@@ -1,0 +1,27 @@
+{
+  "dataSource": {
+    "driverName": "mysql",
+    "addr": "127.0.0.1:3306",
+    "database": "spot",
+    "user": "root",
+    "password": "123456",
+    "enableAutoMigrate": false
+  },
+  "redis": {
+    "addr": ":6379",
+    "password": "foobared"
+  },
+  "kafka": {
+    "brokers": [
+      "localhost:9092"
+    ]
+  },
+  "pushServer": {
+    "addr": ":8002",
+    "path": "/ws"
+  },
+  "restServer": {
+    "addr": ":8001"
+  },
+  "jwtSecret": "flj23jfoi23apdl3jfslkj23za01mf3"
+}
