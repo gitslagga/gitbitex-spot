@@ -249,3 +249,43 @@ type Transaction struct {
 	Note        string
 	TxId        string
 }
+
+type Address struct {
+	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	Address    string
+	publicKey  string
+	PrivateKey string
+	Mnemonic   string
+}
+
+type AccountAsset struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64           `gorm:"column:user_id;unique_index:idx_uid_currency"`
+	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
+	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
+	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+}
+
+type AccountPool struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64           `gorm:"column:user_id;unique_index:idx_uid_currency"`
+	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
+	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
+	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+}
+
+type AccountShop struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64           `gorm:"column:user_id;unique_index:idx_uid_currency"`
+	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
+	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
+	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+}

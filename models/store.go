@@ -61,4 +61,22 @@ type Store interface {
 	GetTicksByProductId(productId string, granularity int64, limit int) ([]*Tick, error)
 	GetLastTickByProductId(productId string, granularity int64) (*Tick, error)
 	AddTicks(ticks []*Tick) error
+
+	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
+	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
+	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
+	AddAccountAsset(account *AccountAsset) error
+	UpdateAccountAsset(account *AccountAsset) error
+
+	GetAccountPool(userId int64, currency string) (*AccountPool, error)
+	GetAccountsPoolByUserId(userId int64) ([]*AccountPool, error)
+	GetAccountPoolForUpdate(userId int64, currency string) (*AccountPool, error)
+	AddAccountPool(account *AccountPool) error
+	UpdateAccountPool(account *AccountPool) error
+
+	GetAccountShop(userId int64, currency string) (*AccountShop, error)
+	GetAccountsShopByUserId(userId int64) ([]*AccountShop, error)
+	GetAccountShopForUpdate(userId int64, currency string) (*AccountShop, error)
+	AddAccountShop(account *AccountShop) error
+	UpdateAccountShop(account *AccountShop) error
 }
