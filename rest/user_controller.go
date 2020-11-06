@@ -53,7 +53,7 @@ func SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("accessToken", token, 7*24*60*60, "/", "*", false, false)
+	ctx.SetCookie("accessToken", token, 7*24*60*60, "/", "", false, false)
 	ctx.JSON(http.StatusOK, token)
 }
 
@@ -102,7 +102,7 @@ func ChangePassword(ctx *gin.Context) {
 
 // DELETE /users/accessToken
 func SignOut(ctx *gin.Context) {
-	ctx.SetCookie("accessToken", "", -1, "/", "*", false, false)
+	ctx.SetCookie("accessToken", "", -1, "/", "", false, false)
 	ctx.JSON(http.StatusOK, nil)
 }
 
