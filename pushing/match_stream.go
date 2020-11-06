@@ -15,9 +15,9 @@
 package pushing
 
 import (
-	"github.com/gitbitex/gitbitex-spot/matching"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/utils"
+	"github.com/gitslagga/gitbitex-spot/matching"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/shopspring/decimal"
 	"time"
 )

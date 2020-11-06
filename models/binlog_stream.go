@@ -16,8 +16,8 @@ package models
 
 import (
 	"encoding/json"
-	"github.com/gitbitex/gitbitex-spot/conf"
-	"github.com/gitbitex/gitbitex-spot/utils"
+	"github.com/gitslagga/gitbitex-spot/conf"
+	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/go-redis/redis"
 	"github.com/shopspring/decimal"
 	"github.com/siddontang/go-log/log"

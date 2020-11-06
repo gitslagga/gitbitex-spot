@@ -18,7 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/emirpasic/gods/maps/treemap"
-	"github.com/gitbitex/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/shopspring/decimal"
 	"github.com/siddontang/go-log/log"
 	"math"

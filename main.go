@@ -15,13 +15,13 @@
 package main
 
 import (
-	"github.com/gitbitex/gitbitex-spot/conf"
-	"github.com/gitbitex/gitbitex-spot/matching"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/pushing"
-	"github.com/gitbitex/gitbitex-spot/rest"
-	"github.com/gitbitex/gitbitex-spot/service"
-	"github.com/gitbitex/gitbitex-spot/worker"
+	"github.com/gitslagga/gitbitex-spot/conf"
+	"github.com/gitslagga/gitbitex-spot/matching"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/pushing"
+	"github.com/gitslagga/gitbitex-spot/rest"
+	"github.com/gitslagga/gitbitex-spot/service"
+	"github.com/gitslagga/gitbitex-spot/worker"
 	"github.com/prometheus/common/log"
 	"net/http"
 	_ "net/http/pprof"

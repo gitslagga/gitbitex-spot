@@ -15,9 +15,9 @@
 package pushing
 
 import (
-	"github.com/gitbitex/gitbitex-spot/matching"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/service"
+	"github.com/gitslagga/gitbitex-spot/matching"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/service"
 	"github.com/shopspring/decimal"
 	logger "github.com/siddontang/go-log/log"
 	"sync"

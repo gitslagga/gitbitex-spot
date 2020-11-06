@@ -16,9 +16,9 @@ package worker
 
 import (
 	"encoding/json"
-	"github.com/gitbitex/gitbitex-spot/conf"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/service"
+	"github.com/gitslagga/gitbitex-spot/conf"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/service"
 	"github.com/go-redis/redis"
 	"github.com/siddontang/go-log/log"
 	"time"

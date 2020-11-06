@@ -15,7 +15,7 @@
 package matching
 
 import (
-	"github.com/gitbitex/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/models"
 )
 
 // 用于撮合引擎读取order，需要支持设置offset，从指定的offset开始读取

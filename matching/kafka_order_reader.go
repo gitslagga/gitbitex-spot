@@ -17,7 +17,7 @@ package matching
 import (
 	"context"
 	"encoding/json"
-	"github.com/gitbitex/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/segmentio/kafka-go"
 )
 

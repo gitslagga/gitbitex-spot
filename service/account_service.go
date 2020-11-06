@@ -17,8 +17,8 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/models/mysql"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/shopspring/decimal"
 )
 

@@ -18,9 +18,9 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gitbitex/gitbitex-spot/conf"
-	"github.com/gitbitex/gitbitex-spot/models"
-	"github.com/gitbitex/gitbitex-spot/models/mysql"
+	"github.com/gitslagga/gitbitex-spot/conf"
+	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/pkg/errors"
 	"time"
 )

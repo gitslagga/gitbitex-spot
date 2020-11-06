@@ -15,7 +15,7 @@
 package rest
 
 import (
-	"github.com/gitbitex/gitbitex-spot/conf"
+	"github.com/gitslagga/gitbitex-spot/conf"
 	"github.com/siddontang/go-log/log"
 )
 
