@@ -60,6 +60,19 @@ func (server *HttpServer) Start() {
 		private.POST("/api/wallets/:currency/withdrawal", Withdrawal)
 	}
 
+	//development new
+	r.POST("/api/address/mnemonic", MnemonicService)
+	r.POST("/api/address/register", RegisterService)
+	r.POST("/api/address/login", LoginService)
+
+	personal := r.Group("/", checkJwtToken())
+	{
+		personal.GET("/api/address/info", AddressService)
+		personal.DELETE("/api/address/logout", LogoutService)
+		personal.POST("/api/address/findPassword", FindPasswordService)
+		personal.POST("/api/address/modifyPassword", ModifyPasswordService)
+	}
+
 	err := r.Run(server.addr)
 	if err != nil {
 		panic(err)

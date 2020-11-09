@@ -60,7 +60,8 @@ func RefreshAccessToken(email, password string) (string, error) {
 		"id":           user.Id,
 		"email":        user.Email,
 		"passwordHash": user.PasswordHash,
-		"expiredAt":    time.Now().Unix(),
+		"exp":          time.Now().Add(time.Second * time.Duration(60*60*24*7)).Unix(),
+		"iat":          time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString([]byte(conf.GetConfig().JwtSecret))

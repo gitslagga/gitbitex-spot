@@ -22,11 +22,14 @@ import (
 	"net/http"
 )
 
-const keyCurrentUser = "__current_user"
+const (
+	keyCurrentUser    = "__current_user"
+	keyCurrentAddress = "__current_address"
+)
 
 func checkToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Query("token")
+		token := c.GetHeader("token")
 		if len(token) == 0 {
 			var err error
 			token, err = c.Cookie("accessToken")
@@ -57,4 +60,41 @@ func GetCurrentUser(ctx *gin.Context) *models.User {
 		return nil
 	}
 	return val.(*models.User)
+}
+
+//development new
+func checkJwtToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		out := CommonResp{}
+		token := c.GetHeader("token")
+		if len(token) == 0 {
+			var err error
+			token, err = c.Cookie("accessToken")
+			if err != nil {
+				out.RespCode = EC_TOKEN_INVALID
+				out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+				c.AbortWithStatusJSON(http.StatusOK, out)
+				return
+			}
+		}
+
+		address, err := service.CheckJwtToken(token)
+		if err != nil || address == nil {
+			out.RespCode = EC_TOKEN_INVALID
+			out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+			c.AbortWithStatusJSON(http.StatusOK, out)
+			return
+		}
+
+		c.Set(keyCurrentAddress, address)
+		c.Next()
+	}
+}
+
+func GetCurrentAddress(ctx *gin.Context) *models.Address {
+	val, found := ctx.Get(keyCurrentAddress)
+	if !found {
+		return nil
+	}
+	return val.(*models.Address)
 }

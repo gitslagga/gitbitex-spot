@@ -250,14 +250,18 @@ type Transaction struct {
 	TxId        string
 }
 
+//development new
 type Address struct {
 	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Username   string
+	Password   string
 	Address    string
-	publicKey  string
+	PublicKey  string
 	PrivateKey string
 	Mnemonic   string
+	ParentIds  string
 }
 
 type AccountAsset struct {

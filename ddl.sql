@@ -159,10 +159,13 @@ CREATE TABLE `g_address` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `public_key` varchar(255) NOT NULL,
   `private_key` varchar(255) NOT NULL,
-  `mnemonic` varchar(255) NOT NULL,
+  `mnemonic` varchar(255) NOT NULL DEFAULT '',
+  `parent_ids` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_address` (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

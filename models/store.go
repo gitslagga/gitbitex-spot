@@ -62,6 +62,11 @@ type Store interface {
 	GetLastTickByProductId(productId string, granularity int64) (*Tick, error)
 	AddTicks(ticks []*Tick) error
 
+	//development new
+	GetAddressByAddr(addr string) (*Address, error)
+	AddAddress(address *Address) error
+	UpdateAddress(address *Address) error
+
 	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
 	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
