@@ -51,7 +51,7 @@ type Store interface {
 	AddTicks(ticks []*Tick) error
 
 	//development new
-	GetAddressByAddr(addr string) (*Address, error)
+	GetAddressByAddress(addr string) (*Address, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 

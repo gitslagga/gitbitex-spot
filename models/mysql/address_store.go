@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func (s *Store) GetAddressByAddr(addr string) (*models.Address, error) {
+func (s *Store) GetAddressByAddress(addr string) (*models.Address, error) {
 	var address models.Address
 	err := s.db.Raw("SELECT * FROM g_address WHERE address=?", addr).Scan(&address).Error
 	if err == gorm.ErrRecordNotFound {

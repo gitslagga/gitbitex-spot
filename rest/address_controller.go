@@ -15,7 +15,7 @@ func MnemonicService(ctx *gin.Context) {
 
 	mnemonic, err := service.CreateMnemonic()
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] MnemonicService CreateAddress err: %v", err)
+		mylog.Frontend.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -50,9 +50,9 @@ func RegisterService(ctx *gin.Context) {
 
 	mylog.Frontend.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
-	_, err = service.CreateAddress(register.Username, encryptPassword(register.Password), register.Mnemonic)
+	_, err = service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService CreateAddress err: %v", err)
+		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -85,9 +85,9 @@ func LoginService(ctx *gin.Context) {
 
 	mylog.Frontend.Info().Msgf("[Rest] LoginService request param: %v", login)
 
-	address, err := service.UpdateAddress(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
+	address, err := service.AddressLogin(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService UpdateAddress err: %v", err)
+		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -169,7 +169,7 @@ func FindPasswordService(ctx *gin.Context) {
 	}
 
 	address.Password = encryptPassword(findPassword.Password)
-	err = service.UpdateAddressByAddress(address)
+	err = service.UpdateAddress(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -212,7 +212,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 	}
 
 	address.Password = encryptPassword(modifyPassword.NewPassword)
-	err = service.UpdateAddressByAddress(address)
+	err = service.UpdateAddress(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -247,7 +247,7 @@ func ActivationService(ctx *gin.Context) {
 	//
 	//mylog.Frontend.Info().Msgf("[Rest] ActivationService request param: %v", activation)
 	//
-	//err = service.UpdateAddressByAddress(address)
+	//err = service.UpdateAddress(address)
 	//if err != nil {
 	//	out.RespCode = EC_NETWORK_ERR
 	//	out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)

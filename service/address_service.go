@@ -87,7 +87,7 @@ func createAddressByPrivateKey(privateKey string) (*models.Address, error) {
 	}, nil
 }
 
-func CreateAddress(username, password, mnemonic string) (*models.Address, error) {
+func AddressRegister(username, password, mnemonic string) (*models.Address, error) {
 	address, err := createAddressByMnemonic(mnemonic)
 	if err != nil {
 		return nil, err
@@ -96,20 +96,20 @@ func CreateAddress(username, password, mnemonic string) (*models.Address, error)
 	address.Username = username
 	address.Password = password
 
-	addressExists, err := GetAddressByAddr(address.Address)
+	addressExists, err := GetAddressByAddress(address.Address)
 	if err != nil {
 		return nil, err
 	}
 
 	if addressExists != nil {
 		address.Id = addressExists.Id
-		return address, mysql.SharedStore().UpdateAddress(address)
+		return address, UpdateAddress(address)
 	}
 
-	return address, mysql.SharedStore().AddAddress(address)
+	return address, AddAddress(address)
 }
 
-func UpdateAddress(mnemonic, privateKey, password string) (address *models.Address, err error) {
+func AddressLogin(mnemonic, privateKey, password string) (address *models.Address, err error) {
 	if mnemonic != "" {
 		address, err = createAddressByMnemonic(mnemonic)
 	} else {
@@ -121,18 +121,18 @@ func UpdateAddress(mnemonic, privateKey, password string) (address *models.Addre
 
 	address.Password = password
 
-	addressExists, err := GetAddressByAddr(address.Address)
+	addressExists, err := GetAddressByAddress(address.Address)
 	if err != nil {
 		return nil, err
 	}
 	if addressExists != nil {
 		address.Id = addressExists.Id
 		address.Username = addressExists.Username
-		return address, mysql.SharedStore().UpdateAddress(address)
+		return address, UpdateAddress(address)
 	}
 
 	address.Username = "Account1"
-	return address, mysql.SharedStore().AddAddress(address)
+	return address, AddAddress(address)
 }
 
 func CreateFrontendToken(address *models.Address) (string, error) {
@@ -174,7 +174,7 @@ func CheckFrontendToken(tokenStr string) (*models.Address, error) {
 	}
 	privateKey := privateKeyVal.(string)
 
-	address, err := GetAddressByAddr(addr)
+	address, err := GetAddressByAddress(addr)
 	if err != nil {
 		return nil, err
 	}
@@ -187,10 +187,14 @@ func CheckFrontendToken(tokenStr string) (*models.Address, error) {
 	return address, nil
 }
 
-func GetAddressByAddr(addr string) (*models.Address, error) {
-	return mysql.SharedStore().GetAddressByAddr(addr)
+func GetAddressByAddress(address string) (*models.Address, error) {
+	return mysql.SharedStore().GetAddressByAddress(address)
 }
 
-func UpdateAddressByAddress(address *models.Address) error {
+func AddAddress(address *models.Address) error {
+	return mysql.SharedStore().AddAddress(address)
+}
+
+func UpdateAddress(address *models.Address) error {
 	return mysql.SharedStore().UpdateAddress(address)
 }
