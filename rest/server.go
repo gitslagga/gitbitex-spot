@@ -64,7 +64,7 @@ func (server *HttpServer) Start() {
 	r.POST("/api/admin/login", AdminLoginService)
 	backend := r.Group("/api", checkBackendToken())
 	{
-		frontend.GET("/admin/info", AdminService)
+		backend.GET("/admin/info", AdminService)
 		backend.POST("/config/update", UpdateConfigService)
 	}
 

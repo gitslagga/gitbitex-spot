@@ -218,9 +218,9 @@ CREATE TABLE `g_admin` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `g_config`(`key`,`value`) values
-('ACTIVE_NUMBER','0.1'),
-('ISSUE_NUMBER','100000'),
-('ENERGY_NUMBER','5000'),
-('HOLD_NUMBER','8000'),
-('PROMOTE_NUMBER','4000');
+('激活转币数量','0.1'),
+('认购奖励数量','100000'),
+('能量兑换数量','5000'),
+('持币收益数量','8000'),
+('推广收益数量','4000');
 

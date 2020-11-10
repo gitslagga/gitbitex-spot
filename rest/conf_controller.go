@@ -27,7 +27,7 @@ func GetConfigs(ctx *gin.Context) {
 func GetConfigService(ctx *gin.Context) {
 	out := CommonResp{}
 	config, err := service.GetConfigs()
-	if err == nil {
+	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
