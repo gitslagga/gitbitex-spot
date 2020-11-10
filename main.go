@@ -18,6 +18,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/conf"
 	"github.com/gitslagga/gitbitex-spot/matching"
 	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/pushing"
 	"github.com/gitslagga/gitbitex-spot/rest"
 	"github.com/gitslagga/gitbitex-spot/service"
@@ -29,6 +30,7 @@ import (
 
 func main() {
 	gbeConfig := conf.GetConfig()
+	mylog.ConfigLoggers()
 
 	go func() {
 		log.Info(http.ListenAndServe("localhost:6060", nil))

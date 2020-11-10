@@ -15,6 +15,8 @@
 package rest
 
 import (
+	"crypto/md5"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
@@ -62,7 +64,7 @@ func RegisterService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
-	_, err = service.CreateAddress(register.Username, register.Password, register.Mnemonic)
+	_, err = service.CreateAddress(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
 		mylog.DataLogger.Info().Msgf("[Rest] RegisterService CreateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
@@ -97,7 +99,7 @@ func LoginService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] LoginService request param: %v", login)
 
-	address, err := service.UpdateAddress(login.Mnemonic, login.PrivateKey, login.Password)
+	address, err := service.UpdateAddress(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
 		mylog.DataLogger.Info().Msgf("[Rest] RegisterService CreateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
@@ -179,7 +181,7 @@ func FindPasswordService(ctx *gin.Context) {
 		return
 	}
 
-	address.Password = findPassword.Password
+	address.Password = encryptPassword(findPassword.Password)
 	err = service.UpdateAddressByAddr(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
@@ -215,14 +217,14 @@ func ModifyPasswordService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] ModifyPasswordService request param: %v", modifyPassword)
 
-	if address.Password != modifyPassword.OldPassword {
+	if encryptPassword(address.Password) != modifyPassword.OldPassword {
 		out.RespCode = EC_PASSWORD_INCORRECT
 		out.RespDesc = ErrorCodeMessage(EC_PASSWORD_INCORRECT)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
 
-	address.Password = modifyPassword.NewPassword
+	address.Password = encryptPassword(modifyPassword.NewPassword)
 	err = service.UpdateAddressByAddr(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
@@ -234,4 +236,9 @@ func ModifyPasswordService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	ctx.JSON(http.StatusOK, out)
+}
+
+func encryptPassword(password string) string {
+	hash := md5.Sum([]byte(password))
+	return fmt.Sprintf("%x", hash)
 }
