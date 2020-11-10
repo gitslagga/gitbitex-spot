@@ -7,7 +7,6 @@ import (
 	"net/http"
 )
 
-// 后台用户登录
 // GET /admin/login
 func AdminLoginService(ctx *gin.Context) {
 	out := CommonResp{}
@@ -60,5 +59,22 @@ func AdminLoginService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	out.RespData = token
+	ctx.JSON(http.StatusOK, out)
+}
+
+// Get /admin/info
+func AdminService(ctx *gin.Context) {
+	out := CommonResp{}
+	admin := GetCurrentAdmin(ctx)
+	if admin == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = admin
 	ctx.JSON(http.StatusOK, out)
 }
