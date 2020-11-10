@@ -17,7 +17,6 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 func (s *Store) GetUserByEmail(email string) (*models.User, error) {
@@ -30,7 +29,6 @@ func (s *Store) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func (s *Store) AddUser(user *models.User) error {
-	user.CreatedAt = time.Now()
 	return s.db.Create(user).Error
 }
 

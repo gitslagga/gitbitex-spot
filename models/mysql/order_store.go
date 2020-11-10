@@ -17,7 +17,6 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 func (s *Store) GetOrderById(orderId int64) (*models.Order, error) {
@@ -83,17 +82,15 @@ func (s *Store) GetOrdersByUserId(userId int64, statuses []models.OrderStatus, s
 }
 
 func (s *Store) AddOrder(order *models.Order) error {
-	order.CreatedAt = time.Now()
 	return s.db.Create(order).Error
 }
 
 func (s *Store) UpdateOrder(order *models.Order) error {
-	order.UpdatedAt = time.Now()
 	return s.db.Save(order).Error
 }
 
 func (s *Store) UpdateOrderStatus(orderId int64, oldStatus, newStatus models.OrderStatus) (bool, error) {
-	ret := s.db.Exec("UPDATE g_order SET `status`=?,updated_at=? WHERE id=? AND `status`=? ", newStatus, time.Now(), orderId, oldStatus)
+	ret := s.db.Exec("UPDATE g_order SET `status`=? WHERE id=? AND `status`=? ", newStatus, orderId, oldStatus)
 	if ret.Error != nil {
 		return false, ret.Error
 	}

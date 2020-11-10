@@ -239,6 +239,11 @@ func ModifyPasswordService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, out)
 }
 
+// POST /api/address/activation
+func ActivationService(ctx *gin.Context) {
+
+}
+
 func encryptPassword(password string) string {
 	hash := md5.Sum([]byte(password))
 	return fmt.Sprintf("%x", hash)

@@ -20,6 +20,7 @@ type Store interface {
 	CommitTx() error
 
 	GetConfigs() ([]*Config, error)
+	UpdateConfig(config *Config) error
 
 	GetUserByEmail(email string) (*User, error)
 	AddUser(user *User) error

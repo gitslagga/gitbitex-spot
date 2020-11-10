@@ -71,6 +71,7 @@ func (server *HttpServer) Start() {
 		personal.DELETE("/api/address/logout", LogoutService)
 		personal.POST("/api/address/findPassword", FindPasswordService)
 		personal.POST("/api/address/modifyPassword", ModifyPasswordService)
+		personal.POST("/api/address/activation", ActivationService)
 	}
 
 	err := r.Run(server.addr)

@@ -19,7 +19,6 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
 	"strings"
-	"time"
 )
 
 func (s *Store) GetLastTradeByProductId(productId string) (*models.Trade, error) {
@@ -44,12 +43,12 @@ func (s *Store) AddTrades(trades []*models.Trade) error {
 	}
 	var valueStrings []string
 	for _, trade := range trades {
-		valueString := fmt.Sprintf("('%v', '%v', %v, %v, %v, %v, '%v', '%v',%v,%v)",
-			time.Now(), trade.ProductId, trade.TakerOrderId, trade.MakerOrderId, trade.Price, trade.Size, trade.Side,
+		valueString := fmt.Sprintf("('%v', %v, %v, %v, %v, '%v', '%v', %v, %v)",
+			trade.ProductId, trade.TakerOrderId, trade.MakerOrderId, trade.Price, trade.Size, trade.Side,
 			trade.Time, trade.LogOffset, trade.LogSeq)
 		valueStrings = append(valueStrings, valueString)
 	}
-	sql := fmt.Sprintf("INSERT IGNORE  INTO g_trade (created_at,product_id,taker_order_id,maker_order_id,"+
+	sql := fmt.Sprintf("INSERT IGNORE  INTO g_trade (product_id,taker_order_id,maker_order_id,"+
 		"price,size,side,time,log_offset,log_seq) VALUES %s", strings.Join(valueStrings, ","))
 	return s.db.Exec(sql).Error
 }

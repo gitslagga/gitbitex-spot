@@ -21,3 +21,7 @@ func (s *Store) GetConfigs() ([]*models.Config, error) {
 	err := s.db.Find(&configs).Error
 	return configs, err
 }
+
+func (s *Store) UpdateConfig(config *models.Config) error {
+	return s.db.Save(config).Error
+}

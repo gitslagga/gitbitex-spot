@@ -22,3 +22,7 @@ import (
 func GetConfigs() ([]*models.Config, error) {
 	return mysql.SharedStore().GetConfigs()
 }
+
+func UpdateConfig(config *models.Config) error {
+	return mysql.SharedStore().UpdateConfig(config)
+}

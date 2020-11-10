@@ -17,7 +17,6 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
-	"time"
 )
 
 func (s *Store) GetAccount(userId int64, currency string) (*models.Account, error) {
@@ -48,11 +47,9 @@ func (s *Store) GetAccountForUpdate(userId int64, currency string) (*models.Acco
 }
 
 func (s *Store) AddAccount(account *models.Account) error {
-	account.CreatedAt = time.Now()
 	return s.db.Create(account).Error
 }
 
 func (s *Store) UpdateAccount(account *models.Account) error {
-	account.UpdatedAt = time.Now()
 	return s.db.Save(account).Error
 }
