@@ -87,16 +87,16 @@ func LoginService(ctx *gin.Context) {
 
 	address, err := service.UpdateAddress(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
-		mylog.DataLogger.Info().Msgf("[Rest] RegisterService CreateAddress err: %v", err)
+		mylog.DataLogger.Info().Msgf("[Rest] RegisterService UpdateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
 
-	token, err := service.CreateJwtToken(address)
+	token, err := service.CreateFrontendToken(address)
 	if err != nil {
-		mylog.DataLogger.Info().Msgf("[Rest] LoginService CreateJwtToken err: %v", err)
+		mylog.DataLogger.Info().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -169,7 +169,7 @@ func FindPasswordService(ctx *gin.Context) {
 	}
 
 	address.Password = encryptPassword(findPassword.Password)
-	err = service.UpdateAddressByAddr(address)
+	err = service.UpdateAddressByAddress(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -212,7 +212,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 	}
 
 	address.Password = encryptPassword(modifyPassword.NewPassword)
-	err = service.UpdateAddressByAddr(address)
+	err = service.UpdateAddressByAddress(address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)

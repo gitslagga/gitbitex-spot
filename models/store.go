@@ -6,6 +6,7 @@ type Store interface {
 	CommitTx() error
 
 	GetConfigs() ([]*Config, error)
+	GetConfigById(id int64) (*Config, error)
 	UpdateConfig(config *Config) error
 
 	GetUserByEmail(email string) (*User, error)
@@ -71,4 +72,7 @@ type Store interface {
 	GetAccountShopForUpdate(userId int64, currency string) (*AccountShop, error)
 	AddAccountShop(account *AccountShop) error
 	UpdateAccountShop(account *AccountShop) error
+
+	GetAdmin(username string) (*Admin, error)
+	UpdateAdmin(admin *Admin) error
 }

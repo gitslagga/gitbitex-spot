@@ -279,3 +279,12 @@ type AccountShop struct {
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
 }
+
+type Admin struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Username  string
+	Password  string
+	Role      int
+}

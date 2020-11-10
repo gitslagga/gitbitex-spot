@@ -11,6 +11,7 @@ import (
 const (
 	keyCurrentUser    = "__current_user"
 	keyCurrentAddress = "__current_address"
+	keyCurrentAdmin   = "__current_admin"
 )
 
 func checkToken() gin.HandlerFunc {
@@ -49,7 +50,7 @@ func GetCurrentUser(ctx *gin.Context) *models.User {
 }
 
 //development new
-func checkJwtToken() gin.HandlerFunc {
+func checkFrontendToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		out := CommonResp{}
 		token := c.GetHeader("token")
@@ -64,7 +65,7 @@ func checkJwtToken() gin.HandlerFunc {
 			}
 		}
 
-		address, err := service.CheckJwtToken(token)
+		address, err := service.CheckFrontendToken(token)
 		if err != nil || address == nil {
 			out.RespCode = EC_TOKEN_INVALID
 			out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
@@ -83,4 +84,40 @@ func GetCurrentAddress(ctx *gin.Context) *models.Address {
 		return nil
 	}
 	return val.(*models.Address)
+}
+
+func checkBackendToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		out := CommonResp{}
+		token := c.GetHeader("token")
+		if len(token) == 0 {
+			var err error
+			token, err = c.Cookie("accessToken")
+			if err != nil {
+				out.RespCode = EC_TOKEN_INVALID
+				out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+				c.AbortWithStatusJSON(http.StatusOK, out)
+				return
+			}
+		}
+
+		admin, err := service.CheckBackendToken(token)
+		if err != nil || admin == nil {
+			out.RespCode = EC_TOKEN_INVALID
+			out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+			c.AbortWithStatusJSON(http.StatusOK, out)
+			return
+		}
+
+		c.Set(keyCurrentAdmin, admin)
+		c.Next()
+	}
+}
+
+func GetCurrentAdmin(ctx *gin.Context) *models.Admin {
+	val, found := ctx.Get(keyCurrentAdmin)
+	if !found {
+		return nil
+	}
+	return val.(*models.Admin)
 }

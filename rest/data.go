@@ -15,9 +15,10 @@ const (
 	EC_RESPONSE_DATA_ERR           = 10004
 	EC_REQUEST_DATA_ERR            = 10005
 
-	EC_PASSWORD_ERR       = 9000
-	EC_MNEMONIC_INCORRECT = 9001
-	EC_PASSWORD_INCORRECT = 9002
+	EC_PASSWORD_ERR          = 9000
+	EC_MNEMONIC_INCORRECT    = 9001
+	EC_PASSWORD_INCORRECT    = 9002
+	EC_USERNAME_PASSWORD_ERR = 9003
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -53,6 +54,8 @@ func (c ErrorCode) String() (r string) {
 		r = "助记词不正确|Mnemonic is incorrect"
 	case EC_PASSWORD_INCORRECT:
 		r = "旧密码不正确|Old password is incorrect"
+	case EC_USERNAME_PASSWORD_ERR:
+		r = "用户名或密码错误|Username or password error"
 
 	default:
 	}
@@ -90,4 +93,14 @@ type FindPasswordRequest struct {
 type ModifyPasswordRequest struct {
 	OldPassword string `json:"old_password" binding:"required"`
 	NewPassword string `json:"new_password" binding:"required"`
+}
+
+type AdminLoginRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type UpdateConfigRequest struct {
+	Id    int64  `json:"id" binding:"required"`
+	Value string `json:"value" binding:"required"`
 }

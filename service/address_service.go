@@ -135,7 +135,7 @@ func UpdateAddress(mnemonic, privateKey, password string) (address *models.Addre
 	return address, mysql.SharedStore().AddAddress(address)
 }
 
-func CreateJwtToken(address *models.Address) (string, error) {
+func CreateFrontendToken(address *models.Address) (string, error) {
 	claim := jwt.MapClaims{
 		"id":          address.Id,
 		"address":     address.Address,
@@ -147,7 +147,7 @@ func CreateJwtToken(address *models.Address) (string, error) {
 	return token.SignedString([]byte(conf.GetConfig().JwtSecret))
 }
 
-func CheckJwtToken(tokenStr string) (*models.Address, error) {
+func CheckFrontendToken(tokenStr string) (*models.Address, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return []byte(conf.GetConfig().JwtSecret), nil
 	})
@@ -191,6 +191,6 @@ func GetAddressByAddr(addr string) (*models.Address, error) {
 	return mysql.SharedStore().GetAddressByAddr(addr)
 }
 
-func UpdateAddressByAddr(address *models.Address) error {
+func UpdateAddressByAddress(address *models.Address) error {
 	return mysql.SharedStore().UpdateAddress(address)
 }

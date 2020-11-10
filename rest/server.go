@@ -22,31 +22,28 @@ func (server *HttpServer) Start() {
 	r := gin.Default()
 	r.Use(setCROSOptions)
 
-	r.POST("/api/user/signup", SignUp)
-	r.POST("/api/user/signin", SignIn)
-	r.POST("/api/user/token", GetToken)
-	r.GET("/api/product", GetProducts)
-	r.GET("/api/product/:productId/trades", GetProductTrades)
-	r.GET("/api/product/:productId/book", GetProductOrderBook)
-	r.GET("/api/product/:productId/candles", GetProductCandles)
+	r.GET("/api/configs", GetConfigs)
+	r.POST("/api/users", SignUp)
+	r.POST("/api/users/accessToken", SignIn)
+	r.POST("/api/users/token", GetToken)
+	r.GET("/api/products", GetProducts)
+	r.GET("/api/products/:productId/trades", GetProductTrades)
+	r.GET("/api/products/:productId/book", GetProductOrderBook)
+	r.GET("/api/products/:productId/candles", GetProductCandles)
 
-	private := r.Group("/api", checkToken())
+	private := r.Group("/", checkToken())
 	{
-		private.GET("/api/configs", GetConfigs)
-		private.POST("/api/config", UpdateConfig)
-
-		private.GET("/order", GetOrders)
-		private.POST("/order", PlaceOrder)
-		private.DELETE("/order/:orderId", CancelOrder)
-		private.DELETE("/order", CancelOrders)
-		private.GET("/account", GetAccounts)
-		private.GET("/user/self", GetUsersSelf)
-		private.POST("/user/password", ChangePassword)
-		private.DELETE("/user/accessToken", SignOut)
-
-		private.GET("/wallet/:currency/address", GetWalletAddress)
-		private.GET("/wallet/:currency/transactions", GetWalletTransactions)
-		private.POST("/wallet/:currency/withdrawal", Withdrawal)
+		private.GET("/api/orders", GetOrders)
+		private.POST("/api/orders", PlaceOrder)
+		private.DELETE("/api/orders/:orderId", CancelOrder)
+		private.DELETE("/api/orders", CancelOrders)
+		private.GET("/api/accounts", GetAccounts)
+		private.GET("/api/users/self", GetUsersSelf)
+		private.POST("/api/users/password", ChangePassword)
+		private.DELETE("/api/users/accessToken", SignOut)
+		private.GET("/api/wallets/:currency/address", GetWalletAddress)
+		private.GET("/api/wallets/:currency/transactions", GetWalletTransactions)
+		private.POST("/api/wallets/:currency/withdrawal", Withdrawal)
 	}
 
 	//development new
@@ -54,13 +51,20 @@ func (server *HttpServer) Start() {
 	r.POST("/api/address/register", RegisterService)
 	r.POST("/api/address/login", LoginService)
 
-	personal := r.Group("/api", checkJwtToken())
+	frontend := r.Group("/api", checkFrontendToken())
 	{
-		personal.GET("/address/info", AddressService)
-		personal.DELETE("/address/logout", LogoutService)
-		personal.POST("/address/findPassword", FindPasswordService)
-		personal.POST("/address/modifyPassword", ModifyPasswordService)
-		personal.POST("/address/activation", ActivationService)
+		frontend.GET("/address/info", AddressService)
+		frontend.DELETE("/address/logout", LogoutService)
+		frontend.POST("/address/findPassword", FindPasswordService)
+		frontend.POST("/address/modifyPassword", ModifyPasswordService)
+		frontend.POST("/address/activation", ActivationService)
+	}
+
+	r.GET("/api/config/info", GetConfigService)
+	r.POST("/api/admin/login", AdminLoginService)
+	backend := r.Group("/api", checkBackendToken())
+	{
+		backend.POST("/config/update", UpdateConfigService)
 	}
 
 	err := r.Run(server.addr)

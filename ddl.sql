@@ -206,6 +206,17 @@ CREATE TABLE `g_account_shop` (
   UNIQUE KEY `idx_uid_currency` (`user_id`,`currency`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `g_admin` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1-admin,2-normal',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
 INSERT INTO `g_config`(`key`,`value`) values
 ('ACTIVE_NUMBER','0.1'),
 ('ISSUE_NUMBER','100000'),
