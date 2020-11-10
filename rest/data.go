@@ -98,6 +98,12 @@ type ModifyPasswordRequest struct {
 	NewPassword string `json:"new_password" binding:"required"`
 }
 
+type ActivationRequest struct {
+	Address string  `json:"address" binding:"required"`
+	Number  float64 `json:"number" binding:"required"`
+}
+
+//backend
 type AdminLoginRequest struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`

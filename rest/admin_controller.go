@@ -26,11 +26,10 @@ func AdminLoginService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Logger.Info().Msgf("[Rest] AdminLoginService request param: %v", adminLogin)
+	mylog.Backend.Info().Msgf("[Rest] AdminLoginService request param: %v", adminLogin)
 
 	admin, err := service.GetAdminByUsername(adminLogin.Username)
 	if err != nil {
-		mylog.DataLogger.Info().Msgf("[Rest] AdminLoginService GetAdminByUsername err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -38,7 +37,6 @@ func AdminLoginService(ctx *gin.Context) {
 	}
 
 	if admin == nil || admin.Password != encryptPassword(adminLogin.Password) {
-		mylog.DataLogger.Info().Msgf("[Rest] AdminLoginService username or password error")
 		out.RespCode = EC_USERNAME_PASSWORD_ERR
 		out.RespDesc = ErrorCodeMessage(EC_USERNAME_PASSWORD_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -47,7 +45,7 @@ func AdminLoginService(ctx *gin.Context) {
 
 	token, err := service.CreateBackendToken(admin)
 	if err != nil {
-		mylog.DataLogger.Info().Msgf("[Rest] AdminLoginService CreateBackendToken err: %v", err)
+		mylog.Backend.Error().Msgf("[Rest] AdminLoginService CreateBackendToken err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)

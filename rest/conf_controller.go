@@ -52,11 +52,11 @@ func UpdateConfigService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Logger.Info().Msgf("[Rest] UpdateConfigService request param: %v", updateConfig)
+	mylog.Backend.Info().Msgf("[Rest] UpdateConfigService request param: %v", updateConfig)
 
 	config, err := service.GetConfigById(updateConfig.Id)
 	if err != nil {
-		mylog.DataLogger.Info().Msgf("[Rest] UpdateConfigService GetConfigById err: %v", err)
+		mylog.Backend.Error().Msgf("[Rest] UpdateConfigService GetConfigById err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
