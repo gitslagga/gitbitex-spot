@@ -83,8 +83,8 @@ type LoginRequest struct {
 }
 
 type FindPasswordRequest struct {
-	Mnemonic string `json:"mnemonic" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	PrivateKey string `json:"private_key" binding:"required"`
+	Password   string `json:"password" binding:"required"`
 }
 
 type ModifyPasswordRequest struct {

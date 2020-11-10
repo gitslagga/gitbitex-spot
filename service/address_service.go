@@ -141,6 +141,7 @@ func UpdateAddress(mnemonic, privateKey, password string) (address *models.Addre
 	}
 	if addressExists != nil {
 		address.Id = addressExists.Id
+		address.Username = addressExists.Username
 		return address, mysql.SharedStore().UpdateAddress(address)
 	}
 
@@ -150,11 +151,11 @@ func UpdateAddress(mnemonic, privateKey, password string) (address *models.Addre
 
 func CreateJwtToken(address *models.Address) (string, error) {
 	claim := jwt.MapClaims{
-		"id":       address.Id,
-		"address":  address.Address,
-		"mnemonic": address.Mnemonic,
-		"exp":      time.Now().Add(time.Second * time.Duration(60*60*24*7)).Unix(),
-		"iat":      time.Now().Unix(),
+		"id":          address.Id,
+		"address":     address.Address,
+		"private_key": address.PrivateKey,
+		"exp":         time.Now().Add(time.Second * time.Duration(60*60*24*7)).Unix(),
+		"iat":         time.Now().Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString([]byte(conf.GetConfig().JwtSecret))
@@ -181,11 +182,11 @@ func CheckJwtToken(tokenStr string) (*models.Address, error) {
 	}
 	addr := addressValue.(string)
 
-	mnemonicVal, found := claim["mnemonic"]
+	privateKeyVal, found := claim["private_key"]
 	if !found {
 		return nil, errors.New("bad token")
 	}
-	mnemonic := mnemonicVal.(string)
+	privateKey := privateKeyVal.(string)
 
 	address, err := GetAddressByAddr(addr)
 	if err != nil {
@@ -194,7 +195,7 @@ func CheckJwtToken(tokenStr string) (*models.Address, error) {
 	if address == nil {
 		return nil, errors.New("bad token")
 	}
-	if address.Mnemonic != mnemonic {
+	if address.PrivateKey != privateKey {
 		return nil, errors.New("bad token")
 	}
 	return address, nil

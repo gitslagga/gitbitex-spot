@@ -174,7 +174,7 @@ func FindPasswordService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] FindPasswordService request param: %v", findPassword)
 
-	if address.Mnemonic != findPassword.Mnemonic {
+	if address.PrivateKey != findPassword.PrivateKey {
 		out.RespCode = EC_MNEMONIC_INCORRECT
 		out.RespDesc = ErrorCodeMessage(EC_MNEMONIC_INCORRECT)
 		ctx.JSON(http.StatusOK, out)
