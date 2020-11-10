@@ -1,17 +1,3 @@
-// Copyright 2019 GitBitEx.com
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package rest
 
 import (
@@ -36,28 +22,31 @@ func (server *HttpServer) Start() {
 	r := gin.Default()
 	r.Use(setCROSOptions)
 
-	r.GET("/api/configs", GetConfigs)
-	r.POST("/api/users", SignUp)
-	r.POST("/api/users/accessToken", SignIn)
-	r.POST("/api/users/token", GetToken)
-	r.GET("/api/products", GetProducts)
-	r.GET("/api/products/:productId/trades", GetProductTrades)
-	r.GET("/api/products/:productId/book", GetProductOrderBook)
-	r.GET("/api/products/:productId/candles", GetProductCandles)
+	r.POST("/api/user/signup", SignUp)
+	r.POST("/api/user/signin", SignIn)
+	r.POST("/api/user/token", GetToken)
+	r.GET("/api/product", GetProducts)
+	r.GET("/api/product/:productId/trades", GetProductTrades)
+	r.GET("/api/product/:productId/book", GetProductOrderBook)
+	r.GET("/api/product/:productId/candles", GetProductCandles)
 
-	private := r.Group("/", checkToken())
+	private := r.Group("/api", checkToken())
 	{
-		private.GET("/api/orders", GetOrders)
-		private.POST("/api/orders", PlaceOrder)
-		private.DELETE("/api/orders/:orderId", CancelOrder)
-		private.DELETE("/api/orders", CancelOrders)
-		private.GET("/api/accounts", GetAccounts)
-		private.GET("/api/users/self", GetUsersSelf)
-		private.POST("/api/users/password", ChangePassword)
-		private.DELETE("/api/users/accessToken", SignOut)
-		private.GET("/api/wallets/:currency/address", GetWalletAddress)
-		private.GET("/api/wallets/:currency/transactions", GetWalletTransactions)
-		private.POST("/api/wallets/:currency/withdrawal", Withdrawal)
+		private.GET("/api/configs", GetConfigs)
+		private.POST("/api/config", UpdateConfig)
+
+		private.GET("/order", GetOrders)
+		private.POST("/order", PlaceOrder)
+		private.DELETE("/order/:orderId", CancelOrder)
+		private.DELETE("/order", CancelOrders)
+		private.GET("/account", GetAccounts)
+		private.GET("/user/self", GetUsersSelf)
+		private.POST("/user/password", ChangePassword)
+		private.DELETE("/user/accessToken", SignOut)
+
+		private.GET("/wallet/:currency/address", GetWalletAddress)
+		private.GET("/wallet/:currency/transactions", GetWalletTransactions)
+		private.POST("/wallet/:currency/withdrawal", Withdrawal)
 	}
 
 	//development new
@@ -65,13 +54,13 @@ func (server *HttpServer) Start() {
 	r.POST("/api/address/register", RegisterService)
 	r.POST("/api/address/login", LoginService)
 
-	personal := r.Group("/", checkJwtToken())
+	personal := r.Group("/api", checkJwtToken())
 	{
-		personal.GET("/api/address/info", AddressService)
-		personal.DELETE("/api/address/logout", LogoutService)
-		personal.POST("/api/address/findPassword", FindPasswordService)
-		personal.POST("/api/address/modifyPassword", ModifyPasswordService)
-		personal.POST("/api/address/activation", ActivationService)
+		personal.GET("/address/info", AddressService)
+		personal.DELETE("/address/logout", LogoutService)
+		personal.POST("/address/findPassword", FindPasswordService)
+		personal.POST("/address/modifyPassword", ModifyPasswordService)
+		personal.POST("/address/activation", ActivationService)
 	}
 
 	err := r.Run(server.addr)
