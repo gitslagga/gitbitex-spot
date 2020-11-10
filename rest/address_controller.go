@@ -149,6 +149,7 @@ func AddressService(ctx *gin.Context) {
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
+	out.RespData = address
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -217,7 +218,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] ModifyPasswordService request param: %v", modifyPassword)
 
-	if encryptPassword(address.Password) != modifyPassword.OldPassword {
+	if address.Password != encryptPassword(modifyPassword.OldPassword) {
 		out.RespCode = EC_PASSWORD_INCORRECT
 		out.RespDesc = ErrorCodeMessage(EC_PASSWORD_INCORRECT)
 		ctx.JSON(http.StatusOK, out)

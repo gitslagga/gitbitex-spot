@@ -3,7 +3,6 @@ package mylog
 import (
 	"fmt"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
@@ -37,17 +36,8 @@ func ConfigLoggers() {
 	//zerolog.CallerSkipFrameCount = 3
 	zerolog.TimestampFunc = SgNow
 
-	log.Logger = zerolog.New(&lumberjack.Logger{
-		Filename:   "./log/info.log",
-		MaxSize:    500,
-		MaxBackups: 10,
-		MaxAge:     10,
-		Compress:   true,
-	}).With().Caller().Timestamp().Logger()
-	fmt.Println("Default logger init succeed.")
-
 	Logger = zerolog.New(&lumberjack.Logger{
-		Filename:   "./log/data.log",
+		Filename:   "./log/info.log",
 		MaxSize:    500,
 		MaxBackups: 10,
 		MaxAge:     10,
