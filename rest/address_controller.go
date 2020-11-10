@@ -162,8 +162,8 @@ func FindPasswordService(ctx *gin.Context) {
 	mylog.Logger.Info().Msgf("[Rest] FindPasswordService request param: %v", findPassword)
 
 	if address.PrivateKey != findPassword.PrivateKey {
-		out.RespCode = EC_MNEMONIC_INCORRECT
-		out.RespDesc = ErrorCodeMessage(EC_MNEMONIC_INCORRECT)
+		out.RespCode = EC_PRIVATE_KEY_INCORRECT
+		out.RespDesc = ErrorCodeMessage(EC_PRIVATE_KEY_INCORRECT)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -227,7 +227,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 
 // POST /api/address/activation
 func ActivationService(ctx *gin.Context) {
-
+	//TODO
 }
 
 func encryptPassword(password string) string {

@@ -17,8 +17,9 @@ const (
 
 	EC_PASSWORD_ERR          = 9000
 	EC_MNEMONIC_INCORRECT    = 9001
-	EC_PASSWORD_INCORRECT    = 9002
-	EC_USERNAME_PASSWORD_ERR = 9003
+	EC_PRIVATE_KEY_INCORRECT = 9002
+	EC_PASSWORD_INCORRECT    = 9003
+	EC_USERNAME_PASSWORD_ERR = 9004
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -52,6 +53,8 @@ func (c ErrorCode) String() (r string) {
 		r = "密码长度必须至少为6个字符|password must be of minimum 6 characters length"
 	case EC_MNEMONIC_INCORRECT:
 		r = "助记词不正确|Mnemonic is incorrect"
+	case EC_PRIVATE_KEY_INCORRECT:
+		r = "私钥不正确|Private key is incorrect"
 	case EC_PASSWORD_INCORRECT:
 		r = "旧密码不正确|Old password is incorrect"
 	case EC_USERNAME_PASSWORD_ERR:
