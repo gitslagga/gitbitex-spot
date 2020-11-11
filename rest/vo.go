@@ -28,8 +28,8 @@ type AccountVo struct {
 
 type placeOrderRequest struct {
 	ClientOid   string  `json:"client_oid"`
-	ProductId   string  `json:"productId"`
-	Size        float64 `json:"size"`
+	ProductId   string  `json:"productId" binding:"required"`
+	Size        float64 `json:"size" binding:"required"`
 	Funds       float64 `json:"funds"`
 	Price       float64 `json:"price"`
 	Side        string  `json:"side"`

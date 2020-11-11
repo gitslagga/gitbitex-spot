@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/service"
 	"github.com/gitslagga/gitbitex-spot/utils"
 	"net/http"
+	"strconv"
 )
 
 // GET /products
@@ -71,4 +72,89 @@ func GetProductCandles(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, tickVos)
+}
+
+// GET /product/info
+func GetProductService(ctx *gin.Context) {
+	out := CommonResp{}
+	products, err := service.GetProducts()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = products
+	ctx.JSON(http.StatusOK, out)
+}
+
+// GET /product/trade/:productId
+func GetProductTradeService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	productId := ctx.Param("productId")
+	limit, err := strconv.Atoi(ctx.DefaultQuery("limit", "50"))
+	if err != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	trades, err := service.GetTradesByProductId(productId, limit)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = trades
+	ctx.JSON(http.StatusOK, out)
+}
+
+// GET /book/:productId
+func GetProductOrderBookService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = "Coming"
+	ctx.JSON(http.StatusOK, out)
+}
+
+// GET /candle/:productId
+func GetProductCandleService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	productId := ctx.Param("productId")
+	granularity, err1 := utils.AToInt64(ctx.DefaultQuery("granularity", "60"))
+	limit, err2 := utils.AToInt64(ctx.DefaultQuery("limit", "1000"))
+	if err1 != nil || err2 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+	if limit <= 0 || limit > 10000 {
+		limit = 1000
+	}
+
+	ticks, err := service.GetTicksByProductId(productId, granularity/60, int(limit))
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = ticks
+	ctx.JSON(http.StatusOK, out)
 }

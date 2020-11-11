@@ -51,6 +51,11 @@ func (server *HttpServer) Start() {
 	r.POST("/api/address/register", RegisterService)
 	r.POST("/api/address/login", LoginService)
 
+	r.GET("/api/product/info", GetProductService)
+	r.GET("/api/trade/:productId", GetProductTradeService)
+	r.GET("/api/book/:productId", GetProductOrderBookService)
+	r.GET("/api/candle/:productId", GetProductCandleService)
+
 	frontend := r.Group("/api", checkFrontendToken())
 	{
 		frontend.GET("/address/info", AddressService)
@@ -58,6 +63,12 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/findPassword", FindPasswordService)
 		frontend.POST("/address/modifyPassword", ModifyPasswordService)
 		frontend.POST("/address/activation", ActivationService)
+
+		frontend.GET("/order/info", GetOrderService)
+		frontend.POST("/order/place", PlaceOrderService)
+		frontend.DELETE("/order/cancel/:orderId", CancelOrderService)
+		frontend.DELETE("/order/cancelAll", CancelAllOrderService)
+		frontend.GET("/address/account", GetAddressAccountService)
 	}
 
 	r.GET("/api/config/info", GetConfigService)
