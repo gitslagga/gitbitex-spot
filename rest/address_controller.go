@@ -263,12 +263,19 @@ func ActivationService(ctx *gin.Context) {
 		return
 	}
 
+	if address.Address == activation.Address {
+		out.RespCode = EC_ACTIVATION_SELF_ERR
+		out.RespDesc = ErrorCodeMessage(EC_ACTIVATION_SELF_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
 	mylog.Frontend.Info().Msgf("[Rest] ActivationService request param: %v", activation)
 
 	err = service.ActivationAddress(address, activation.Number, activation.Address)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

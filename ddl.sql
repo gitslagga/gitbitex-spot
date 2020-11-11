@@ -4,8 +4,8 @@ CREATE TABLE `g_account` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` bigint(20) NOT NULL,
   `currency` varchar(255) NOT NULL,
-  `hold` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
-  `available` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
+  `hold` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
+  `available` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_uid_currency` (`user_id`,`currency`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -24,15 +24,6 @@ CREATE TABLE `g_bill` (
   PRIMARY KEY (`id`),
   KEY `idx_gsoci` (`user_id`,`currency`,`settled`,`id`),
   KEY `idx_s` (`settled`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `g_config` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `key` varchar(255) NOT NULL,
-  `value` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `g_fill` (
@@ -72,10 +63,10 @@ CREATE TABLE `g_order` (
   `executed_value` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
   `price` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
   `fill_fees` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
-  `type` varchar(255) NOT NULL,
+  `type` varchar(100) NOT NULL,
   `side` varchar(100) NOT NULL,
-  `time_in_force` varchar(255) DEFAULT NULL,
-  `status` varchar(255) NOT NULL,
+  `time_in_force` varchar(100) DEFAULT NULL,
+  `status` varchar(100) NOT NULL,
   `settled` tinyint(1) NOT NULL DEFAULT '0',
   `client_oid` varchar(32) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -166,6 +157,10 @@ CREATE TABLE `g_address` (
   `private_key` varchar(255) NOT NULL,
   `mnemonic` varchar(255) NOT NULL DEFAULT '',
   `parent_ids` varchar(255) NOT NULL DEFAULT '',
+  `invite_num` int(11) NOT NULL DEFAULT 0,
+  `active_num` int(11) NOT NULL DEFAULT 0,
+  `convert_fee` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
+  `global_fee` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_address` (`address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -176,8 +171,8 @@ CREATE TABLE `g_account_asset` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` bigint(20) NOT NULL,
   `currency` varchar(255) NOT NULL,
-  `hold` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
-  `available` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
+  `hold` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
+  `available` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_uid_currency` (`user_id`,`currency`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -188,8 +183,8 @@ CREATE TABLE `g_account_pool` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` bigint(20) NOT NULL,
   `currency` varchar(255) NOT NULL,
-  `hold` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
-  `available` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
+  `hold` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
+  `available` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_uid_currency` (`user_id`,`currency`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -200,8 +195,8 @@ CREATE TABLE `g_account_shop` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` bigint(20) NOT NULL,
   `currency` varchar(255) NOT NULL,
-  `hold` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
-  `available` decimal(32,16) NOT NULL DEFAULT '0.0000000000000000',
+  `hold` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
+  `available` decimal(32,16) UNSIGNED NOT NULL DEFAULT '0.0000000000000000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_uid_currency` (`user_id`,`currency`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
@@ -217,10 +212,32 @@ CREATE TABLE `g_admin` (
   UNIQUE KEY `idx_username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO g_admin (id, created_at, updated_at, username, password, role) values (1, '2020-11-10 10:26:40', '2020-11-10 10:26:40', 'admin', '25d55ad283aa400af464c76d713c07ad', 1);
+
+CREATE TABLE `g_config` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `key` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
 INSERT INTO `g_config`(`key`,`value`) values
 ('激活转币数量','0.1'),
 ('认购奖励数量','100000'),
 ('能量兑换数量','5000'),
 ('持币收益数量','8000'),
-('推广收益数量','4000');
+('推广收益数量','4000'),
+('兑换邀请人数','0'),
+('兑换邀请人数','2'),
+('兑换邀请人数','5'),
+('兑换邀请人数','10'),
+('兑换邀请人数','30'),
+('能量兑换手续费','0.50'),
+('能量兑换手续费','0.40'),
+('能量兑换手续费','0.35'),
+('能量兑换手续费','0.30'),
+('能量兑换手续费','0.20');
+
 

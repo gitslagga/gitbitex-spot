@@ -248,6 +248,10 @@ type Address struct {
 	PrivateKey string
 	Mnemonic   string
 	ParentIds  string
+	InviteNum  int
+	ActiveNum  int
+	ConvertFee float64
+	GlobalFee  float64
 }
 
 type AccountAsset struct {

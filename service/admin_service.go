@@ -30,21 +30,21 @@ func CheckBackendToken(tokenStr string) (*models.Admin, error) {
 	}
 	claim, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, errors.New("cannot convert claim to MapClaims")
+		return nil, errors.New("无法将声明转换为MapClaims|cannot convert claim to MapClaims")
 	}
 	if !token.Valid {
-		return nil, errors.New("token is invalid")
+		return nil, errors.New("无效的token|token is invalid")
 	}
 
 	usernameValue, found := claim["username"]
 	if !found {
-		return nil, errors.New("bad token")
+		return nil, errors.New("损坏的令牌|bad token")
 	}
 	username := usernameValue.(string)
 
 	passwordVal, found := claim["password"]
 	if !found {
-		return nil, errors.New("bad token")
+		return nil, errors.New("损坏的令牌|bad token")
 	}
 	password := passwordVal.(string)
 

@@ -2,6 +2,7 @@ package service
 
 import (
 	"crypto/ecdsa"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -10,7 +11,9 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/miguelmota/go-ethereum-hdwallet"
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 	"github.com/tyler-smith/go-bip39"
+	"strconv"
 	"time"
 )
 
@@ -136,8 +139,11 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 }
 
 func AddressAsset(userId int64) error {
-	accounts, err := mysql.SharedStore().GetAccountsByUserId(userId)
-	if len(accounts) > 0 || err != nil {
+	accounts, err := mysql.SharedStore().GetAccountsAssetByUserId(userId)
+	if err != nil {
+		return err
+	}
+	if len(accounts) > 0 {
 		return nil
 	}
 
@@ -148,45 +154,45 @@ func AddressAsset(userId int64) error {
 	defer func() { _ = db.Rollback() }()
 
 	//币币账户(USDT,BITC)
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: "USDT"})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_USDT})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: "BITC"})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_BITC})
 	if err != nil {
 		return err
 	}
 
 	//资产账户(YTL,BITC,ENERGY,USDT)
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "YTL"})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_YTL})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "BITC"})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_BITC})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "ENERGY"})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_ENERGY})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "USDT"})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_USDT})
 	if err != nil {
 		return err
 	}
 
 	//矿池账户(BITC)
-	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: "BITC"})
+	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CURRENCY_BITC})
 	if err != nil {
 		return err
 	}
 
 	//购物账户(BITC,USDT)
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: "BITC"})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_BITC})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: "USDT"})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_USDT})
 	if err != nil {
 		return err
 	}
@@ -215,21 +221,21 @@ func CheckFrontendToken(tokenStr string) (*models.Address, error) {
 	}
 	claim, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, errors.New("cannot convert claim to MapClaims")
+		return nil, errors.New("无法将声明转换为MapClaims|cannot convert claim to MapClaims")
 	}
 	if !token.Valid {
-		return nil, errors.New("token is invalid")
+		return nil, errors.New("无效的token|token is invalid")
 	}
 
 	addressValue, found := claim["address"]
 	if !found {
-		return nil, errors.New("bad token")
+		return nil, errors.New("损坏的令牌|bad token")
 	}
 	addr := addressValue.(string)
 
 	privateKeyVal, found := claim["private_key"]
 	if !found {
-		return nil, errors.New("bad token")
+		return nil, errors.New("损坏的令牌|bad token")
 	}
 	privateKey := privateKeyVal.(string)
 
@@ -258,14 +264,95 @@ func UpdateAddress(address *models.Address) error {
 	return mysql.SharedStore().UpdateAddress(address)
 }
 
-func ActivationAddress(address *models.Address, number float64, targetAddress string) error {
+func ActivationAddress(address *models.Address, number float64, addressValue string) error {
+	//激活数量需要大于等于配置数量
+	configs, err := mysql.SharedStore().GetConfigs()
+	if err != nil {
+		return err
+	}
+
+	configNum, err := strconv.ParseFloat(configs[0].Value, 64)
+	if err != nil {
+		return err
+	}
+	if number < configNum {
+		return errors.New("激活数量不足|Insufficient number of activations")
+	}
+
+	//目标账户未激活
+	targetAddress, err := mysql.SharedStore().GetAddressByAddress(addressValue)
+	if err != nil {
+		return err
+	}
+	if targetAddress == nil {
+		return errors.New("地址不存在|Address is not exists")
+	}
+	if targetAddress.ParentIds != "" {
+		return errors.New("地址已经激活|Address is always activation")
+	}
+
+	return activationAddress(address, decimal.NewFromFloat(number), targetAddress, configs)
+}
+
+func activationAddress(address *models.Address, number decimal.Decimal,
+	targetAddress *models.Address, configs []*models.Config) error {
+	//进行激活
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = db.Rollback() }()
 
-	//TODO 如果激活所需数量大于等于配置数量，并且该账户未激活，进行激活
+	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITC)
+	if err != nil {
+		return err
+	}
+
+	if addressAsset.Available.LessThan(number) {
+		return errors.New("资产余额不足|Insufficient number of asset")
+	}
+
+	addressAsset.Available = addressAsset.Available.Sub(number)
+	err = db.UpdateAccountAsset(addressAsset)
+	if err != nil {
+		return err
+	}
+
+	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CURRENCY_BITC)
+	if err != nil {
+		return err
+	}
+
+	targetAddressAsset.Available = targetAddressAsset.Available.Add(number)
+	err = db.UpdateAccountAsset(targetAddressAsset)
+	if err != nil {
+		return err
+	}
+
+	address.InviteNum++
+	var inviteNum int
+	var convertFee float64
+	for i := 5; i < 10; i++ {
+		inviteNum, _ = strconv.Atoi(configs[i].Value)
+		convertFee, _ = strconv.ParseFloat(configs[i+5].Value, 64)
+		if address.InviteNum >= inviteNum {
+			address.ConvertFee = convertFee
+		}
+	}
+
+	err = db.UpdateAddress(address)
+	if err != nil {
+		return err
+	}
+
+	targetAddress.ParentIds = address.ParentIds + "-" + fmt.Sprintf("%d", address.Id)
+	if address.ParentIds == "" {
+		targetAddress.ParentIds = fmt.Sprintf("%d", address.Id)
+	}
+	err = db.UpdateAddress(targetAddress)
+	if err != nil {
+		return err
+	}
 
 	return db.CommitTx()
 }

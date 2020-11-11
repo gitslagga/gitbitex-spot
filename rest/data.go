@@ -20,6 +20,7 @@ const (
 	EC_PRIVATE_KEY_INCORRECT = 9002
 	EC_PASSWORD_INCORRECT    = 9003
 	EC_USERNAME_PASSWORD_ERR = 9004
+	EC_ACTIVATION_SELF_ERR   = 9005
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -59,6 +60,8 @@ func (c ErrorCode) String() (r string) {
 		r = "旧密码不正确|Old password is incorrect"
 	case EC_USERNAME_PASSWORD_ERR:
 		r = "用户名或密码错误|Username or password error"
+	case EC_ACTIVATION_SELF_ERR:
+		r = "不能自己激活自己|Can not activate yourself"
 
 	default:
 	}
