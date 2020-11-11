@@ -50,9 +50,18 @@ func RegisterService(ctx *gin.Context) {
 
 	mylog.Frontend.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
-	_, err = service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
+	address, err := service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
 		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	err = service.AddressAsset(address.Id)
+	if err != nil {
+		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -88,6 +97,15 @@ func LoginService(ctx *gin.Context) {
 	address, err := service.AddressLogin(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
 		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	err = service.AddressAsset(address.Id)
+	if err != nil {
+		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -227,37 +245,37 @@ func ModifyPasswordService(ctx *gin.Context) {
 
 // POST /api/address/activation
 func ActivationService(ctx *gin.Context) {
-	//out := CommonResp{}
-	//address := GetCurrentAddress(ctx)
-	//if address == nil {
-	//	out.RespCode = EC_TOKEN_INVALID
-	//	out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
-	//	ctx.JSON(http.StatusOK, out)
-	//	return
-	//}
-	//
-	//var activation ActivationRequest
-	//err := ctx.ShouldBindJSON(&activation)
-	//if err != nil {
-	//	out.RespCode = EC_PARAMS_ERR
-	//	out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-	//	ctx.JSON(http.StatusOK, out)
-	//	return
-	//}
-	//
-	//mylog.Frontend.Info().Msgf("[Rest] ActivationService request param: %v", activation)
-	//
-	//err = service.UpdateAddress(address)
-	//if err != nil {
-	//	out.RespCode = EC_NETWORK_ERR
-	//	out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-	//	ctx.JSON(http.StatusOK, out)
-	//	return
-	//}
-	//
-	//out.RespCode = EC_NONE.Code()
-	//out.RespDesc = EC_NONE.String()
-	//ctx.JSON(http.StatusOK, out)
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	var activation ActivationRequest
+	err := ctx.ShouldBindJSON(&activation)
+	if err != nil || activation.Number <= 0 {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	mylog.Frontend.Info().Msgf("[Rest] ActivationService request param: %v", activation)
+
+	err = service.ActivationAddress(address, activation.Number, activation.Address)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	ctx.JSON(http.StatusOK, out)
 }
 
 func encryptPassword(password string) string {

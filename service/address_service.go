@@ -135,6 +135,65 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	return address, AddAddress(address)
 }
 
+func AddressAsset(userId int64) error {
+	accounts, err := mysql.SharedStore().GetAccountsByUserId(userId)
+	if len(accounts) > 0 || err != nil {
+		return nil
+	}
+
+	db, err := mysql.SharedStore().BeginTx()
+	if err != nil {
+		return err
+	}
+	defer func() { _ = db.Rollback() }()
+
+	//币币账户(USDT,BITC)
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: "USDT"})
+	if err != nil {
+		return err
+	}
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: "BITC"})
+	if err != nil {
+		return err
+	}
+
+	//资产账户(YTL,BITC,ENERGY,USDT)
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "YTL"})
+	if err != nil {
+		return err
+	}
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "BITC"})
+	if err != nil {
+		return err
+	}
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "ENERGY"})
+	if err != nil {
+		return err
+	}
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: "USDT"})
+	if err != nil {
+		return err
+	}
+
+	//矿池账户(BITC)
+	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: "BITC"})
+	if err != nil {
+		return err
+	}
+
+	//购物账户(BITC,USDT)
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: "BITC"})
+	if err != nil {
+		return err
+	}
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: "USDT"})
+	if err != nil {
+		return err
+	}
+
+	return db.CommitTx()
+}
+
 func CreateFrontendToken(address *models.Address) (string, error) {
 	claim := jwt.MapClaims{
 		"id":          address.Id,
@@ -197,4 +256,16 @@ func AddAddress(address *models.Address) error {
 
 func UpdateAddress(address *models.Address) error {
 	return mysql.SharedStore().UpdateAddress(address)
+}
+
+func ActivationAddress(address *models.Address, number float64, targetAddress string) error {
+	db, err := mysql.SharedStore().BeginTx()
+	if err != nil {
+		return err
+	}
+	defer func() { _ = db.Rollback() }()
+
+	//TODO 如果激活所需数量大于等于配置数量，并且该账户未激活，进行激活
+
+	return db.CommitTx()
 }
