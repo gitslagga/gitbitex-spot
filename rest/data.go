@@ -113,14 +113,3 @@ type ActivationRequest struct {
 	Address string  `json:"address" binding:"required"`
 	Number  float64 `json:"number" binding:"required"`
 }
-
-//backend
-type AdminLoginRequest struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-type UpdateConfigRequest struct {
-	Id    int64  `json:"id" binding:"required"`
-	Value string `json:"value" binding:"required"`
-}

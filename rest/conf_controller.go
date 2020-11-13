@@ -2,7 +2,6 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
 )
@@ -37,43 +36,5 @@ func GetConfigService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	out.RespData = config
-	ctx.JSON(http.StatusOK, out)
-}
-
-// POST /config/update
-func UpdateConfigService(ctx *gin.Context) {
-	out := CommonResp{}
-	var updateConfig UpdateConfigRequest
-	err := ctx.ShouldBindJSON(&updateConfig)
-	if err != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	mylog.Backend.Info().Msgf("[Rest] UpdateConfigService request param: %v", updateConfig)
-
-	config, err := service.GetConfigById(updateConfig.Id)
-	if err != nil {
-		mylog.Backend.Error().Msgf("[Rest] UpdateConfigService GetConfigById err: %v", err)
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	if config == nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	config.Value = updateConfig.Value
-	err = service.UpdateConfig(config)
-
-	out.RespCode = EC_NONE.Code()
-	out.RespDesc = EC_NONE.String()
 	ctx.JSON(http.StatusOK, out)
 }

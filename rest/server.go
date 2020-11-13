@@ -58,6 +58,7 @@ func (server *HttpServer) Start() {
 
 	frontend := r.Group("/api", checkFrontendToken())
 	{
+		frontend.GET("/api/config/info", GetConfigService)
 		frontend.GET("/address/info", AddressService)
 		frontend.DELETE("/address/logout", LogoutService)
 		frontend.POST("/address/findPassword", FindPasswordService)
@@ -69,14 +70,6 @@ func (server *HttpServer) Start() {
 		frontend.DELETE("/order/cancel/:orderId", CancelOrderService)
 		frontend.DELETE("/order/cancelAll", CancelAllOrderService)
 		frontend.GET("/address/account", GetAddressAccountService)
-	}
-
-	r.GET("/api/config/info", GetConfigService)
-	r.POST("/api/admin/login", AdminLoginService)
-	backend := r.Group("/api", checkBackendToken())
-	{
-		backend.GET("/admin/info", AdminService)
-		backend.POST("/config/update", UpdateConfigService)
 	}
 
 	err := r.Run(server.addr)

@@ -72,7 +72,4 @@ type Store interface {
 	GetAccountShopForUpdate(userId int64, currency string) (*AccountShop, error)
 	AddAccountShop(account *AccountShop) error
 	UpdateAccountShop(account *AccountShop) error
-
-	GetAdmin(username string) (*Admin, error)
-	UpdateAdmin(admin *Admin) error
 }
