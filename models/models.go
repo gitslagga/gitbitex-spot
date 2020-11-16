@@ -319,3 +319,7 @@ type MachineLog struct {
 	Day       int
 	TotalDay  int
 }
+
+type TotalCount struct {
+	Count int
+}

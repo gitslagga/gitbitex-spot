@@ -16,6 +16,15 @@ func GetMachineById(machineId int64) (*models.Machine, error) {
 }
 
 func BuyMachine(address *models.Address, machine *models.Machine, currency string) error {
+	count, err := mysql.SharedStore().GetMachineAddressUsedCount(address.Id)
+	if err != nil {
+		return err
+	}
+
+	if count >= machine.BuyQuantity {
+		return errors.New("可买数量受限|Available quantity limited")
+	}
+
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
 		return err

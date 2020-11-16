@@ -76,6 +76,7 @@ type Store interface {
 	GetBuyMachine() ([]*Machine, error)
 	GetMachineById(machineId int64) (*Machine, error)
 	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
+	GetMachineAddressUsedCount(userId int64) (int, error)
 	AddMachineAddress(machineAddress *MachineAddress) error
 	UpdateMachineAddress(machineAddress *MachineAddress) error
 	GetMachineLogByUserId(userId int64) ([]*MachineLog, error)
