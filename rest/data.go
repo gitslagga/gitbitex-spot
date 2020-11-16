@@ -113,3 +113,8 @@ type ActivationRequest struct {
 	Address string  `json:"address" binding:"required"`
 	Number  float64 `json:"number" binding:"required"`
 }
+
+type BuyMachineRequest struct {
+	MachineId int64  `json:"machine_id" binding:"required"`
+	Currency  string `json:"currency" binding:"required"`
+}

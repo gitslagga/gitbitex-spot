@@ -70,6 +70,11 @@ func (server *HttpServer) Start() {
 		frontend.DELETE("/order/cancel/:orderId", CancelOrderService)
 		frontend.DELETE("/order/cancelAll", CancelAllOrderService)
 		frontend.GET("/address/account", GetAddressAccountService)
+
+		frontend.GET("/machine/info", GetMachineService)
+		frontend.POST("/machine/buy", BuyMachineService)
+		frontend.GET("/machine/address", AddressMachineService)
+		frontend.GET("/machine/log", LogMachineService)
 	}
 
 	err := r.Run(server.addr)

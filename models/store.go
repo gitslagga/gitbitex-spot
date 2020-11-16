@@ -72,4 +72,12 @@ type Store interface {
 	GetAccountShopForUpdate(userId int64, currency string) (*AccountShop, error)
 	AddAccountShop(account *AccountShop) error
 	UpdateAccountShop(account *AccountShop) error
+
+	GetBuyMachine() ([]*Machine, error)
+	GetMachineById(machineId int64) (*Machine, error)
+	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
+	AddMachineAddress(machineAddress *MachineAddress) error
+	UpdateMachineAddress(machineAddress *MachineAddress) error
+	GetMachineLogByUserId(userId int64) ([]*MachineLog, error)
+	AddMachineLog(machineLog *MachineLog) error
 }

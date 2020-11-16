@@ -284,11 +284,38 @@ type AccountShop struct {
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
 }
 
-type Admin struct {
+type Machine struct {
+	Id          int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Name        string
+	Profit      decimal.Decimal `gorm:"column:profit" sql:"type:decimal(32,16);"`
+	Number      decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Release     int
+	Invite      decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Active      int
+	BuyQuantity int
+}
+
+type MachineAddress struct {
+	Id          int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	MachineId   int64
+	UserId      int64
+	Number      decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	TotalNumber decimal.Decimal `gorm:"column:total_number" sql:"type:decimal(32,16);"`
+	Day         int
+	TotalDay    int
+}
+
+type MachineLog struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Username  string
-	Password  string
-	Role      int
+	MachineId int64
+	UserId    int64
+	Number    decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Day       int
+	TotalDay  int
 }

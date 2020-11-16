@@ -279,7 +279,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 		return errors.New("激活数量不足|Insufficient number of activations")
 	}
 
-	//目标账户未激活
+	//目标账户已经激活
 	targetAddress, err := mysql.SharedStore().GetAddressByAddress(addressValue)
 	if err != nil {
 		return err
