@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"strings"
 )
 
 // GET /api/machine/info
@@ -56,7 +57,7 @@ func BuyMachineService(ctx *gin.Context) {
 		return
 	}
 
-	err = service.BuyMachine(address, machine, buyMachine.Currency)
+	err = service.BuyMachine(address, machine, strings.ToUpper(buyMachine.Currency))
 	if err != nil {
 		mylog.Frontend.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
