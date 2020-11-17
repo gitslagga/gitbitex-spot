@@ -57,15 +57,22 @@ func checkFrontendToken() gin.HandlerFunc {
 			var err error
 			token, err = c.Cookie("accessToken")
 			if err != nil {
-				out.RespCode = EC_TOKEN_INVALID
-				out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+				out.RespCode = EC_NETWORK_ERR
+				out.RespDesc = err.Error()
 				c.AbortWithStatusJSON(http.StatusOK, out)
 				return
 			}
 		}
 
 		address, err := service.CheckFrontendToken(token)
-		if err != nil || address == nil {
+		if err != nil {
+			out.RespCode = EC_NETWORK_ERR
+			out.RespDesc = err.Error()
+			c.AbortWithStatusJSON(http.StatusOK, out)
+			return
+		}
+
+		if address == nil {
 			out.RespCode = EC_TOKEN_INVALID
 			out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
 			c.AbortWithStatusJSON(http.StatusOK, out)

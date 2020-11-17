@@ -336,7 +336,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		inviteNum, _ = strconv.Atoi(configs[i].Value)
 		convertFee, _ = strconv.ParseFloat(configs[i+5].Value, 64)
 		if address.InviteNum >= inviteNum {
-			address.ConvertFee = convertFee
+			address.ConvertFee = decimal.NewFromFloat(convertFee)
 		}
 	}
 

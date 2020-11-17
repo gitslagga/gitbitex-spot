@@ -250,8 +250,8 @@ type Address struct {
 	ParentIds  string
 	InviteNum  int
 	ActiveNum  int
-	ConvertFee float64
-	GlobalFee  float64
+	ConvertFee decimal.Decimal
+	GlobalFee  decimal.Decimal
 }
 
 type AccountAsset struct {
@@ -321,4 +321,19 @@ type MachineLog struct {
 
 type TotalCount struct {
 	Count int
+}
+
+type SumNumber struct {
+	Number decimal.Decimal
+}
+
+type AccountConvert struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Number    decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Price     decimal.Decimal `gorm:"column:price" sql:"type:decimal(32,16);"`
+	Fee       decimal.Decimal `gorm:"column:fee" sql:"type:decimal(32,16);"`
+	Amount    decimal.Decimal `gorm:"column:amount" sql:"type:decimal(32,16);"`
 }

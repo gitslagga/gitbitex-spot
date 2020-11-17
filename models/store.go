@@ -1,5 +1,7 @@
 package models
 
+import "github.com/shopspring/decimal"
+
 type Store interface {
 	BeginTx() (Store, error)
 	Rollback() error
@@ -83,4 +85,8 @@ type Store interface {
 	GetMachineLogByUserId(userId int64) ([]*MachineLog, error)
 	GetLastMachineLog(machineAddressId int64) (*MachineLog, error)
 	AddMachineLog(machineLog *MachineLog) error
+
+	GetAccountConvertByUserId(userId int64) ([]*AccountConvert, error)
+	GetAccountConvertSumNumber() (decimal.Decimal, error)
+	AddAccountConvert(accountConvert *AccountConvert) error
 }

@@ -118,3 +118,7 @@ type BuyMachineRequest struct {
 	MachineId int64  `json:"machine_id" binding:"required"`
 	Currency  string `json:"currency" binding:"required"`
 }
+
+type AccountConvertRequest struct {
+	Number float64 `json:"number" binding:"required"`
+}

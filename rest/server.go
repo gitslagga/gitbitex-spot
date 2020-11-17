@@ -69,12 +69,18 @@ func (server *HttpServer) Start() {
 		frontend.POST("/order/place", PlaceOrderService)
 		frontend.DELETE("/order/cancel/:orderId", CancelOrderService)
 		frontend.DELETE("/order/cancelAll", CancelAllOrderService)
-		frontend.GET("/address/account", GetAddressAccountService)
 
 		frontend.GET("/machine/info", GetMachineService)
 		frontend.POST("/machine/buy", BuyMachineService)
 		frontend.GET("/machine/address", AddressMachineService)
 		frontend.GET("/machine/log", LogMachineService)
+
+		frontend.GET("/account/address", AccountAddressService)
+		frontend.POST("/account/convert", AccountConvertService)
+		frontend.GET("/account/convertInfo", AccountConvertInfoService)
+		//frontend.POST("/account/transfer", AccountTransferService)
+		//frontend.POST("/account/scan", AccountScanService)
+
 	}
 
 	err := r.Run(server.addr)
