@@ -337,3 +337,14 @@ type AccountConvert struct {
 	Fee       decimal.Decimal `gorm:"column:fee" sql:"type:decimal(32,16);"`
 	Amount    decimal.Decimal `gorm:"column:amount" sql:"type:decimal(32,16);"`
 }
+
+type AccountTransfer struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	From      int
+	To        int
+	Currency  string
+	Number    decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+}

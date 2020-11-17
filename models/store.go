@@ -89,4 +89,6 @@ type Store interface {
 	GetAccountConvertByUserId(userId int64) ([]*AccountConvert, error)
 	GetAccountConvertSumNumber() (decimal.Decimal, error)
 	AddAccountConvert(accountConvert *AccountConvert) error
+	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
+	AddAccountTransfer(accountTransfer *AccountTransfer) error
 }

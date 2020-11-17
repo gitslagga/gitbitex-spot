@@ -78,7 +78,8 @@ func (server *HttpServer) Start() {
 		frontend.GET("/account/address", AccountAddressService)
 		frontend.POST("/account/convert", AccountConvertService)
 		frontend.GET("/account/convertInfo", AccountConvertInfoService)
-		//frontend.POST("/account/transfer", AccountTransferService)
+		frontend.POST("/account/transfer", AccountTransferService)
+		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		//frontend.POST("/account/scan", AccountScanService)
 
 	}

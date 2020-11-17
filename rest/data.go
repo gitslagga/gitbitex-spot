@@ -122,3 +122,10 @@ type BuyMachineRequest struct {
 type AccountConvertRequest struct {
 	Number float64 `json:"number" binding:"required"`
 }
+
+type AccountTransferRequest struct {
+	From     int     `json:"from" binding:"required"`
+	To       int     `json:"to" binding:"required"`
+	Currency string  `json:"currency" binding:"required"`
+	Number   float64 `json:"number" binding:"required"`
+}
