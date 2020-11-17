@@ -20,7 +20,7 @@ func UpdateMachineAddress(machineAddress *models.MachineAddress) error {
 }
 
 func MachineRelease() {
-	t := time.NewTicker(6 * time.Second)
+	t := time.NewTicker(6 * time.Hour)
 
 	for {
 		select {
