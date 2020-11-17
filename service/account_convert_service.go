@@ -59,7 +59,7 @@ func AccountConvert(address *models.Address, num float64) error {
 	}
 
 	price := energyRate.Div(bitcRate)
-	amount := number.Div(price).Sub(address.ConvertFee.Add(decimal.New(1, 0)))
+	amount := number.Div(price).Mul(address.ConvertFee.Add(decimal.New(1, 0)))
 
 	err = accountConvert(address, number, price, amount)
 	if err != nil {
@@ -106,6 +106,9 @@ func accountConvert(address *models.Address, number, price, amount decimal.Decim
 		Fee:    address.ConvertFee,
 		Amount: amount,
 	})
+	if err != nil {
+		return err
+	}
 
 	return db.CommitTx()
 }

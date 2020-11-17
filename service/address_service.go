@@ -109,6 +109,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return address, UpdateAddress(address)
 	}
 
+	address.ConvertFee = decimal.NewFromFloat(0.5)
 	return address, AddAddress(address)
 }
 
@@ -135,6 +136,7 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	}
 
 	address.Username = "Account1"
+	address.ConvertFee = decimal.NewFromFloat(0.5)
 	return address, AddAddress(address)
 }
 
@@ -331,12 +333,19 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 
 	address.InviteNum++
 	var inviteNum int
-	var convertFee float64
+	var convertFee decimal.Decimal
 	for i := 5; i < 10; i++ {
-		inviteNum, _ = strconv.Atoi(configs[i].Value)
-		convertFee, _ = strconv.ParseFloat(configs[i+5].Value, 64)
+		inviteNum, err = strconv.Atoi(configs[i].Value)
+		if err != nil {
+			return err
+		}
+		convertFee, err = decimal.NewFromString(configs[i+5].Value)
+		if err != nil {
+			return err
+		}
+
 		if address.InviteNum >= inviteNum {
-			address.ConvertFee = decimal.NewFromFloat(convertFee)
+			address.ConvertFee = convertFee
 		}
 	}
 

@@ -114,7 +114,7 @@ func AccountConvertService(ctx *gin.Context) {
 	err = service.AccountConvert(address, accountConvert.Number)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
