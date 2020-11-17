@@ -23,6 +23,15 @@ func (s *Store) GetMachineAddressUsedCount(userId int64) (int, error) {
 	return count.Count, err
 }
 
+func (s *Store) GetMachineAddressUsedList() ([]*models.MachineAddress, error) {
+	var machineAddress []*models.MachineAddress
+	err := s.db.Raw("SELECT * FROM g_machine_address WHERE day!=0").Scan(&machineAddress).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return machineAddress, err
+}
+
 func (s *Store) AddMachineAddress(machineAddress *models.MachineAddress) error {
 	return s.db.Create(machineAddress).Error
 }

@@ -310,14 +310,13 @@ type MachineAddress struct {
 }
 
 type MachineLog struct {
-	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	MachineId int64
-	UserId    int64
-	Number    decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
-	Day       int
-	TotalDay  int
+	Id               int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	UserId           int64
+	MachineId        int64
+	MachineAddressId int64
+	Number           decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
 }
 
 type TotalCount struct {

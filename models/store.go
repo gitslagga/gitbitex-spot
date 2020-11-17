@@ -77,8 +77,10 @@ type Store interface {
 	GetMachineById(machineId int64) (*Machine, error)
 	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
 	GetMachineAddressUsedCount(userId int64) (int, error)
+	GetMachineAddressUsedList() ([]*MachineAddress, error)
 	AddMachineAddress(machineAddress *MachineAddress) error
 	UpdateMachineAddress(machineAddress *MachineAddress) error
 	GetMachineLogByUserId(userId int64) ([]*MachineLog, error)
+	GetLastMachineLog(machineAddressId int64) (*MachineLog, error)
 	AddMachineLog(machineLog *MachineLog) error
 }

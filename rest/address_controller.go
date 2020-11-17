@@ -15,7 +15,7 @@ func MnemonicService(ctx *gin.Context) {
 
 	mnemonic, err := service.CreateMnemonic()
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -48,11 +48,11 @@ func RegisterService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] RegisterService request param: %v", register)
+	mylog.Logger.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
 	address, err := service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -61,7 +61,7 @@ func RegisterService(ctx *gin.Context) {
 
 	err = service.AddressAsset(address.Id)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -92,11 +92,11 @@ func LoginService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] LoginService request param: %v", login)
+	mylog.Logger.Info().Msgf("[Rest] LoginService request param: %v", login)
 
 	address, err := service.AddressLogin(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -105,7 +105,7 @@ func LoginService(ctx *gin.Context) {
 
 	err = service.AddressAsset(address.Id)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -114,7 +114,7 @@ func LoginService(ctx *gin.Context) {
 
 	token, err := service.CreateFrontendToken(address)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -177,7 +177,7 @@ func FindPasswordService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] FindPasswordService request param: %v", findPassword)
+	mylog.Logger.Info().Msgf("[Rest] FindPasswordService request param: %v", findPassword)
 
 	if address.PrivateKey != findPassword.PrivateKey {
 		out.RespCode = EC_PRIVATE_KEY_INCORRECT
@@ -220,7 +220,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] ModifyPasswordService request param: %v", modifyPassword)
+	mylog.Logger.Info().Msgf("[Rest] ModifyPasswordService request param: %v", modifyPassword)
 
 	if address.Password != encryptPassword(modifyPassword.OldPassword) {
 		out.RespCode = EC_PASSWORD_INCORRECT
@@ -270,7 +270,7 @@ func ActivationService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] ActivationService request param: %v", activation)
+	mylog.Logger.Info().Msgf("[Rest] ActivationService request param: %v", activation)
 
 	err = service.ActivationAddress(address, activation.Number, activation.Address)
 	if err != nil {

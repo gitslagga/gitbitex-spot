@@ -304,7 +304,7 @@ func PlaceOrderService(ctx *gin.Context) {
 	if len(req.ClientOid) > 0 {
 		_, err = uuid.Parse(req.ClientOid)
 		if err != nil {
-			mylog.Frontend.Error().Msgf("[Rest] PlaceOrderService uuid Parse error: %v", err)
+			mylog.Logger.Error().Msgf("[Rest] PlaceOrderService uuid Parse error: %v", err)
 			out.RespCode = EC_CLIENT_OID_ERR
 			out.RespDesc = ErrorCodeMessage(EC_CLIENT_OID_ERR)
 			ctx.JSON(http.StatusOK, out)
@@ -319,7 +319,7 @@ func PlaceOrderService(ctx *gin.Context) {
 	order, err := service.PlaceOrder(GetCurrentAddress(ctx).Id, req.ClientOid, req.ProductId, orderType,
 		side, size, price, funds)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] PlaceOrderService PlaceOrder error: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] PlaceOrderService PlaceOrder error: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -366,7 +366,7 @@ func CancelOrderService(ctx *gin.Context) {
 	}
 
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] CancelOrderService GetOrderByClientOid or GetOrderById error: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] CancelOrderService GetOrderByClientOid or GetOrderById error: %v", err)
 		out.RespCode = EC_ORDER_NOT_EXISTS
 		out.RespDesc = ErrorCodeMessage(EC_ORDER_NOT_EXISTS)
 		ctx.JSON(http.StatusOK, out)
@@ -408,7 +408,7 @@ func CancelAllOrderService(ctx *gin.Context) {
 	orders, err := service.GetOrdersByUserId(GetCurrentAddress(ctx).Id,
 		[]models.OrderStatus{models.OrderStatusOpen, models.OrderStatusNew}, side, ctx.Query("productId"), 0, 0, 10000)
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] CancelAllOrderService GetOrdersByUserId error: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] CancelAllOrderService GetOrdersByUserId error: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)

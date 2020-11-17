@@ -47,7 +47,7 @@ func BuyMachineService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Frontend.Info().Msgf("[Rest] BuyMachineService request param: %v", buyMachine)
+	mylog.Logger.Info().Msgf("[Rest] BuyMachineService request param: %v", buyMachine)
 
 	machine, err := service.GetMachineById(buyMachine.MachineId)
 	if machine == nil || err != nil {
@@ -59,7 +59,7 @@ func BuyMachineService(ctx *gin.Context) {
 
 	err = service.BuyMachine(address, machine, strings.ToUpper(buyMachine.Currency))
 	if err != nil {
-		mylog.Frontend.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)

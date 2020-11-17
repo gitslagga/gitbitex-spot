@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	Frontend zerolog.Logger
-	Backend  zerolog.Logger
+	Logger     zerolog.Logger
+	DataLogger zerolog.Logger
 )
 
 func SgNow() time.Time {
@@ -36,21 +36,21 @@ func ConfigLoggers() {
 	//zerolog.CallerSkipFrameCount = 3
 	zerolog.TimestampFunc = SgNow
 
-	Frontend = zerolog.New(&lumberjack.Logger{
+	Logger = zerolog.New(&lumberjack.Logger{
 		Filename:   "./log/frontend.log",
 		MaxSize:    500,
 		MaxBackups: 10,
 		MaxAge:     10,
 		Compress:   true,
 	}).With().Caller().Timestamp().Logger()
-	fmt.Println("Frontend log init succeed.")
+	fmt.Println("Logger log init succeed.")
 
-	Backend = zerolog.New(&lumberjack.Logger{
+	DataLogger = zerolog.New(&lumberjack.Logger{
 		Filename:   "./log/backend.log",
 		MaxSize:    500,
 		MaxBackups: 10,
 		MaxAge:     10,
 		Compress:   true,
 	}).With().Caller().Timestamp().Logger()
-	fmt.Println("Backend log init succeed.")
+	fmt.Println("DataLogger log init succeed.")
 }
