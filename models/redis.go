@@ -46,5 +46,9 @@ func (b *box) GetAccountConvertSumFee() (float64, error) {
 		return 0, err
 	}
 
+	if err == redis.Nil {
+		return 0, nil
+	}
+
 	return sumFee, nil
 }
