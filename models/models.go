@@ -292,7 +292,7 @@ type Machine struct {
 	Profit      decimal.Decimal `gorm:"column:profit" sql:"type:decimal(32,16);"`
 	Number      decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
 	Release     int
-	Invite      decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Invite      decimal.Decimal `gorm:"column:invite" sql:"type:decimal(32,16);"`
 	Active      int
 	BuyQuantity int
 }
@@ -307,6 +307,7 @@ type MachineAddress struct {
 	TotalNumber decimal.Decimal `gorm:"column:total_number" sql:"type:decimal(32,16);"`
 	Day         int
 	TotalDay    int
+	IsBuy       int
 }
 
 type MachineLog struct {

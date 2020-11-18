@@ -16,7 +16,7 @@ func (s *Store) GetMachineAddressByUserId(userId int64) ([]*models.MachineAddres
 
 func (s *Store) GetMachineAddressUsedCount(userId int64, machineId int64) (int, error) {
 	var count models.TotalCount
-	err := s.db.Raw("SELECT COUNT(*) as count FROM g_machine_address WHERE user_id=? AND machine_id=?",
+	err := s.db.Raw("SELECT COUNT(*) as count FROM g_machine_address WHERE user_id=? AND machine_id=? AND is_buy=1",
 		userId, machineId).Scan(&count).Error
 	if err == gorm.ErrRecordNotFound {
 		return 0, nil

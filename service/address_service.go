@@ -376,6 +376,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
+		IsBuy:       0,
 	})
 
 	return db.CommitTx()
