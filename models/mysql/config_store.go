@@ -7,7 +7,7 @@ import (
 
 func (s *Store) GetConfigs() ([]*models.Config, error) {
 	var configs []*models.Config
-	err := s.db.Find(&configs).Error
+	err := s.db.Find(&configs).Order("id ASC").Error
 	return configs, err
 }
 

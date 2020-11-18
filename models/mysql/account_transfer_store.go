@@ -5,7 +5,7 @@ import (
 )
 
 func (s *Store) GetAccountTransferByUserId(userId int64) ([]*models.AccountTransfer, error) {
-	db := s.db.Where("user_id=?", userId)
+	db := s.db.Where("user_id=?", userId).Order("id DESC")
 
 	var accountTransfer []*models.AccountTransfer
 	err := db.Find(&accountTransfer).Error

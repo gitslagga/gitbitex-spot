@@ -5,6 +5,8 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/shopspring/decimal"
+	"strconv"
+	"strings"
 )
 
 func GetBuyMachine() ([]*models.Machine, error) {
@@ -16,7 +18,7 @@ func GetMachineById(machineId int64) (*models.Machine, error) {
 }
 
 func BuyMachine(address *models.Address, machine *models.Machine, currency string) error {
-	count, err := mysql.SharedStore().GetMachineAddressUsedCount(address.Id)
+	count, err := mysql.SharedStore().GetMachineAddressUsedCount(address.Id, machine.Id)
 	if err != nil {
 		return err
 	}
@@ -80,6 +82,36 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
 	})
+	if err != nil {
+		return err
+	}
+
+	//增加上级活跃度
+	parentIds := strings.Split(address.ParentIds, "-")
+	parentId, err := strconv.ParseInt(parentIds[len(parentIds)-1], 10, 64)
+	if err != nil {
+		return err
+	}
+
+	parentAddress, err := db.GetAddressById(parentId)
+	if err != nil {
+		return err
+	}
+
+	parentAddress.ActiveNum = parentAddress.ActiveNum + machine.Active
+	err = db.UpdateAddress(parentAddress)
+	if err != nil {
+		return err
+	}
+
+	//增加上级直推奖励
+	parentAddressAsset, err := db.GetAccountAssetForUpdate(parentId, models.CURRENCY_YTL)
+	if err != nil {
+		return err
+	}
+
+	parentAddressAsset.Available.Add(machine.Number.Mul(machine.Invite))
+	err = db.UpdateAccountAsset(parentAddressAsset)
 	if err != nil {
 		return err
 	}

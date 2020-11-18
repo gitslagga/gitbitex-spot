@@ -7,7 +7,7 @@ import (
 
 func (s *Store) GetMachineLogByUserId(userId int64) ([]*models.MachineLog, error) {
 	var machineLog []*models.MachineLog
-	err := s.db.Raw("SELECT * FROM g_machine_log WHERE user_id=?", userId).Scan(&machineLog).Error
+	err := s.db.Raw("SELECT * FROM g_machine_log WHERE user_id=?", userId).Order("id DESC").Scan(&machineLog).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}

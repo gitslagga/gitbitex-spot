@@ -54,6 +54,7 @@ type Store interface {
 
 	//development new
 	GetAddressByAddress(addr string) (*Address, error)
+	GetAddressById(id int64) (*Address, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 
@@ -78,7 +79,7 @@ type Store interface {
 	GetBuyMachine() ([]*Machine, error)
 	GetMachineById(machineId int64) (*Machine, error)
 	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
-	GetMachineAddressUsedCount(userId int64) (int, error)
+	GetMachineAddressUsedCount(userId int64, machineId int64) (int, error)
 	GetMachineAddressUsedList() ([]*MachineAddress, error)
 	AddMachineAddress(machineAddress *MachineAddress) error
 	UpdateMachineAddress(machineAddress *MachineAddress) error

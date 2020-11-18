@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Store) GetAccountConvertByUserId(userId int64) ([]*models.AccountConvert, error) {
-	db := s.db.Where("user_id=?", userId)
+	db := s.db.Where("user_id=?", userId).Order("id DESC")
 
 	var accountConvert []*models.AccountConvert
 	err := db.Find(&accountConvert).Error

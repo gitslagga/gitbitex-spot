@@ -254,6 +254,10 @@ func GetAddressByAddress(address string) (*models.Address, error) {
 	return mysql.SharedStore().GetAddressByAddress(address)
 }
 
+func GetAddressById(id int64) (*models.Address, error) {
+	return mysql.SharedStore().GetAddressById(id)
+}
+
 func AddAddress(address *models.Address) error {
 	return mysql.SharedStore().AddAddress(address)
 }
@@ -350,14 +354,29 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	targetAddress.ParentIds = address.ParentIds + "-" + fmt.Sprintf("%d", address.Id)
 	if address.ParentIds == "" {
 		targetAddress.ParentIds = fmt.Sprintf("%d", address.Id)
+	} else {
+		targetAddress.ParentIds = fmt.Sprintf("%s-%d", address.ParentIds, address.Id)
 	}
 	err = db.UpdateAddress(targetAddress)
 	if err != nil {
 		return err
 	}
+
+	//激活下级，赠送上级一级矿机
+	machine, err := db.GetMachineById(1)
+	if err != nil {
+		return err
+	}
+	err = db.AddMachineAddress(&models.MachineAddress{
+		MachineId:   machine.Id,
+		UserId:      address.Id,
+		Number:      machine.Number.Add(machine.Number.Mul(machine.Profit)).Div(decimal.NewFromInt(int64(machine.Release))),
+		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
+		Day:         machine.Release,
+		TotalDay:    machine.Release,
+	})
 
 	return db.CommitTx()
 }

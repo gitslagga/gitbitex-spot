@@ -7,7 +7,7 @@ import (
 
 func (s *Store) GetBuyMachine() ([]*models.Machine, error) {
 	var machines []*models.Machine
-	err := s.db.Raw("SELECT * FROM g_machine WHERE buy_quantity>0").Scan(&machines).Error
+	err := s.db.Raw("SELECT * FROM g_machine WHERE buy_quantity>0").Order("id ASC").Scan(&machines).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
