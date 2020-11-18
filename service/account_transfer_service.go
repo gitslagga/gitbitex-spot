@@ -29,7 +29,7 @@ func AccountTransfer(userId int64, from, to int, currency string, amount float64
 			err = transferFromAssetToShop(userId, from, to, currency, number)
 		}
 	case 2:
-		if to == 2 {
+		if to == 1 {
 			err = transferFromPoolToAsset(userId, from, to, currency, number)
 		} else if to == 3 {
 			err = transferFromPoolToSpot(userId, from, to, currency, number)
@@ -37,19 +37,19 @@ func AccountTransfer(userId int64, from, to int, currency string, amount float64
 			err = transferFromPoolToShop(userId, from, to, currency, number)
 		}
 	case 3:
-		if to == 2 {
+		if to == 1 {
 			err = transferFromSpotToAsset(userId, from, to, currency, number)
-		} else if to == 3 {
+		} else if to == 2 {
 			err = transferFromSpotToPool(userId, from, to, currency, number)
 		} else if to == 4 {
 			err = transferFromSpotToShop(userId, from, to, currency, number)
 		}
 	case 4:
-		if to == 2 {
+		if to == 1 {
 			err = transferFromShopToAsset(userId, from, to, currency, number)
-		} else if to == 3 {
+		} else if to == 2 {
 			err = transferFromShopToPool(userId, from, to, currency, number)
-		} else if to == 4 {
+		} else if to == 3 {
 			err = transferFromShopToSpot(userId, from, to, currency, number)
 		}
 	default:
