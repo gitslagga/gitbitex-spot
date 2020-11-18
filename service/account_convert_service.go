@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/shopspring/decimal"
+	"time"
 )
 
 func GetAccountConvertByUserId(userId int64) ([]*models.AccountConvert, error) {
@@ -64,6 +65,15 @@ func AccountConvert(address *models.Address, num float64) error {
 	err = accountConvert(address, number, price, amount)
 	if err != nil {
 		return err
+	}
+
+	sumFee, err := mysql.SharedStore().GetAccountConvertSumFee()
+	if err == nil {
+		sumFeeFloat, _ := sumFee.Float64()
+		currentTime := time.Now()
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		_ = models.SharedRedis().SetAccountConvertSumFee(sumFeeFloat, endTime.Sub(currentTime))
 	}
 
 	return nil
