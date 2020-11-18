@@ -16,7 +16,7 @@ func (s *Store) GetAccountPool(userId int64, currency string) (*models.AccountPo
 }
 
 func (s *Store) GetAccountsPoolByUserId(userId int64) ([]*models.AccountPool, error) {
-	db := s.db.Where("user_id=?", userId)
+	db := s.db.Where("user_id=?", userId).Order("id ASC")
 
 	var accounts []*models.AccountPool
 	err := db.Find(&accounts).Error

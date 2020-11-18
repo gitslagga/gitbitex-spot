@@ -16,7 +16,7 @@ func (s *Store) GetAccountAsset(userId int64, currency string) (*models.AccountA
 }
 
 func (s *Store) GetAccountsAssetByUserId(userId int64) ([]*models.AccountAsset, error) {
-	db := s.db.Where("user_id=?", userId)
+	db := s.db.Where("user_id=?", userId).Order("id ASC")
 
 	var accounts []*models.AccountAsset
 	err := db.Find(&accounts).Error

@@ -54,7 +54,7 @@ func AccountConvert(address *models.Address, num float64) error {
 	if err != nil {
 		return err
 	}
-	if bitcRate.Equal(decimal.Zero) || energyRate.Div(bitcRate).Equal(decimal.Zero) {
+	if bitcRate.LessThanOrEqual(decimal.Zero) || energyRate.Div(bitcRate).LessThanOrEqual(decimal.Zero) {
 		return errors.New("兑换比例配置错误|Convert rate setting error")
 	}
 

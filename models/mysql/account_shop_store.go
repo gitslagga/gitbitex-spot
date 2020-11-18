@@ -16,7 +16,7 @@ func (s *Store) GetAccountShop(userId int64, currency string) (*models.AccountSh
 }
 
 func (s *Store) GetAccountsShopByUserId(userId int64) ([]*models.AccountShop, error) {
-	db := s.db.Where("user_id=?", userId)
+	db := s.db.Where("user_id=?", userId).Order("id ASC")
 
 	var accounts []*models.AccountShop
 	err := db.Find(&accounts).Error

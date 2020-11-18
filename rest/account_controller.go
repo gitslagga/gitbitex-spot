@@ -49,46 +49,18 @@ func AccountAddressService(ctx *gin.Context) {
 		return
 	}
 
-	accountCurrency, err := service.GetAccountsByUserId(address.Id)
+	accountAddress, err := service.AccountAddress(address.Id)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	accountAsset, err := service.GetAccountsAssetByUserId(address.Id)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	accountPool, err := service.GetAccountsPoolByUserId(address.Id)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	accountShop, err := service.GetAccountsShopByUserId(address.Id)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = map[string]interface{}{
-		"accountCurrency": accountCurrency,
-		"accountAsset":    accountAsset,
-		"accountPool":     accountPool,
-		"accountShop":     accountShop,
-	}
+	out.RespData = accountAddress
+
 	ctx.JSON(http.StatusOK, out)
 }
 

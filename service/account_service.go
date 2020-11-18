@@ -152,3 +152,85 @@ func AddDelayBill(store models.Store, userId int64, currency string, available, 
 func GetUnsettledBills() ([]*models.Bill, error) {
 	return mysql.SharedStore().GetUnsettledBills()
 }
+
+func AccountAddress(userId int64) (map[string]interface{}, error) {
+	accountSpot, err := GetAccountsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	accountAsset, err := GetAccountsAssetByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	accountPool, err := GetAccountsPoolByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	accountShop, err := GetAccountsShopByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	configs, err := GetConfigs()
+	if err != nil {
+		return nil, err
+	}
+
+	ytlRate, err := decimal.NewFromString(configs[15].Value)
+	if err != nil {
+		return nil, err
+	}
+	energyRate, err := decimal.NewFromString(configs[16].Value)
+	if err != nil {
+		return nil, err
+	}
+	bitcRate, err := decimal.NewFromString(configs[17].Value)
+	if err != nil {
+		return nil, err
+	}
+	usdtRate, err := decimal.NewFromString(configs[18].Value)
+	if err != nil {
+		return nil, err
+	}
+	if ytlRate.LessThanOrEqual(decimal.Zero) || energyRate.LessThanOrEqual(decimal.Zero) ||
+		bitcRate.LessThanOrEqual(decimal.Zero) || usdtRate.LessThanOrEqual(decimal.Zero) {
+		return nil, errors.New("兑换比例配置错误|Convert rate setting error")
+	}
+
+	var calculateUsdt decimal.Decimal
+	calculateUsdt = calculateUsdt.Add(accountAsset[0].Available.Mul(ytlRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[1].Available.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[2].Available.Mul(energyRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[3].Available)
+	calculateUsdt = calculateUsdt.Add(accountAsset[0].Hold.Mul(ytlRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[1].Hold.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[2].Hold.Mul(energyRate))
+	calculateUsdt = calculateUsdt.Add(accountAsset[3].Hold)
+
+	calculateUsdt = calculateUsdt.Add(accountPool[0].Available.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountPool[0].Hold.Mul(bitcRate))
+
+	calculateUsdt = calculateUsdt.Add(accountSpot[0].Available)
+	calculateUsdt = calculateUsdt.Add(accountSpot[1].Available.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountSpot[0].Hold)
+	calculateUsdt = calculateUsdt.Add(accountSpot[1].Hold.Mul(bitcRate))
+
+	calculateUsdt = calculateUsdt.Add(accountShop[0].Available.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountShop[1].Hold)
+	calculateUsdt = calculateUsdt.Add(accountShop[0].Available.Mul(bitcRate))
+	calculateUsdt = calculateUsdt.Add(accountShop[1].Hold)
+
+	calculateCny := calculateUsdt.Mul(usdtRate)
+
+	return map[string]interface{}{
+		"accountSpot":   accountSpot,
+		"accountAsset":  accountAsset,
+		"accountPool":   accountPool,
+		"accountShop":   accountShop,
+		"calculateUsdt": calculateUsdt,
+		"calculateCny":  calculateCny,
+	}, nil
+}

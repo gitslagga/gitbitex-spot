@@ -36,7 +36,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 		if err != nil {
 			return err
 		}
-		if rate.LessThanOrEqual(decimal.NewFromInt32(0)) {
+		if rate.LessThanOrEqual(decimal.Zero) {
 			return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
@@ -45,7 +45,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 		if err != nil {
 			return err
 		}
-		if rate.LessThanOrEqual(decimal.NewFromInt32(0)) {
+		if rate.LessThanOrEqual(decimal.Zero) {
 			return errors.New("ENERGY兑换USDT价格错误|ENERGY convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
