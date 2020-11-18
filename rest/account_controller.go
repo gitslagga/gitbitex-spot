@@ -144,18 +144,18 @@ func AccountTransferService(ctx *gin.Context) {
 	}
 
 	// 1-资产账户，2-矿池账户，3-币币账户，4-商城账户
-	if a.From == a.To || (a.From == 1 && a.To == 2 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 1 && a.To == 3 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) ||
-		(a.From == 1 && a.To == 4 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) ||
-		(a.From == 2 && a.To == 1 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 2 && a.To == 3 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 2 && a.To == 4 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 3 && a.To == 1 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) ||
-		(a.From == 3 && a.To == 2 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 3 && a.To == 4 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) ||
-		(a.From == 4 && a.To == 1 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) ||
-		(a.From == 4 && a.To == 2 && a.Currency != models.CURRENCY_BITC) ||
-		(a.From == 4 && a.To == 3 && a.Currency != models.CURRENCY_BITC && a.Currency != models.CURRENCY_USDT) {
+	if a.From == a.To || (a.From == 1 && a.To == 2 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 1 && a.To == 3 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) ||
+		(a.From == 1 && a.To == 4 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) ||
+		(a.From == 2 && a.To == 1 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 2 && a.To == 3 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 2 && a.To == 4 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 3 && a.To == 1 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) ||
+		(a.From == 3 && a.To == 2 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 3 && a.To == 4 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) ||
+		(a.From == 4 && a.To == 1 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) ||
+		(a.From == 4 && a.To == 2 && a.Currency != models.CURRENCY_BITE) ||
+		(a.From == 4 && a.To == 3 && a.Currency != models.CURRENCY_BITE && a.Currency != models.CURRENCY_USDT) {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
 		ctx.JSON(http.StatusOK, out)

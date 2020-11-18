@@ -46,19 +46,19 @@ func AccountConvert(address *models.Address, num float64) error {
 		return errors.New("每日兑换数量超过限制|Daily convert quantity exceeds limit")
 	}
 
-	energyRate, err := decimal.NewFromString(configs[16].Value)
+	ytlRate, err := decimal.NewFromString(configs[15].Value)
 	if err != nil {
 		return err
 	}
-	bitcRate, err := decimal.NewFromString(configs[17].Value)
+	biteRate, err := decimal.NewFromString(configs[17].Value)
 	if err != nil {
 		return err
 	}
-	if bitcRate.LessThanOrEqual(decimal.Zero) || energyRate.Div(bitcRate).LessThanOrEqual(decimal.Zero) {
+	if ytlRate.LessThanOrEqual(decimal.Zero) || biteRate.LessThanOrEqual(decimal.Zero) {
 		return errors.New("兑换比例配置错误|Convert rate setting error")
 	}
 
-	price := energyRate.Div(bitcRate)
+	price := ytlRate.Div(biteRate)
 	amount := number.Div(price).Mul(address.ConvertFee.Add(decimal.New(1, 0)))
 
 	err = accountConvert(address, number, price, amount)
@@ -76,25 +76,25 @@ func accountConvert(address *models.Address, number, price, amount decimal.Decim
 	}
 	defer func() { _ = db.Rollback() }()
 
-	energyAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_ENERGY)
+	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_YTL)
 	if err != nil {
 		return err
 	}
-	if energyAsset.Available.LessThan(amount) {
+	if ytlAsset.Available.LessThan(amount) {
 		return errors.New("资产余额不足|Insufficient number of asset")
 	}
-	energyAsset.Available = energyAsset.Available.Sub(amount)
-	err = db.UpdateAccountAsset(energyAsset)
+	ytlAsset.Available = ytlAsset.Available.Sub(amount)
+	err = db.UpdateAccountAsset(ytlAsset)
 	if err != nil {
 		return err
 	}
 
-	bitcAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITC)
+	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITE)
 	if err != nil {
 		return err
 	}
-	bitcAsset.Available = bitcAsset.Available.Add(number)
-	err = db.UpdateAccountAsset(bitcAsset)
+	biteAsset.Available = biteAsset.Available.Add(number)
+	err = db.UpdateAccountAsset(biteAsset)
 	if err != nil {
 		return err
 	}

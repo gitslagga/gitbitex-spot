@@ -9,7 +9,7 @@ const (
 
 const (
 	CURRENCY_YTL    = "YTL"
-	CURRENCY_BITC   = "BITC"
+	CURRENCY_BITE   = "BITE"
 	CURRENCY_USDT   = "USDT"
 	CURRENCY_ENERGY = "ENERGY"
 )

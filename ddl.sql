@@ -137,7 +137,7 @@ CREATE TABLE `g_user` (
 
 
 INSERT INTO `g_product`(`id`,`base_currency`,`quote_currency`,`base_min_size`,`base_max_size`,`base_scale`,`quote_scale`,`quote_increment`,`quote_min_size`,`quote_max_size`) values
-('BITC-USDT','BITC','USDT',0.0001000000000000,100000.0000000000000000,4,2,0.01,0E-16,0E-16),
+('BITE-USDT','BITE','USDT',0.0001000000000000,100000.0000000000000000,4,2,0.01,0E-16,0E-16),
 ('BTC-USDT','BTC','USDT',0.0000010000000000,10000000.0000000000000000,6,2,0.01,0E-16,0E-16);
 
 

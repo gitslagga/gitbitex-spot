@@ -31,7 +31,8 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 	}
 
 	var amount decimal.Decimal
-	if currency == models.CURRENCY_YTL {
+	switch currency {
+	case models.CURRENCY_YTL:
 		rate, err := decimal.NewFromString(configs[15].Value)
 		if err != nil {
 			return err
@@ -40,18 +41,9 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 			return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
-	} else if currency == models.CURRENCY_ENERGY {
-		rate, err := decimal.NewFromString(configs[16].Value)
-		if err != nil {
-			return err
-		}
-		if rate.LessThanOrEqual(decimal.Zero) {
-			return errors.New("ENERGY兑换USDT价格错误|ENERGY convert USDT price error")
-		}
-		amount = machine.Number.Div(rate)
-	} else if currency == models.CURRENCY_USDT {
+	case models.CURRENCY_USDT:
 		amount = machine.Number
-	} else {
+	default:
 		return errors.New("无效的币种|Invalid of currency")
 	}
 

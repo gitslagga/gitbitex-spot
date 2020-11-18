@@ -155,26 +155,22 @@ func AddressAsset(userId int64) error {
 	}
 	defer func() { _ = db.Rollback() }()
 
-	//币币账户(USDT,BITC)
+	//币币账户(USDT,BITE)
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_BITE})
+	if err != nil {
+		return err
+	}
 	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_USDT})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_BITC})
-	if err != nil {
-		return err
-	}
 
-	//资产账户(YTL,BITC,ENERGY,USDT)
+	//资产账户(YTL,BITE,USDT)
 	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_YTL})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_BITC})
-	if err != nil {
-		return err
-	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_ENERGY})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_BITE})
 	if err != nil {
 		return err
 	}
@@ -183,14 +179,14 @@ func AddressAsset(userId int64) error {
 		return err
 	}
 
-	//矿池账户(BITC)
-	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CURRENCY_BITC})
+	//矿池账户(BITE)
+	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CURRENCY_BITE})
 	if err != nil {
 		return err
 	}
 
-	//购物账户(BITC,USDT)
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_BITC})
+	//购物账户(BITE,USDT)
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_BITE})
 	if err != nil {
 		return err
 	}
@@ -305,7 +301,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 	defer func() { _ = db.Rollback() }()
 
-	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITC)
+	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITE)
 	if err != nil {
 		return err
 	}
@@ -320,7 +316,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CURRENCY_BITC)
+	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CURRENCY_BITE)
 	if err != nil {
 		return err
 	}
