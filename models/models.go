@@ -337,6 +337,7 @@ type AccountConvert struct {
 	Price     decimal.Decimal `gorm:"column:price" sql:"type:decimal(32,16);"`
 	Fee       decimal.Decimal `gorm:"column:fee" sql:"type:decimal(32,16);"`
 	Amount    decimal.Decimal `gorm:"column:amount" sql:"type:decimal(32,16);"`
+	Type      int
 }
 
 type AccountTransfer struct {

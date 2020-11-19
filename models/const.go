@@ -15,17 +15,32 @@ const (
 )
 
 const (
-	GiveAwayMachineId = 1
-	FreeMachine       = 0
-	BuyMachine        = 1
+	// 1-赠送矿机，2-购买矿机
+	MachineGiveAwayId = 1
+	MachineFree       = 1
+	MachineBuy        = 2
 )
 
 const (
-	ActiveTransferNumber = iota
-	IssueRewardNumber
-	YtlConvertNumber
-	HoldCoinProfitNumber
-	PromoteProfitNumber
+	// 1-资产账户，2-矿池账户，3-币币账户，4-商城账户
+	TransferAccountAsset = 1
+	TransferAccountPool  = 2
+	TransferAccountSpot  = 3
+	TransferAccountShop  = 4
+)
+
+const (
+	// 1-Ytl兑换BITE，2-Bite兑换Ytl
+	ConvertYtlToBite = 1
+	ConvertBiteToYtl = 2
+)
+
+const (
+	TotalActiveTransfer = iota
+	TotalIssueReward
+	TotalYtlConvert
+	TotalHoldCoinProfit
+	TotalPromoteProfit
 
 	YtlConvertInviteOne
 	YtlConvertInviteTwo
@@ -38,10 +53,10 @@ const (
 	YtlConvertFeeFour
 	YtlConvertFeeFive
 
-	YtlConvertUsdtRate
-	EnergyConvertUsdtRate // Deprecated
-	BiteConvertUsdtRate
-	UsdtConvertCnyRate
+	RateYtlConvertUsdt
+	RateEnergyConvertUsdt // Deprecated
+	RateBiteConvertUsdt
+	RateUsdtConvertCny
 
 	UsdtMinDepositNumber
 	UsdtMinWithdrawNumber

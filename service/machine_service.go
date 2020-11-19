@@ -35,7 +35,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 	var amount decimal.Decimal
 	switch currency {
 	case models.CurrencyYtl:
-		rate, err := decimal.NewFromString(configs[models.YtlConvertUsdtRate].Value)
+		rate, err := decimal.NewFromString(configs[models.RateYtlConvertUsdt].Value)
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 		}
 		amount = machine.Number.Div(rate)
 	case models.CurrencyBite:
-		rate, err := decimal.NewFromString(configs[models.BiteConvertUsdtRate].Value)
+		rate, err := decimal.NewFromString(configs[models.RateBiteConvertUsdt].Value)
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
-		IsBuy:       models.BuyMachine,
+		IsBuy:       models.MachineBuy,
 	})
 	if err != nil {
 		return err

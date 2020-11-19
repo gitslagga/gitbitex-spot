@@ -20,47 +20,41 @@ func AccountTransfer(userId int64, from, to int, currency string, amount float64
 	number := decimal.NewFromFloat(amount)
 
 	switch from {
-	case 1:
-		if to == 2 {
+	case models.TransferAccountAsset:
+		if to == models.TransferAccountPool {
 			err = transferFromAssetToPool(userId, from, to, currency, number)
-		} else if to == 3 {
+		} else if to == models.TransferAccountSpot {
 			err = transferFromAssetToSpot(userId, from, to, currency, number)
-		} else if to == 4 {
+		} else if to == models.TransferAccountShop {
 			err = transferFromAssetToShop(userId, from, to, currency, number)
 		}
-	case 2:
-		if to == 1 {
+	case models.TransferAccountPool:
+		if to == models.TransferAccountAsset {
 			err = transferFromPoolToAsset(userId, from, to, currency, number)
-		} else if to == 3 {
+		} else if to == models.TransferAccountSpot {
 			err = transferFromPoolToSpot(userId, from, to, currency, number)
-		} else if to == 4 {
+		} else if to == models.TransferAccountShop {
 			err = transferFromPoolToShop(userId, from, to, currency, number)
 		}
-	case 3:
-		if to == 1 {
+	case models.TransferAccountSpot:
+		if to == models.TransferAccountAsset {
 			err = transferFromSpotToAsset(userId, from, to, currency, number)
-		} else if to == 2 {
+		} else if to == models.TransferAccountPool {
 			err = transferFromSpotToPool(userId, from, to, currency, number)
-		} else if to == 4 {
+		} else if to == models.TransferAccountShop {
 			err = transferFromSpotToShop(userId, from, to, currency, number)
 		}
-	case 4:
-		if to == 1 {
+	case models.TransferAccountShop:
+		if to == models.TransferAccountAsset {
 			err = transferFromShopToAsset(userId, from, to, currency, number)
-		} else if to == 2 {
+		} else if to == models.TransferAccountPool {
 			err = transferFromShopToPool(userId, from, to, currency, number)
-		} else if to == 3 {
+		} else if to == models.TransferAccountSpot {
 			err = transferFromShopToSpot(userId, from, to, currency, number)
 		}
-	default:
-		return nil
 	}
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func transferFromAssetToPool(userId int64, from, to int, currency string, number decimal.Decimal) error {

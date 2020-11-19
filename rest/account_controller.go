@@ -84,7 +84,8 @@ func AccountConvertService(ctx *gin.Context) {
 		return
 	}
 
-	err = service.AccountConvert(address, accountConvert.Number)
+	// ConvertType: 1-ytl兑换bite, 2-bite兑换ytl
+	err = service.AccountConvert(address, accountConvert.ConvertType, accountConvert.Number)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = err.Error()
@@ -143,19 +144,8 @@ func AccountTransferService(ctx *gin.Context) {
 		return
 	}
 
-	// 1-资产账户，2-矿池账户，3-币币账户，4-商城账户
-	if a.From == a.To || (a.From == 1 && a.To == 2 && a.Currency != models.CurrencyBite) ||
-		(a.From == 1 && a.To == 3 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		(a.From == 1 && a.To == 4 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		(a.From == 2 && a.To == 1 && a.Currency != models.CurrencyBite) ||
-		(a.From == 2 && a.To == 3 && a.Currency != models.CurrencyBite) ||
-		(a.From == 2 && a.To == 4 && a.Currency != models.CurrencyBite) ||
-		(a.From == 3 && a.To == 1 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		(a.From == 3 && a.To == 2 && a.Currency != models.CurrencyBite) ||
-		(a.From == 3 && a.To == 4 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		(a.From == 4 && a.To == 1 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		(a.From == 4 && a.To == 2 && a.Currency != models.CurrencyBite) ||
-		(a.From == 4 && a.To == 3 && a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) {
+	if a.From == a.To || (a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
+		((a.From == models.TransferAccountPool || a.To == models.TransferAccountPool) && a.Currency != models.CurrencyBite) {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
 		ctx.JSON(http.StatusOK, out)

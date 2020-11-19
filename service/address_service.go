@@ -273,7 +273,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 		return err
 	}
 
-	configNum, err := strconv.ParseFloat(configs[models.ActiveTransferNumber].Value, 64)
+	configNum, err := strconv.ParseFloat(configs[models.TotalActiveTransfer].Value, 64)
 	if err != nil {
 		return err
 	}
@@ -365,7 +365,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 
 	//激活下级，赠送上级一级矿机
-	machine, err := db.GetMachineById(models.GiveAwayMachineId)
+	machine, err := db.GetMachineById(models.MachineGiveAwayId)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
-		IsBuy:       models.FreeMachine,
+		IsBuy:       models.MachineFree,
 	})
 
 	return db.CommitTx()

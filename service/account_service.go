@@ -179,15 +179,15 @@ func AccountAddress(userId int64) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	ytlRate, err := decimal.NewFromString(configs[models.YtlConvertUsdtRate].Value)
+	ytlRate, err := decimal.NewFromString(configs[models.RateYtlConvertUsdt].Value)
 	if err != nil {
 		return nil, err
 	}
-	biteRate, err := decimal.NewFromString(configs[models.BiteConvertUsdtRate].Value)
+	biteRate, err := decimal.NewFromString(configs[models.RateBiteConvertUsdt].Value)
 	if err != nil {
 		return nil, err
 	}
-	usdtRate, err := decimal.NewFromString(configs[models.UsdtConvertCnyRate].Value)
+	usdtRate, err := decimal.NewFromString(configs[models.RateUsdtConvertCny].Value)
 	if err != nil {
 		return nil, err
 	}

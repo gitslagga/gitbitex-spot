@@ -120,7 +120,8 @@ type BuyMachineRequest struct {
 }
 
 type AccountConvertRequest struct {
-	Number float64 `json:"number" binding:"required"`
+	ConvertType int     `json:"convert_type" binding:"required"`
+	Number      float64 `json:"number" binding:"required"`
 }
 
 type AccountTransferRequest struct {
