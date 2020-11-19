@@ -20,36 +20,36 @@ func AccountTransfer(userId int64, from, to int, currency string, amount float64
 	number := decimal.NewFromFloat(amount)
 
 	switch from {
-	case models.TransferAccountAsset:
-		if to == models.TransferAccountPool {
+	case models.AccountAssetTransfer:
+		if to == models.AccountPoolTransfer {
 			err = transferFromAssetToPool(userId, from, to, currency, number)
-		} else if to == models.TransferAccountSpot {
+		} else if to == models.AccountSpotTransfer {
 			err = transferFromAssetToSpot(userId, from, to, currency, number)
-		} else if to == models.TransferAccountShop {
+		} else if to == models.AccountShopTransfer {
 			err = transferFromAssetToShop(userId, from, to, currency, number)
 		}
-	case models.TransferAccountPool:
-		if to == models.TransferAccountAsset {
+	case models.AccountPoolTransfer:
+		if to == models.AccountAssetTransfer {
 			err = transferFromPoolToAsset(userId, from, to, currency, number)
-		} else if to == models.TransferAccountSpot {
+		} else if to == models.AccountSpotTransfer {
 			err = transferFromPoolToSpot(userId, from, to, currency, number)
-		} else if to == models.TransferAccountShop {
+		} else if to == models.AccountShopTransfer {
 			err = transferFromPoolToShop(userId, from, to, currency, number)
 		}
-	case models.TransferAccountSpot:
-		if to == models.TransferAccountAsset {
+	case models.AccountSpotTransfer:
+		if to == models.AccountAssetTransfer {
 			err = transferFromSpotToAsset(userId, from, to, currency, number)
-		} else if to == models.TransferAccountPool {
+		} else if to == models.AccountPoolTransfer {
 			err = transferFromSpotToPool(userId, from, to, currency, number)
-		} else if to == models.TransferAccountShop {
+		} else if to == models.AccountShopTransfer {
 			err = transferFromSpotToShop(userId, from, to, currency, number)
 		}
-	case models.TransferAccountShop:
-		if to == models.TransferAccountAsset {
+	case models.AccountShopTransfer:
+		if to == models.AccountAssetTransfer {
 			err = transferFromShopToAsset(userId, from, to, currency, number)
-		} else if to == models.TransferAccountPool {
+		} else if to == models.AccountPoolTransfer {
 			err = transferFromShopToPool(userId, from, to, currency, number)
-		} else if to == models.TransferAccountSpot {
+		} else if to == models.AccountSpotTransfer {
 			err = transferFromShopToSpot(userId, from, to, currency, number)
 		}
 	}

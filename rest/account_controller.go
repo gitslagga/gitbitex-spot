@@ -84,8 +84,8 @@ func AccountTransferService(ctx *gin.Context) {
 		return
 	}
 
-	if a.From == a.To || (a.Currency != models.CurrencyBite && a.Currency != models.CurrencyUsdt) ||
-		((a.From == models.TransferAccountPool || a.To == models.TransferAccountPool) && a.Currency != models.CurrencyBite) {
+	if a.From == a.To || (a.Currency != models.AccountCurrencyBite && a.Currency != models.AccountCurrencyUsdt) ||
+		((a.From == models.AccountPoolTransfer || a.To == models.AccountPoolTransfer) && a.Currency != models.AccountCurrencyBite) {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
 		ctx.JSON(http.StatusOK, out)

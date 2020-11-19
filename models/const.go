@@ -8,16 +8,16 @@ const (
 )
 
 const (
-	CurrencyYtl    = "YTL"
-	CurrencyBite   = "BITE"
-	CurrencyUsdt   = "USDT"
-	CurrencyEnergy = "ENERGY" // Deprecated
+	AccountCurrencyYtl    = "YTL"
+	AccountCurrencyBite   = "BITE"
+	AccountCurrencyUsdt   = "USDT"
+	AccountCurrencyEnergy = "ENERGY" // Deprecated
 
 	// 1-资产账户，2-矿池账户，3-币币账户，4-商城账户
-	TransferAccountAsset = 1
-	TransferAccountPool  = 2
-	TransferAccountSpot  = 3
-	TransferAccountShop  = 4
+	AccountAssetTransfer = 1
+	AccountPoolTransfer  = 2
+	AccountSpotTransfer  = 3
+	AccountShopTransfer  = 4
 )
 
 const (
@@ -42,11 +42,11 @@ const (
 )
 
 const (
-	TotalActiveTransfer = iota
-	TotalIssueReward
-	TotalYtlConvert
-	TotalHoldCoinProfit
-	TotalPromoteProfit
+	ConfigActiveTransfer = iota
+	ConfigIssueReward
+	ConfigYtlConvert
+	ConfigHoldCoinProfit
+	ConfigPromoteProfit
 
 	YtlConvertInviteOne
 	YtlConvertInviteTwo
@@ -59,10 +59,10 @@ const (
 	YtlConvertFeeFour
 	YtlConvertFeeFive
 
-	RateYtlConvertUsdt
-	RateEnergyConvertUsdt // Deprecated
-	RateBiteConvertUsdt
-	RateUsdtConvertCny
+	ConfigYtlConvertUsdt
+	ConfigEnergyConvertUsdt // Deprecated
+	ConfigBiteConvertUsdt
+	ConfigUsdtConvertCny
 
 	UsdtMinDepositNumber
 	UsdtMinWithdrawNumber

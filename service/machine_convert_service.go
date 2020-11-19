@@ -50,7 +50,7 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 		return err
 	}
 
-	total, err := decimal.NewFromString(configs[models.TotalYtlConvert].Value)
+	total, err := decimal.NewFromString(configs[models.ConfigYtlConvert].Value)
 	if err != nil {
 		return err
 	}
@@ -59,11 +59,11 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 		return errors.New("每日兑换数量超过限制|Daily convert quantity exceeds limit")
 	}
 
-	ytlRate, err := decimal.NewFromString(configs[models.RateYtlConvertUsdt].Value)
+	ytlRate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
 	if err != nil {
 		return err
 	}
-	biteRate, err := decimal.NewFromString(configs[models.RateBiteConvertUsdt].Value)
+	biteRate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
 	if err != nil {
 		return err
 	}
@@ -97,7 +97,7 @@ func machineYtlConvertBite(address *models.Address, number, price, amount decima
 	}
 	defer func() { _ = db.Rollback() }()
 
-	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyYtl)
+	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyYtl)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func machineYtlConvertBite(address *models.Address, number, price, amount decima
 		return err
 	}
 
-	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyBite)
+	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
@@ -142,11 +142,11 @@ func MachineBiteConvertYtl(address *models.Address, num float64) error {
 		return err
 	}
 
-	ytlRate, err := decimal.NewFromString(configs[models.RateYtlConvertUsdt].Value)
+	ytlRate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
 	if err != nil {
 		return err
 	}
-	biteRate, err := decimal.NewFromString(configs[models.RateBiteConvertUsdt].Value)
+	biteRate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
 	if err != nil {
 		return err
 	}
@@ -172,7 +172,7 @@ func machineBiteConvertYtl(address *models.Address, number, price, amount decima
 	}
 	defer func() { _ = db.Rollback() }()
 
-	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyBite)
+	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func machineBiteConvertYtl(address *models.Address, number, price, amount decima
 		return err
 	}
 
-	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyYtl)
+	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyYtl)
 	if err != nil {
 		return err
 	}

@@ -174,41 +174,41 @@ func AddressAsset(userId int64) error {
 	defer func() { _ = db.Rollback() }()
 
 	//币币账户(USDT,BITE)
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CurrencyBite})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.AccountCurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CurrencyUsdt})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.AccountCurrencyUsdt})
 	if err != nil {
 		return err
 	}
 
 	//资产账户(YTL,BITE,USDT)
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyYtl})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.AccountCurrencyYtl})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyBite})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.AccountCurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyUsdt})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.AccountCurrencyUsdt})
 	if err != nil {
 		return err
 	}
 
 	//矿池账户(BITE)
-	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CurrencyBite})
+	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.AccountCurrencyBite})
 	if err != nil {
 		return err
 	}
 
 	//购物账户(BITE,USDT)
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CurrencyBite})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.AccountCurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CurrencyUsdt})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.AccountCurrencyUsdt})
 	if err != nil {
 		return err
 	}
@@ -295,7 +295,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 		return err
 	}
 
-	configNum, err := strconv.ParseFloat(configs[models.TotalActiveTransfer].Value, 64)
+	configNum, err := strconv.ParseFloat(configs[models.ConfigActiveTransfer].Value, 64)
 	if err != nil {
 		return err
 	}
@@ -327,7 +327,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 	defer func() { _ = db.Rollback() }()
 
-	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyBite)
+	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
@@ -342,7 +342,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CurrencyBite)
+	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}

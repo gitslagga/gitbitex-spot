@@ -33,8 +33,8 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 
 	var amount decimal.Decimal
 	switch currency {
-	case models.CurrencyYtl:
-		rate, err := decimal.NewFromString(configs[models.RateYtlConvertUsdt].Value)
+	case models.AccountCurrencyYtl:
+		rate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
 		if err != nil {
 			return err
 		}
@@ -42,8 +42,8 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 			return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
-	case models.CurrencyBite:
-		rate, err := decimal.NewFromString(configs[models.RateBiteConvertUsdt].Value)
+	case models.AccountCurrencyBite:
+		rate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 			return errors.New("BITE兑换USDT价格错误|BITE convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
-	case models.CurrencyUsdt:
+	case models.AccountCurrencyUsdt:
 		amount = machine.Number
 	default:
 		return errors.New("无效的币种|Invalid of currency")
@@ -103,7 +103,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 	}
 
 	//增加上级直推奖励
-	parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.CurrencyYtl)
+	parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.AccountCurrencyYtl)
 	if err != nil {
 		return err
 	}
@@ -216,7 +216,7 @@ func machineLevelStepThree(userId int64, amount decimal.Decimal, machine *models
 	}
 	defer func() { _ = db.Rollback() }()
 
-	ytlAsset, err := db.GetAccountAssetForUpdate(userId, models.CurrencyYtl)
+	ytlAsset, err := db.GetAccountAssetForUpdate(userId, models.AccountCurrencyYtl)
 	if err != nil {
 		return err
 	}
