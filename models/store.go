@@ -94,4 +94,7 @@ type Store interface {
 	GetMachineConvertSumNumber() (decimal.Decimal, error)
 	GetMachineConvertSumFee() (decimal.Decimal, error)
 	AddMachineConvert(machineConvert *MachineConvert) error
+
+	GetMachineLevel() ([]*MachineLevel, error)
+	GetMachineLevelById(machineLevelId int64) (*MachineLevel, error)
 }

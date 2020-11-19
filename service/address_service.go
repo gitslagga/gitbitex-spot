@@ -109,7 +109,16 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return address, UpdateAddress(address)
 	}
 
-	address.ConvertFee = decimal.NewFromFloat(0.5)
+	config, err := GetConfigById(models.YtlConvertFeeTwo)
+	if err != nil {
+		return nil, err
+	}
+
+	address.ConvertFee, err = decimal.NewFromString(config.Value)
+	if err != nil {
+		return nil, err
+	}
+
 	return address, AddAddress(address)
 }
 
@@ -136,7 +145,16 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	}
 
 	address.Username = "Account1"
-	address.ConvertFee = decimal.NewFromFloat(0.5)
+	config, err := GetConfigById(models.YtlConvertFeeTwo)
+	if err != nil {
+		return nil, err
+	}
+
+	address.ConvertFee, err = decimal.NewFromString(config.Value)
+	if err != nil {
+		return nil, err
+	}
+
 	return address, AddAddress(address)
 }
 

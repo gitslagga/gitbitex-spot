@@ -238,21 +238,22 @@ type Transaction struct {
 
 //development new
 type Address struct {
-	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	Username   string
-	Password   string
-	Address    string
-	PublicKey  string
-	PrivateKey string
-	Mnemonic   string
-	ParentId   int64
-	ParentIds  string
-	InviteNum  int
-	ActiveNum  int
-	ConvertFee decimal.Decimal
-	GlobalFee  decimal.Decimal
+	Id           int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Username     string
+	Password     string
+	Address      string
+	PublicKey    string
+	PrivateKey   string
+	Mnemonic     string
+	ParentId     int64
+	ParentIds    string
+	InviteNum    int
+	ActiveNum    int
+	ConvertFee   decimal.Decimal
+	GlobalFee    decimal.Decimal
+	MachineLevel int64
 }
 
 type AccountAsset struct {
@@ -331,6 +332,19 @@ type MachineConvert struct {
 	Fee       decimal.Decimal `gorm:"column:fee" sql:"type:decimal(32,16);"`
 	Amount    decimal.Decimal `gorm:"column:amount" sql:"type:decimal(32,16);"`
 	Type      int
+}
+
+type MachineLevel struct {
+	Id           int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	MasterLevel  int
+	TrainNum     int
+	InviteNum    int
+	TotalActive  int
+	CommonActive int
+	GlobalFee    decimal.Decimal `gorm:"column:global_fee" sql:"type:decimal(32,16);"`
+	MachineId    int64
 }
 
 type TotalCount struct {
