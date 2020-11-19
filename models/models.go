@@ -247,6 +247,7 @@ type Address struct {
 	PublicKey  string
 	PrivateKey string
 	Mnemonic   string
+	ParentId   int64
 	ParentIds  string
 	InviteNum  int
 	ActiveNum  int

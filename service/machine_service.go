@@ -5,8 +5,6 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/shopspring/decimal"
-	"strconv"
-	"strings"
 )
 
 func GetBuyMachine() ([]*models.Machine, error) {
@@ -104,13 +102,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 	}
 
 	//增加上级直推奖励
-	parentIds := strings.Split(address.ParentIds, ",")
-	parentId, err := strconv.ParseInt(parentIds[0], 10, 64)
-	if err != nil {
-		return err
-	}
-
-	parentAddressAsset, err := db.GetAccountAssetForUpdate(parentId, models.CurrencyYtl)
+	parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.CurrencyYtl)
 	if err != nil {
 		return err
 	}

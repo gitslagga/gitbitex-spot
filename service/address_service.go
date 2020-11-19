@@ -289,7 +289,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 	if targetAddress == nil {
 		return errors.New("地址不存在|Address is not exists")
 	}
-	if targetAddress.ParentIds != "" {
+	if targetAddress.ParentId != 0 {
 		return errors.New("地址已经激活|Address is always activation")
 	}
 
@@ -354,10 +354,11 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
+	targetAddress.ParentId = address.Id
 	if address.ParentIds == "" {
 		targetAddress.ParentIds = fmt.Sprintf("%d", address.Id)
 	} else {
-		targetAddress.ParentIds = fmt.Sprintf("%d,%s", address.Id, address.ParentIds)
+		targetAddress.ParentIds = fmt.Sprintf("%s,%d", address.ParentIds, address.Id)
 	}
 	err = db.UpdateAddress(targetAddress)
 	if err != nil {
