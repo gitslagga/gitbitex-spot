@@ -238,22 +238,22 @@ type Transaction struct {
 
 //development new
 type Address struct {
-	Id           int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	Username     string
-	Password     string
-	Address      string
-	PublicKey    string
-	PrivateKey   string
-	Mnemonic     string
-	ParentId     int64
-	ParentIds    string
-	InviteNum    int
-	ActiveNum    int
-	ConvertFee   decimal.Decimal
-	GlobalFee    decimal.Decimal
-	MachineLevel int64
+	Id             int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	Username       string
+	Password       string
+	Address        string
+	PublicKey      string
+	PrivateKey     string
+	Mnemonic       string
+	ParentId       int64
+	ParentIds      string
+	InviteNum      int
+	ActiveNum      int
+	ConvertFee     decimal.Decimal
+	GlobalFee      decimal.Decimal
+	MachineLevelId int64
 }
 
 type AccountAsset struct {

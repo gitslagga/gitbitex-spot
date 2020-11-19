@@ -29,9 +29,9 @@ func AddMachineConvert(machineConvert *models.MachineConvert) error {
 func MachineConvert(address *models.Address, convertType int, num float64) error {
 	var err error
 	switch convertType {
-	case models.ConvertYtlToBite:
+	case models.MachineYtlConvertBite:
 		err = MachineYtlConvertBite(address, num)
-	case models.ConvertBiteToYtl:
+	case models.MachineBiteConvertYtl:
 		err = MachineBiteConvertYtl(address, num)
 	}
 
@@ -81,11 +81,10 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 
 	sumFee, err := mysql.SharedStore().GetMachineConvertSumFee()
 	if err == nil {
-		sumFeeFloat, _ := sumFee.Float64()
 		currentTime := time.Now()
 		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
 
-		_ = models.SharedRedis().SetMachineConvertSumFee(sumFeeFloat, endTime.Sub(currentTime))
+		_ = models.SharedRedis().SetMachineConvertSumFee(sumFee, endTime.Sub(currentTime))
 	}
 
 	return nil
@@ -127,7 +126,7 @@ func machineYtlConvertBite(address *models.Address, number, price, amount decima
 		Price:  price,
 		Fee:    address.ConvertFee,
 		Amount: amount,
-		Type:   models.ConvertYtlToBite,
+		Type:   models.MachineYtlConvertBite,
 	})
 	if err != nil {
 		return err
@@ -202,7 +201,7 @@ func machineBiteConvertYtl(address *models.Address, number, price, amount decima
 		Price:  price,
 		Fee:    decimal.Zero,
 		Amount: amount,
-		Type:   models.ConvertBiteToYtl,
+		Type:   models.MachineBiteConvertYtl,
 	})
 	if err != nil {
 		return err

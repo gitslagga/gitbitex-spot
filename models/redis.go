@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/gitslagga/gitbitex-spot/conf"
 	"github.com/go-redis/redis"
+	"github.com/shopspring/decimal"
 	"sync"
 	"time"
 )
@@ -31,8 +32,8 @@ func SharedRedis() *box {
 	return &box{redis: redisClient}
 }
 
-func (b *box) SetMachineConvertSumFee(number float64, exp time.Duration) error {
-	err := b.redis.Set(AccountConvertSumFee, number, exp).Err()
+func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration) error {
+	err := b.redis.Set(AccountConvertSumFee, sumFee, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -40,15 +41,15 @@ func (b *box) SetMachineConvertSumFee(number float64, exp time.Duration) error {
 	return nil
 }
 
-func (b *box) GetAccountConvertSumFee() (float64, error) {
+func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
 	sumFee, err := b.redis.Get(AccountConvertSumFee).Float64()
 	if err != nil {
-		return 0, err
+		return decimal.Zero, err
 	}
 
 	if err == redis.Nil {
-		return 0, nil
+		return decimal.Zero, nil
 	}
 
-	return sumFee, nil
+	return decimal.NewFromFloat(sumFee), nil
 }

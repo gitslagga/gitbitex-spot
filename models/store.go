@@ -55,6 +55,7 @@ type Store interface {
 	//development new
 	GetAddressByAddress(addr string) (*Address, error)
 	GetAddressById(id int64) (*Address, error)
+	CountAddressByMachineLevelId(machineLevelId int64) (int, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 

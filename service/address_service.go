@@ -276,6 +276,10 @@ func GetAddressById(id int64) (*models.Address, error) {
 	return mysql.SharedStore().GetAddressById(id)
 }
 
+func CountAddressByMachineLevelId(machineLevelId int64) (int, error) {
+	return mysql.SharedStore().CountAddressByMachineLevelId(machineLevelId)
+}
+
 func AddAddress(address *models.Address) error {
 	return mysql.SharedStore().AddAddress(address)
 }
