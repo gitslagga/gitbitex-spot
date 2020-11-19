@@ -8,8 +8,44 @@ const (
 )
 
 const (
-	CURRENCY_YTL    = "YTL"
-	CURRENCY_BITE   = "BITE"
-	CURRENCY_USDT   = "USDT"
-	CURRENCY_ENERGY = "ENERGY"
+	CurrencyYtl    = "YTL"
+	CurrencyBite   = "BITE"
+	CurrencyUsdt   = "USDT"
+	CurrencyEnergy = "ENERGY" // Deprecated
+)
+
+const (
+	GiveAwayMachineId = 1
+	FreeMachine       = 0
+	BuyMachine        = 1
+)
+
+const (
+	ActiveTransferNumber = iota
+	IssueRewardNumber
+	YtlConvertNumber
+	HoldCoinProfitNumber
+	PromoteProfitNumber
+
+	YtlConvertInviteOne
+	YtlConvertInviteTwo
+	YtlConvertInviteThree
+	YtlConvertInviteFour
+	YtlConvertInviteFive
+	YtlConvertFeeOne
+	YtlConvertFeeTwo
+	YtlConvertFeeThree
+	YtlConvertFeeFour
+	YtlConvertFeeFive
+
+	YtlConvertUsdtRate
+	EnergyConvertUsdtRate // Deprecated
+	BiteConvertUsdtRate
+	UsdtConvertCnyRate
+
+	UsdtMinDepositNumber
+	UsdtMinWithdrawNumber
+	UsdtWithdrawFee
+	UsdtCollectionAddress
+	UsdtCollectFeeAddress
 )

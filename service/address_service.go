@@ -156,41 +156,41 @@ func AddressAsset(userId int64) error {
 	defer func() { _ = db.Rollback() }()
 
 	//币币账户(USDT,BITE)
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_BITE})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CURRENCY_USDT})
+	err = db.AddAccount(&models.Account{UserId: userId, Currency: models.CurrencyUsdt})
 	if err != nil {
 		return err
 	}
 
 	//资产账户(YTL,BITE,USDT)
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_YTL})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyYtl})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_BITE})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CURRENCY_USDT})
+	err = db.AddAccountAsset(&models.AccountAsset{UserId: userId, Currency: models.CurrencyUsdt})
 	if err != nil {
 		return err
 	}
 
 	//矿池账户(BITE)
-	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CURRENCY_BITE})
+	err = db.AddAccountPool(&models.AccountPool{UserId: userId, Currency: models.CurrencyBite})
 	if err != nil {
 		return err
 	}
 
 	//购物账户(BITE,USDT)
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_BITE})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CurrencyBite})
 	if err != nil {
 		return err
 	}
-	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CURRENCY_USDT})
+	err = db.AddAccountShop(&models.AccountShop{UserId: userId, Currency: models.CurrencyUsdt})
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 		return err
 	}
 
-	configNum, err := strconv.ParseFloat(configs[0].Value, 64)
+	configNum, err := strconv.ParseFloat(configs[models.ActiveTransferNumber].Value, 64)
 	if err != nil {
 		return err
 	}
@@ -305,7 +305,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 	defer func() { _ = db.Rollback() }()
 
-	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITE)
+	addressAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyBite)
 	if err != nil {
 		return err
 	}
@@ -320,7 +320,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CURRENCY_BITE)
+	targetAddressAsset, err := db.GetAccountAssetForUpdate(targetAddress.Id, models.CurrencyBite)
 	if err != nil {
 		return err
 	}
@@ -334,7 +334,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	address.InviteNum++
 	var inviteNum int
 	var convertFee decimal.Decimal
-	for i := 5; i < 10; i++ {
+	for i := models.YtlConvertInviteOne; i < models.YtlConvertFeeOne; i++ {
 		inviteNum, err = strconv.Atoi(configs[i].Value)
 		if err != nil {
 			return err
@@ -357,7 +357,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	if address.ParentIds == "" {
 		targetAddress.ParentIds = fmt.Sprintf("%d", address.Id)
 	} else {
-		targetAddress.ParentIds = fmt.Sprintf("%s-%d", address.ParentIds, address.Id)
+		targetAddress.ParentIds = fmt.Sprintf("%d,%s", address.Id, address.ParentIds)
 	}
 	err = db.UpdateAddress(targetAddress)
 	if err != nil {
@@ -365,7 +365,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 
 	//激活下级，赠送上级一级矿机
-	machine, err := db.GetMachineById(1)
+	machine, err := db.GetMachineById(models.GiveAwayMachineId)
 	if err != nil {
 		return err
 	}
@@ -376,7 +376,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
-		IsBuy:       0,
+		IsBuy:       models.FreeMachine,
 	})
 
 	return db.CommitTx()

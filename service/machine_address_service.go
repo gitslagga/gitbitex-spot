@@ -82,7 +82,7 @@ func machineRelease(machineAddress *models.MachineAddress) error {
 		return err
 	}
 
-	addressAsset, err := db.GetAccountAssetForUpdate(machineAddress.UserId, models.CURRENCY_YTL)
+	addressAsset, err := db.GetAccountAssetForUpdate(machineAddress.UserId, models.CurrencyYtl)
 	if err != nil {
 		return err
 	}

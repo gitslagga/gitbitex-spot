@@ -38,7 +38,7 @@ func AccountConvert(address *models.Address, num float64) error {
 		return err
 	}
 
-	total, err := decimal.NewFromString(configs[2].Value)
+	total, err := decimal.NewFromString(configs[models.YtlConvertNumber].Value)
 	if err != nil {
 		return err
 	}
@@ -47,11 +47,11 @@ func AccountConvert(address *models.Address, num float64) error {
 		return errors.New("每日兑换数量超过限制|Daily convert quantity exceeds limit")
 	}
 
-	ytlRate, err := decimal.NewFromString(configs[15].Value)
+	ytlRate, err := decimal.NewFromString(configs[models.YtlConvertUsdtRate].Value)
 	if err != nil {
 		return err
 	}
-	biteRate, err := decimal.NewFromString(configs[17].Value)
+	biteRate, err := decimal.NewFromString(configs[models.BiteConvertUsdtRate].Value)
 	if err != nil {
 		return err
 	}
@@ -86,7 +86,7 @@ func accountConvert(address *models.Address, number, price, amount decimal.Decim
 	}
 	defer func() { _ = db.Rollback() }()
 
-	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_YTL)
+	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyYtl)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func accountConvert(address *models.Address, number, price, amount decimal.Decim
 		return err
 	}
 
-	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CURRENCY_BITE)
+	biteAsset, err := db.GetAccountAssetForUpdate(address.Id, models.CurrencyBite)
 	if err != nil {
 		return err
 	}

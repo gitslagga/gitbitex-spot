@@ -34,8 +34,8 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 
 	var amount decimal.Decimal
 	switch currency {
-	case models.CURRENCY_YTL:
-		rate, err := decimal.NewFromString(configs[15].Value)
+	case models.CurrencyYtl:
+		rate, err := decimal.NewFromString(configs[models.YtlConvertUsdtRate].Value)
 		if err != nil {
 			return err
 		}
@@ -43,8 +43,8 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 			return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
-	case models.CURRENCY_BITE:
-		rate, err := decimal.NewFromString(configs[17].Value)
+	case models.CurrencyBite:
+		rate, err := decimal.NewFromString(configs[models.BiteConvertUsdtRate].Value)
 		if err != nil {
 			return err
 		}
@@ -52,7 +52,7 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 			return errors.New("BITE兑换USDT价格错误|BITE convert USDT price error")
 		}
 		amount = machine.Number.Div(rate)
-	case models.CURRENCY_USDT:
+	case models.CurrencyUsdt:
 		amount = machine.Number
 	default:
 		return errors.New("无效的币种|Invalid of currency")
@@ -90,7 +90,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,
 		TotalDay:    machine.Release,
-		IsBuy:       1,
+		IsBuy:       models.BuyMachine,
 	})
 	if err != nil {
 		return err
@@ -104,13 +104,13 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 	}
 
 	//增加上级直推奖励
-	parentIds := strings.Split(address.ParentIds, "-")
-	parentId, err := strconv.ParseInt(parentIds[len(parentIds)-1], 10, 64)
+	parentIds := strings.Split(address.ParentIds, ",")
+	parentId, err := strconv.ParseInt(parentIds[0], 10, 64)
 	if err != nil {
 		return err
 	}
 
-	parentAddressAsset, err := db.GetAccountAssetForUpdate(parentId, models.CURRENCY_YTL)
+	parentAddressAsset, err := db.GetAccountAssetForUpdate(parentId, models.CurrencyYtl)
 	if err != nil {
 		return err
 	}
