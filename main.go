@@ -42,7 +42,7 @@ func main() {
 
 	rest.StartServer()
 
-	go service.MachineRelease()
+	go service.StartMachineRelease()
 
 	select {}
 }

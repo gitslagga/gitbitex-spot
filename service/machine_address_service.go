@@ -19,40 +19,41 @@ func UpdateMachineAddress(machineAddress *models.MachineAddress) error {
 	return mysql.SharedStore().UpdateMachineAddress(machineAddress)
 }
 
-func MachineRelease() {
+func StartMachineRelease() {
 	t := time.NewTicker(6 * time.Hour)
+	MachineRelease()
 
 	for {
 		select {
 		case <-t.C:
-			machineAddress, err := mysql.SharedStore().GetMachineAddressUsedList()
-			if len(machineAddress) > 0 && err == nil {
-				for i := 0; i < len(machineAddress); i++ {
-					//未结束的矿机才能挖矿
-					if machineAddress[i].Day > 0 {
-						machineLog, err := mysql.SharedStore().GetLastMachineLog(machineAddress[i].Id)
-						if err != nil {
-							mylog.DataLogger.Error().Msgf("MachineRelease GetLastMachineLog err: %v", err)
-							continue
-						}
-						if machineLog != nil {
-							t, err := time.Parse("2006-01-02", time.Now().Format("2006-01-02"))
-							if err != nil {
-								mylog.DataLogger.Error().Msgf("MachineRelease time parse err: %v", err)
-								continue
-							}
+			MachineRelease()
+		}
+	}
+}
 
-							if machineLog.UpdatedAt.After(t) && machineLog.UpdatedAt.Before(t.Add(24*time.Hour)) {
-								continue
-							}
-						}
+func MachineRelease() {
+	machineAddress, err := mysql.SharedStore().GetMachineAddressUsedList()
+	if err == nil && len(machineAddress) > 0 {
+		for i := 0; i < len(machineAddress); i++ {
+			//获取矿机最后一条挖矿记录
+			machineLog, err := mysql.SharedStore().GetLastMachineLog(machineAddress[i].Id)
+			if err != nil {
+				mylog.DataLogger.Error().Msgf("MachineRelease GetLastMachineLog err: %v", err)
+				continue
+			}
+			if machineLog != nil {
+				currentTime := time.Now()
+				startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+				endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
 
-						err = machineRelease(machineAddress[i])
-						if err != nil {
-							mylog.DataLogger.Error().Msgf("MachineRelease machineRelease err: %v", err)
-						}
-					}
+				if machineLog.CreatedAt.After(startTime) && machineLog.CreatedAt.Before(endTime) {
+					continue
 				}
+			}
+
+			err = machineRelease(machineAddress[i])
+			if err != nil {
+				mylog.DataLogger.Error().Msgf("MachineRelease machineRelease err: %v", err)
 			}
 		}
 	}

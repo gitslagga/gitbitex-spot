@@ -37,7 +37,7 @@ func ConfigLoggers() {
 	zerolog.TimestampFunc = SgNow
 
 	Logger = zerolog.New(&lumberjack.Logger{
-		Filename:   "./log/frontend.log",
+		Filename:   "./log/info.log",
 		MaxSize:    500,
 		MaxBackups: 10,
 		MaxAge:     10,
@@ -46,7 +46,7 @@ func ConfigLoggers() {
 	fmt.Println("Logger log init succeed.")
 
 	DataLogger = zerolog.New(&lumberjack.Logger{
-		Filename:   "./log/backend.log",
+		Filename:   "./log/data.log",
 		MaxSize:    500,
 		MaxBackups: 10,
 		MaxAge:     10,
