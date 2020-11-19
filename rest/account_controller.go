@@ -64,66 +64,6 @@ func AccountAddressService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, out)
 }
 
-// POST /account/convert
-func AccountConvertService(ctx *gin.Context) {
-	out := CommonResp{}
-	address := GetCurrentAddress(ctx)
-	if address == nil {
-		out.RespCode = EC_TOKEN_INVALID
-		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	var accountConvert AccountConvertRequest
-	err := ctx.ShouldBindJSON(&accountConvert)
-	if err != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	// ConvertType: 1-ytl兑换bite, 2-bite兑换ytl
-	err = service.AccountConvert(address, accountConvert.ConvertType, accountConvert.Number)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	out.RespCode = EC_NONE.Code()
-	out.RespDesc = EC_NONE.String()
-
-	ctx.JSON(http.StatusOK, out)
-}
-
-// GET /account/convertInfo
-func AccountConvertInfoService(ctx *gin.Context) {
-	out := CommonResp{}
-	address := GetCurrentAddress(ctx)
-	if address == nil {
-		out.RespCode = EC_TOKEN_INVALID
-		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	accountConvert, err := service.GetAccountConvertByUserId(address.Id)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	out.RespCode = EC_NONE.Code()
-	out.RespDesc = EC_NONE.String()
-	out.RespData = accountConvert
-	ctx.JSON(http.StatusOK, out)
-}
-
 // POST /account/transfer
 func AccountTransferService(ctx *gin.Context) {
 	out := CommonResp{}

@@ -8,12 +8,12 @@ import (
 	"time"
 )
 
-func GetAccountConvertByUserId(userId int64) ([]*models.AccountConvert, error) {
-	return mysql.SharedStore().GetAccountConvertByUserId(userId)
+func GetMachineConvertByUserId(userId int64) ([]*models.MachineConvert, error) {
+	return mysql.SharedStore().GetMachineConvertByUserId(userId)
 }
 
-func GetAccountConvertSumNumber() (float64, error) {
-	sumNumber, err := mysql.SharedStore().GetAccountConvertSumNumber()
+func GetMachineConvertSumNumber() (float64, error) {
+	sumNumber, err := mysql.SharedStore().GetMachineConvertSumNumber()
 	if err != nil {
 		return 0, err
 	}
@@ -22,30 +22,30 @@ func GetAccountConvertSumNumber() (float64, error) {
 	return number, nil
 }
 
-func AddAccountConvert(accountConvert *models.AccountConvert) error {
-	return mysql.SharedStore().AddAccountConvert(accountConvert)
+func AddMachineConvert(machineConvert *models.MachineConvert) error {
+	return mysql.SharedStore().AddMachineConvert(machineConvert)
 }
 
-func AccountConvert(address *models.Address, convertType int, num float64) error {
+func MachineConvert(address *models.Address, convertType int, num float64) error {
 	var err error
 	switch convertType {
 	case models.ConvertYtlToBite:
-		err = AccountYtlConvertBite(address, num)
+		err = MachineYtlConvertBite(address, num)
 	case models.ConvertBiteToYtl:
-		err = AccountBiteConvertYtl(address, num)
+		err = MachineBiteConvertYtl(address, num)
 	}
 
 	return err
 }
 
-func AccountYtlConvertBite(address *models.Address, num float64) error {
+func MachineYtlConvertBite(address *models.Address, num float64) error {
 	number := decimal.NewFromFloat(num)
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
 		return err
 	}
 
-	count, err := mysql.SharedStore().GetAccountConvertSumNumber()
+	count, err := mysql.SharedStore().GetMachineConvertSumNumber()
 	if err != nil {
 		return err
 	}
@@ -74,24 +74,24 @@ func AccountYtlConvertBite(address *models.Address, num float64) error {
 	price := ytlRate.Div(biteRate)
 	amount := number.Div(price).Mul(address.ConvertFee.Add(decimal.New(1, 0)))
 
-	err = accountYtlConvertBite(address, number, price, amount)
+	err = machineYtlConvertBite(address, number, price, amount)
 	if err != nil {
 		return err
 	}
 
-	sumFee, err := mysql.SharedStore().GetAccountConvertSumFee()
+	sumFee, err := mysql.SharedStore().GetMachineConvertSumFee()
 	if err == nil {
 		sumFeeFloat, _ := sumFee.Float64()
 		currentTime := time.Now()
 		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
 
-		_ = models.SharedRedis().SetAccountConvertSumFee(sumFeeFloat, endTime.Sub(currentTime))
+		_ = models.SharedRedis().SetMachineConvertSumFee(sumFeeFloat, endTime.Sub(currentTime))
 	}
 
 	return nil
 }
 
-func accountYtlConvertBite(address *models.Address, number, price, amount decimal.Decimal) error {
+func machineYtlConvertBite(address *models.Address, number, price, amount decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -121,7 +121,7 @@ func accountYtlConvertBite(address *models.Address, number, price, amount decima
 		return err
 	}
 
-	err = db.AddAccountConvert(&models.AccountConvert{
+	err = db.AddMachineConvert(&models.MachineConvert{
 		UserId: address.Id,
 		Number: number,
 		Price:  price,
@@ -136,7 +136,7 @@ func accountYtlConvertBite(address *models.Address, number, price, amount decima
 	return db.CommitTx()
 }
 
-func AccountBiteConvertYtl(address *models.Address, num float64) error {
+func MachineBiteConvertYtl(address *models.Address, num float64) error {
 	number := decimal.NewFromFloat(num)
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
@@ -158,7 +158,7 @@ func AccountBiteConvertYtl(address *models.Address, num float64) error {
 	price := biteRate.Div(ytlRate)
 	amount := number.Div(price)
 
-	err = accountBiteConvertYtl(address, number, price, amount)
+	err = machineBiteConvertYtl(address, number, price, amount)
 	if err != nil {
 		return err
 	}
@@ -166,7 +166,7 @@ func AccountBiteConvertYtl(address *models.Address, num float64) error {
 	return nil
 }
 
-func accountBiteConvertYtl(address *models.Address, number, price, amount decimal.Decimal) error {
+func machineBiteConvertYtl(address *models.Address, number, price, amount decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -196,7 +196,7 @@ func accountBiteConvertYtl(address *models.Address, number, price, amount decima
 		return err
 	}
 
-	err = db.AddAccountConvert(&models.AccountConvert{
+	err = db.AddMachineConvert(&models.MachineConvert{
 		UserId: address.Id,
 		Number: number,
 		Price:  price,

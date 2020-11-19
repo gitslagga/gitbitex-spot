@@ -58,6 +58,9 @@ type Store interface {
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 
+	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
+	AddAccountTransfer(accountTransfer *AccountTransfer) error
+
 	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
 	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
@@ -87,10 +90,8 @@ type Store interface {
 	GetLastMachineLog(machineAddressId int64) (*MachineLog, error)
 	AddMachineLog(machineLog *MachineLog) error
 
-	GetAccountConvertByUserId(userId int64) ([]*AccountConvert, error)
-	GetAccountConvertSumNumber() (decimal.Decimal, error)
-	GetAccountConvertSumFee() (decimal.Decimal, error)
-	AddAccountConvert(accountConvert *AccountConvert) error
-	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
-	AddAccountTransfer(accountTransfer *AccountTransfer) error
+	GetMachineConvertByUserId(userId int64) ([]*MachineConvert, error)
+	GetMachineConvertSumNumber() (decimal.Decimal, error)
+	GetMachineConvertSumFee() (decimal.Decimal, error)
+	AddMachineConvert(machineConvert *MachineConvert) error
 }

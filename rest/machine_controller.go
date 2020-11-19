@@ -122,3 +122,63 @@ func LogMachineService(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, out)
 }
+
+// POST /machine/convert
+func MachineConvertService(ctx *gin.Context) {
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	var machineConvert MachineConvertRequest
+	err := ctx.ShouldBindJSON(&machineConvert)
+	if err != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	// ConvertType: 1-ytl兑换bite, 2-bite兑换ytl
+	err = service.MachineConvert(address, machineConvert.ConvertType, machineConvert.Number)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = err.Error()
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+
+	ctx.JSON(http.StatusOK, out)
+}
+
+// GET /machine/convertInfo
+func MachineConvertInfoService(ctx *gin.Context) {
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machineConvert, err := service.GetMachineConvertByUserId(address.Id)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = machineConvert
+	ctx.JSON(http.StatusOK, out)
+}

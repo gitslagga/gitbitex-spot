@@ -74,10 +74,10 @@ func (server *HttpServer) Start() {
 		frontend.POST("/machine/buy", BuyMachineService)
 		frontend.GET("/machine/address", AddressMachineService)
 		frontend.GET("/machine/log", LogMachineService)
+		frontend.POST("/machine/convert", MachineConvertService)
+		frontend.GET("/machine/convertInfo", MachineConvertInfoService)
 
 		frontend.GET("/account/address", AccountAddressService)
-		frontend.POST("/account/convert", AccountConvertService)
-		frontend.GET("/account/convertInfo", AccountConvertInfoService)
 		frontend.POST("/account/transfer", AccountTransferService)
 		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		//frontend.POST("/account/scan", AccountScanService)

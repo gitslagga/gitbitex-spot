@@ -119,7 +119,7 @@ type BuyMachineRequest struct {
 	Currency  string `json:"currency" binding:"required"`
 }
 
-type AccountConvertRequest struct {
+type MachineConvertRequest struct {
 	ConvertType int     `json:"convert_type" binding:"required"`
 	Number      float64 `json:"number" binding:"required"`
 }

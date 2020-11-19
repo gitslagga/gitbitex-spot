@@ -6,17 +6,17 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func (s *Store) GetAccountConvertByUserId(userId int64) ([]*models.AccountConvert, error) {
+func (s *Store) GetMachineConvertByUserId(userId int64) ([]*models.MachineConvert, error) {
 	db := s.db.Where("user_id=?", userId).Order("id DESC")
 
-	var accountConvert []*models.AccountConvert
-	err := db.Find(&accountConvert).Error
-	return accountConvert, err
+	var machineConvert []*models.MachineConvert
+	err := db.Find(&machineConvert).Error
+	return machineConvert, err
 }
 
-func (s *Store) GetAccountConvertSumNumber() (decimal.Decimal, error) {
+func (s *Store) GetMachineConvertSumNumber() (decimal.Decimal, error) {
 	var number models.SumNumber
-	err := s.db.Raw("SELECT SUM(number) as number FROM g_account_convert WHERE " +
+	err := s.db.Raw("SELECT SUM(number) as number FROM g_machine_convert WHERE " +
 		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
@@ -25,9 +25,9 @@ func (s *Store) GetAccountConvertSumNumber() (decimal.Decimal, error) {
 	return number.Number, err
 }
 
-func (s *Store) GetAccountConvertSumFee() (decimal.Decimal, error) {
+func (s *Store) GetMachineConvertSumFee() (decimal.Decimal, error) {
 	var number models.SumNumber
-	err := s.db.Raw("SELECT SUM(amount-number) as number FROM g_account_convert WHERE " +
+	err := s.db.Raw("SELECT SUM(amount-number) as number FROM g_machine_convert WHERE " +
 		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
@@ -36,6 +36,6 @@ func (s *Store) GetAccountConvertSumFee() (decimal.Decimal, error) {
 	return number.Number, err
 }
 
-func (s *Store) AddAccountConvert(accountConvert *models.AccountConvert) error {
-	return s.db.Create(accountConvert).Error
+func (s *Store) AddMachineConvert(machineConvert *models.MachineConvert) error {
+	return s.db.Create(machineConvert).Error
 }

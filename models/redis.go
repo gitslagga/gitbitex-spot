@@ -31,7 +31,7 @@ func SharedRedis() *box {
 	return &box{redis: redisClient}
 }
 
-func (b *box) SetAccountConvertSumFee(number float64, exp time.Duration) error {
+func (b *box) SetMachineConvertSumFee(number float64, exp time.Duration) error {
 	err := b.redis.Set(AccountConvertSumFee, number, exp).Err()
 	if err != nil {
 		return err

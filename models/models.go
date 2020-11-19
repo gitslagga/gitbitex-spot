@@ -321,15 +321,7 @@ type MachineLog struct {
 	Number           decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
 }
 
-type TotalCount struct {
-	Count int
-}
-
-type SumNumber struct {
-	Number decimal.Decimal
-}
-
-type AccountConvert struct {
+type MachineConvert struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -339,6 +331,14 @@ type AccountConvert struct {
 	Fee       decimal.Decimal `gorm:"column:fee" sql:"type:decimal(32,16);"`
 	Amount    decimal.Decimal `gorm:"column:amount" sql:"type:decimal(32,16);"`
 	Type      int
+}
+
+type TotalCount struct {
+	Count int
+}
+
+type SumNumber struct {
+	Number decimal.Decimal
 }
 
 type AccountTransfer struct {
