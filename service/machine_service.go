@@ -117,8 +117,49 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 	return db.CommitTx()
 }
 
-// 获取用户培养的达人数量，有效推荐数量(活跃度大于1)，总活跃度，小区活跃度
-func getConditionMachineLevel(address *models.Address) (bool, error) {
+// 获取用户培养的达人数量，有效推荐数量(活跃度大于1)，	TODO 总活跃度，小区活跃度
+func getConditionMachineLevel(address *models.Address, machineLevel *models.MachineLevel) (bool, error) {
+	sonAddress, err := GetAddressByParentId(address.Id)
+	if err != nil {
+		return false, err
+	}
+
+	inviteNum := len(sonAddress)
+	if inviteNum <= 0 || inviteNum < machineLevel.InviteNum {
+		return false, nil
+	}
+
+	var trainNumberOne int
+	var trainNumberTwo int
+	var trainNumberThree int
+	for i := 0; i < inviteNum; i++ {
+		if sonAddress[i].MachineLevelId == models.MachineLevelOne {
+			trainNumberOne++
+		}
+		if sonAddress[i].MachineLevelId == models.MachineLevelTwo {
+			trainNumberTwo++
+		}
+		if sonAddress[i].MachineLevelId == models.MachineLevelThree {
+			trainNumberThree++
+		}
+	}
+
+	switch address.MachineLevelId {
+	case models.MachineLevelZero:
+	case models.MachineLevelOne:
+	case models.MachineLevelTwo:
+		if trainNumberOne < machineLevel.TrainNum {
+			return false, nil
+		}
+	case models.MachineLevelThree:
+		if trainNumberTwo < machineLevel.TrainNum {
+			return false, nil
+		}
+	case models.MachineLevelFour:
+		if trainNumberThree < machineLevel.TrainNum {
+			return false, nil
+		}
+	}
 
 	return true, nil
 }
@@ -130,58 +171,57 @@ func StartMachineLevel(userId int64) {
 		return
 	}
 
-	condition, err := getConditionMachineLevel(address)
+	machineLevel, err := GetMachineLevel()
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
-		return
-	}
-	if !condition {
+		mylog.DataLogger.Error().Msgf("StartMachineLevel GetMachineLevel err: %v", err)
 		return
 	}
 
-	machineLevelStepOne(address)
+	machineLevelStepOne(address, machineLevel)
 }
 
-func machineLevelStepOne(address *models.Address) {
+func machineLevelStepOne(address *models.Address, machineLevel []*models.MachineLevel) {
 	switch address.MachineLevelId {
 	case models.MachineLevelZero:
-		err := machineLevelStepTwo(address.Id, models.MachineLevelZero, models.MachineLevelOne)
+		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelZero])
+		if err != nil {
+			mylog.DataLogger.Error().Msgf("machineLevelStepOne getConditionMachineLevel err: %v", err)
+			return
+		}
+		if !valid {
+			return
+		}
+
+		err = machineLevelStepTwo(machineLevel[models.MachineLevelZero], address, models.MachineLevelOne)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelOne:
-		err := machineLevelStepTwo(address.Id, models.MachineLevelOne, models.MachineLevelTwo)
+		err := machineLevelStepTwo(machineLevel[models.MachineLevelOne], address, models.MachineLevelTwo)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelTwo:
-		err := machineLevelStepTwo(address.Id, models.MachineLevelTwo, models.MachineLevelThree)
+		err := machineLevelStepTwo(machineLevel[models.MachineLevelTwo], address, models.MachineLevelThree)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelThree:
-		err := machineLevelStepTwo(address.Id, models.MachineLevelThree, models.MachineLevelFour)
+		err := machineLevelStepTwo(machineLevel[models.MachineLevelThree], address, models.MachineLevelFour)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelFour:
-		err := machineLevelStepTwo(address.Id, models.MachineLevelFour, models.MachineLevelFive)
+		err := machineLevelStepTwo(machineLevel[models.MachineLevelFour], address, models.MachineLevelFive)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	}
 }
 
-// 进行分红，赠送矿机
-func machineLevelStepTwo(userId, machineLevelId, countMachineLevelId int64) error {
+func machineLevelStepTwo(machineLevel *models.MachineLevel, address *models.Address, countMachineLevelId int64) error {
 	// 获取兑换手续费
 	sumFee, err := models.SharedRedis().GetAccountConvertSumFee()
-	if err != nil {
-		return err
-	}
-
-	// 获取要升级的达人级别
-	machineLevel, err := GetMachineLevelById(machineLevelId)
 	if err != nil {
 		return err
 	}
@@ -193,30 +233,36 @@ func machineLevelStepTwo(userId, machineLevelId, countMachineLevelId int64) erro
 	}
 
 	// 获取实际分红数量
-	var amount decimal.Decimal
+	amount := sumFee.Mul(machineLevel.GlobalFee)
 	if count > 0 {
-		amount = sumFee.Mul(machineLevel.GlobalFee).Div(decimal.NewFromInt(int64(count)))
-	} else {
-		amount = sumFee.Mul(machineLevel.GlobalFee)
+		amount = amount.Div(decimal.NewFromInt(int64(count)))
 	}
 
 	// 获取赠送的矿机
-	machine, err := mysql.SharedStore().GetMachineById(machineLevel.MachineId)
+	machine, err := GetMachineById(machineLevel.MachineId)
 	if err != nil {
 		return err
 	}
 
-	return machineLevelStepThree(userId, amount, machine)
+	address.GlobalFee = machineLevel.GlobalFee
+	address.MachineLevelId = countMachineLevelId
+	return machineLevelStepThree(address, amount, machine)
 }
 
-func machineLevelStepThree(userId int64, amount decimal.Decimal, machine *models.Machine) error {
+// 更改用户达人级别，进行分红，赠送矿机
+func machineLevelStepThree(address *models.Address, amount decimal.Decimal, machine *models.Machine) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = db.Rollback() }()
 
-	ytlAsset, err := db.GetAccountAssetForUpdate(userId, models.AccountCurrencyYtl)
+	err = db.UpdateAddress(address)
+	if err != nil {
+		return err
+	}
+
+	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyYtl)
 	if err != nil {
 		return err
 	}
@@ -229,7 +275,7 @@ func machineLevelStepThree(userId int64, amount decimal.Decimal, machine *models
 
 	err = db.AddMachineAddress(&models.MachineAddress{
 		MachineId:   machine.Id,
-		UserId:      userId,
+		UserId:      address.Id,
 		Number:      machine.Number.Add(machine.Number.Mul(machine.Profit)).Div(decimal.NewFromInt(int64(machine.Release))),
 		TotalNumber: machine.Number.Add(machine.Number.Mul(machine.Profit)),
 		Day:         machine.Release,

@@ -76,6 +76,7 @@ func (server *HttpServer) Start() {
 		frontend.GET("/machine/log", LogMachineService)
 		frontend.POST("/machine/convert", MachineConvertService)
 		frontend.GET("/machine/convertInfo", MachineConvertInfoService)
+		frontend.GET("/machine/level", MachineLevelService)
 
 		frontend.GET("/account/address", AccountAddressService)
 		frontend.POST("/account/transfer", AccountTransferService)

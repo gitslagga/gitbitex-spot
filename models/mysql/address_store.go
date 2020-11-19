@@ -32,6 +32,15 @@ func (s *Store) CountAddressByMachineLevelId(machineLevelId int64) (int, error) 
 	return count.Count, err
 }
 
+func (s *Store) GetAddressByParentId(parentId int64) ([]*models.Address, error) {
+	var address []*models.Address
+	err := s.db.Raw("SELECT * FROM g_address WHERE active_num > 1 AND parent_id=?", parentId).Scan(&address).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return address, err
+}
+
 func (s *Store) AddAddress(address *models.Address) error {
 	return s.db.Create(address).Error
 }

@@ -184,3 +184,21 @@ func MachineConvertInfoService(ctx *gin.Context) {
 	out.RespData = machineConvert
 	ctx.JSON(http.StatusOK, out)
 }
+
+// GET /machine/level
+func MachineLevelService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	machineLevel, err := service.GetMachineLevel()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = machineLevel
+	ctx.JSON(http.StatusOK, out)
+}
