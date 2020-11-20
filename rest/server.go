@@ -82,7 +82,7 @@ func (server *HttpServer) Start() {
 		frontend.POST("/account/transfer", AccountTransferService)
 		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		frontend.POST("/account/scan", AccountScanService)
-		frontend.POST("/account/scanInfo", AccountScanInfoService)
+		frontend.GET("/account/scanInfo", AccountScanInfoService)
 
 	}
 

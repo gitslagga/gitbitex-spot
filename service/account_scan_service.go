@@ -55,7 +55,7 @@ func AccountScan(userId int64, url string, numberF float64) error {
 	actualNumber := decimal.NewFromFloat(numberF * (1 + 0.05))
 
 	rate := usdtRate.Div(biteRate)
-	amount := actualNumber.Div(rate)
+	amount := actualNumber.Mul(rate)
 
 	err = accountScan(userId, url, number, fee, actualNumber, rate, amount)
 	if err != nil {
@@ -85,12 +85,12 @@ func accountScan(userId int64, url string, number, fee, actualNumber, rate, amou
 		return err
 	}
 
-	if addressAsset.Available.LessThan(number) {
+	if addressAsset.Available.LessThan(amount) {
 		return errors.New("资产余额不足|Insufficient number of asset")
 	}
 
-	addressAsset.Available = addressAsset.Available.Sub(number)
-	addressAsset.Hold = addressAsset.Hold.Add(number)
+	addressAsset.Available = addressAsset.Available.Sub(amount)
+	addressAsset.Hold = addressAsset.Hold.Add(amount)
 	err = db.UpdateAccountAsset(addressAsset)
 	if err != nil {
 		return err

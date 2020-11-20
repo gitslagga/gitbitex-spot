@@ -16,7 +16,7 @@ func (s *Store) GetAccountScanByUserId(userId int64) ([]*models.AccountScan, err
 
 func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {
 	var number models.SumNumber
-	err := s.db.Raw("SELECT SUM(number) as number FROM g_machine_scan WHERE "+
+	err := s.db.Raw("SELECT SUM(number) as number FROM g_account_scan WHERE "+
 		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d') AND user_id=?", userId).Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
@@ -27,7 +27,7 @@ func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {
 
 func (s *Store) GetAccountScanSumFee() (decimal.Decimal, error) {
 	var number models.SumNumber
-	err := s.db.Raw("SELECT SUM(actual-number) as number FROM g_machine_scan WHERE " +
+	err := s.db.Raw("SELECT SUM(actual_number-number) as number FROM g_account_scan WHERE " +
 		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
