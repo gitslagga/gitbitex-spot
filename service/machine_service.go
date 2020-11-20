@@ -193,14 +193,15 @@ func getTotalActiveNumber(userId int64) (int, error) {
 		return 0, err
 	}
 
-	var totalNum int
 	var activeNum int
+	var totalNum int
 	for i := 0; i < len(sonAddress); i++ {
 		activeNum, err = getTotalActiveNumber(sonAddress[i].Id)
 		if err != nil {
 			return 0, err
 		}
 
+		totalNum += sonAddress[i].ActiveNum
 		totalNum += activeNum
 	}
 
