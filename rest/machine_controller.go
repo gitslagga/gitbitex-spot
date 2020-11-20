@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
@@ -40,7 +41,7 @@ func BuyMachineService(ctx *gin.Context) {
 
 	var buyMachine BuyMachineRequest
 	err := ctx.ShouldBindJSON(&buyMachine)
-	if err != nil {
+	if err != nil || buyMachine.MachineId == models.MachineGiveAwayId {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
 		ctx.JSON(http.StatusOK, out)
