@@ -29,6 +29,9 @@ const (
 	// 1-Ytl兑换BITE，2-Bite兑换Ytl
 	MachineYtlConvertBite = 1
 	MachineBiteConvertYtl = 2
+
+	// 有效推荐数（活跃的大于1）
+	MachineValidInvite = 1
 )
 
 const (

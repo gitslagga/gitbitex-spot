@@ -117,22 +117,21 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 	return db.CommitTx()
 }
 
-// 获取用户培养的达人数量，有效推荐数量(活跃度大于1)，	TODO 总活跃度，小区活跃度
+// 判断升级所需要的用户培养达人数量，有效推荐数量(活跃度大于1)，总活跃度，小区活跃度(扣除活跃度最大的哪一枝)
 func getConditionMachineLevel(address *models.Address, machineLevel *models.MachineLevel) (bool, error) {
 	sonAddress, err := GetAddressByParentId(address.Id)
 	if err != nil {
 		return false, err
 	}
 
-	inviteNum := len(sonAddress)
-	if inviteNum <= 0 || inviteNum < machineLevel.InviteNum {
-		return false, nil
-	}
-
 	var trainNumberOne int
 	var trainNumberTwo int
 	var trainNumberThree int
-	for i := 0; i < inviteNum; i++ {
+
+	var inviteNum int
+	var maxActiveNum int
+	var totalActiveNum int
+	for i := 0; i < len(sonAddress); i++ {
 		if sonAddress[i].MachineLevelId == models.MachineLevelOne {
 			trainNumberOne++
 		}
@@ -142,6 +141,23 @@ func getConditionMachineLevel(address *models.Address, machineLevel *models.Mach
 		if sonAddress[i].MachineLevelId == models.MachineLevelThree {
 			trainNumberThree++
 		}
+
+		if sonAddress[i].ActiveNum > models.MachineValidInvite {
+			inviteNum++
+		}
+
+		activeNum, err := getTotalActiveNumber(sonAddress[i].Id)
+		if err != nil {
+			return false, err
+		}
+		if activeNum > maxActiveNum {
+			maxActiveNum = activeNum
+		}
+		totalActiveNum += activeNum
+	}
+
+	if inviteNum < machineLevel.InviteNum {
+		return false, nil
 	}
 
 	switch address.MachineLevelId {
@@ -161,7 +177,34 @@ func getConditionMachineLevel(address *models.Address, machineLevel *models.Mach
 		}
 	}
 
+	if totalActiveNum < machineLevel.TotalActive {
+		return false, nil
+	}
+	if totalActiveNum-maxActiveNum < machineLevel.CommonActive {
+		return false, nil
+	}
+
 	return true, nil
+}
+
+func getTotalActiveNumber(userId int64) (int, error) {
+	sonAddress, err := GetAddressByParentId(userId)
+	if err != nil {
+		return 0, err
+	}
+
+	var totalNum int
+	var activeNum int
+	for i := 0; i < len(sonAddress); i++ {
+		activeNum, err = getTotalActiveNumber(sonAddress[i].Id)
+		if err != nil {
+			return 0, err
+		}
+
+		totalNum += activeNum
+	}
+
+	return totalNum, nil
 }
 
 func StartMachineLevel(userId int64) {
