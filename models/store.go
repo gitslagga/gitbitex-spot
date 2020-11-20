@@ -60,9 +60,6 @@ type Store interface {
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 
-	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
-	AddAccountTransfer(accountTransfer *AccountTransfer) error
-
 	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
 	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
@@ -84,7 +81,7 @@ type Store interface {
 	GetBuyMachine() ([]*Machine, error)
 	GetMachineById(machineId int64) (*Machine, error)
 	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
-	GetMachineAddressUsedCount(userId int64, machineId int64) (int, error)
+	CountMachineAddressUsed(userId int64, machineId int64) (int, error)
 	GetMachineAddressUsedList() ([]*MachineAddress, error)
 	AddMachineAddress(machineAddress *MachineAddress) error
 	UpdateMachineAddress(machineAddress *MachineAddress) error
@@ -99,4 +96,11 @@ type Store interface {
 
 	GetMachineLevel() ([]*MachineLevel, error)
 	GetMachineLevelById(machineLevelId int64) (*MachineLevel, error)
+
+	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
+	AddAccountTransfer(accountTransfer *AccountTransfer) error
+	GetAccountScanByUserId(userId int64) ([]*AccountScan, error)
+	GetAccountScanSumNumber(userId int64) (decimal.Decimal, error)
+	GetAccountScanSumFee() (decimal.Decimal, error)
+	AddAccountScan(accountScan *AccountScan) error
 }

@@ -365,3 +365,18 @@ type AccountTransfer struct {
 	Currency  string
 	Number    decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
 }
+
+type AccountScan struct {
+	Id           int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	UserId       int64
+	Currency     string
+	Url          string
+	Number       decimal.Decimal
+	Fee          decimal.Decimal
+	ActualNumber decimal.Decimal
+	Rate         decimal.Decimal
+	Amount       decimal.Decimal
+	Status       int
+}

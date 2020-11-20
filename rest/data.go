@@ -24,6 +24,8 @@ const (
 
 	EC_CLIENT_OID_ERR   = 8000
 	EC_ORDER_NOT_EXISTS = 8001
+	EC_OUT_SERVICE_TIME = 8002
+	EC_NUMBER_ERR       = 8003
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -70,6 +72,10 @@ func (c ErrorCode) String() (r string) {
 		r = "无效的客户ID: %v|invalid client_oid"
 	case EC_ORDER_NOT_EXISTS:
 		r = "订单不存在|order not found"
+	case EC_OUT_SERVICE_TIME:
+		r = "不在服务时间段|Out of service time"
+	case EC_NUMBER_ERR:
+		r = "数量错误|Number error"
 
 	default:
 	}
@@ -129,4 +135,9 @@ type AccountTransferRequest struct {
 	To       int     `json:"to" binding:"required"`
 	Currency string  `json:"currency" binding:"required"`
 	Number   float64 `json:"number" binding:"required"`
+}
+
+type AccountScanRequest struct {
+	Url    string  `json:"url" binding:"required"`
+	Number float64 `json:"number" binding:"required"`
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"time"
 )
 
 // 获取用户余额
@@ -128,5 +129,81 @@ func AccountTransferInfoService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	out.RespData = accountTransfer
+	ctx.JSON(http.StatusOK, out)
+}
+
+// POST /account/scan
+func AccountScanService(ctx *gin.Context) {
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	var accountScan AccountScanRequest
+	err := ctx.ShouldBindJSON(&accountScan)
+	if err != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	nowTime := time.Now()
+	startTime := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), models.AccountScanStartHour, 0, 0, 0, nowTime.Location())
+	endTime := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), models.AccountScanEndHour, 0, 0, 0, nowTime.Location())
+	if nowTime.Before(startTime) || nowTime.After(endTime) {
+		out.RespCode = EC_OUT_SERVICE_TIME
+		out.RespDesc = ErrorCodeMessage(EC_OUT_SERVICE_TIME)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	if accountScan.Number < models.AccountScanMinPayment || accountScan.Number > models.AccountScanMaxPayment {
+		out.RespCode = EC_NUMBER_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NUMBER_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	err = service.AccountScan(address.Id, accountScan.Url, accountScan.Number)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = err.Error()
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+
+	ctx.JSON(http.StatusOK, out)
+}
+
+// GET /account/scanInfo
+func AccountScanInfoService(ctx *gin.Context) {
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	accountScan, err := service.GetAccountScanByUserId(address.Id)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = accountScan
 	ctx.JSON(http.StatusOK, out)
 }

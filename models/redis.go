@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	AccountConvertSumFee = "account_convert_sum_fee"
+	MachineConvertSumFee = "machine_convert_sum_fee"
+	AccountScanSumFee    = "account_scan_sum_fee"
 )
 
 var redisClient *redis.Client
@@ -33,7 +34,7 @@ func SharedRedis() *box {
 }
 
 func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration) error {
-	err := b.redis.Set(AccountConvertSumFee, sumFee, exp).Err()
+	err := b.redis.Set(MachineConvertSumFee, sumFee, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -42,7 +43,7 @@ func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration)
 }
 
 func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
-	sumFee, err := b.redis.Get(AccountConvertSumFee).Float64()
+	sumFee, err := b.redis.Get(MachineConvertSumFee).Float64()
 	if err != nil {
 		return decimal.Zero, err
 	}
@@ -52,4 +53,13 @@ func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
 	}
 
 	return decimal.NewFromFloat(sumFee), nil
+}
+
+func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal, exp time.Duration) error {
+	err := b.redis.Set(AccountScanSumFee, sumFee, exp).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

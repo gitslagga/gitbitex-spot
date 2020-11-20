@@ -18,6 +18,17 @@ const (
 	AccountPoolTransfer  = 2
 	AccountSpotTransfer  = 3
 	AccountShopTransfer  = 4
+
+	// 扫一扫支付币种, 1-未支付，2-已支付
+	AccountScanCurrency  = "BITE"
+	AccountScanUnPayment = 1
+	AccountScanPayment   = 2
+
+	AccountScanStartHour  = 9
+	AccountScanEndHour    = 18
+	AccountScanMinPayment = 20
+	AccountScanMaxPayment = 100
+	AccountScanDayPayment = 500
 )
 
 const (
