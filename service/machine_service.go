@@ -114,6 +114,30 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		return err
 	}
 
+	//增加上级有效账户，更改上级糖果兑换手续费
+	if address.ParentId > 0 {
+		parentAddress, err := GetAddressById(address.ParentId)
+		if err != nil {
+			return err
+		}
+		parentAddress.InviteNum++
+
+		configs, err := db.GetMachineConfigs()
+		if err != nil {
+			return err
+		}
+		for _, v := range configs {
+			if parentAddress.InviteNum >= v.InviteNum && machine.Id >= int64(v.Standard) {
+				address.ConvertFee = v.ConvertFee
+			}
+		}
+
+		err = db.UpdateAddress(parentAddress)
+		if err != nil {
+			return err
+		}
+	}
+
 	return db.CommitTx()
 }
 

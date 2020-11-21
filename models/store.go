@@ -96,6 +96,9 @@ type Store interface {
 
 	GetMachineLevel() ([]*MachineLevel, error)
 	GetMachineLevelById(machineLevelId int64) (*MachineLevel, error)
+	GetMachineConfigs() ([]*MachineConfig, error)
+	GetMachineConfigById(id int64) (*MachineConfig, error)
+	UpdateMachineConfig(config *MachineConfig) error
 
 	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
 	AddAccountTransfer(accountTransfer *AccountTransfer) error

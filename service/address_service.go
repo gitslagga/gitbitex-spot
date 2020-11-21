@@ -357,29 +357,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	address.InviteNum++
-	//var inviteNum int
-	//var convertFee decimal.Decimal
-	//for i := models.YtlConvertInviteOne; i < models.YtlConvertFeeOne; i++ {
-	//	inviteNum, err = strconv.Atoi(configs[i].Value)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	convertFee, err = decimal.NewFromString(configs[i+5].Value)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//	if address.InviteNum >= inviteNum {
-	//		address.ConvertFee = convertFee
-	//	}
-	//}
-
-	err = db.UpdateAddress(address)
-	if err != nil {
-		return err
-	}
-
+	//确认上下级关系
 	targetAddress.ParentId = address.Id
 	if address.ParentIds == "" {
 		targetAddress.ParentIds = fmt.Sprintf("%d", address.Id)
@@ -391,7 +369,7 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 		return err
 	}
 
-	//激活下级，赠送上级一级矿机
+	//赠送上级一级矿机
 	machine, err := db.GetMachineById(models.MachineGiveAwayId)
 	if err != nil {
 		return err

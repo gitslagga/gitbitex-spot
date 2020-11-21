@@ -347,6 +347,16 @@ type MachineLevel struct {
 	MachineId    int64
 }
 
+type MachineConfig struct {
+	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	CandyLevel int
+	InviteNum  int
+	Standard   int
+	ConvertFee decimal.Decimal `gorm:"column:global_fee" sql:"type:decimal(32,16);"`
+}
+
 type TotalCount struct {
 	Count int
 }
