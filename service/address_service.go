@@ -109,7 +109,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return address, UpdateAddress(address)
 	}
 
-	config, err := GetConfigById(models.YtlConvertFeeTwo)
+	config, err := GetConfigById(models.ConfigYtlConvertBiteFee)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	}
 
 	address.Username = "Account1"
-	config, err := GetConfigById(models.YtlConvertFeeTwo)
+	config, err := GetConfigById(models.ConfigYtlConvertBiteFee)
 	if err != nil {
 		return nil, err
 	}
@@ -358,22 +358,22 @@ func activationAddress(address *models.Address, number decimal.Decimal,
 	}
 
 	address.InviteNum++
-	var inviteNum int
-	var convertFee decimal.Decimal
-	for i := models.YtlConvertInviteOne; i < models.YtlConvertFeeOne; i++ {
-		inviteNum, err = strconv.Atoi(configs[i].Value)
-		if err != nil {
-			return err
-		}
-		convertFee, err = decimal.NewFromString(configs[i+5].Value)
-		if err != nil {
-			return err
-		}
-
-		if address.InviteNum >= inviteNum {
-			address.ConvertFee = convertFee
-		}
-	}
+	//var inviteNum int
+	//var convertFee decimal.Decimal
+	//for i := models.YtlConvertInviteOne; i < models.YtlConvertFeeOne; i++ {
+	//	inviteNum, err = strconv.Atoi(configs[i].Value)
+	//	if err != nil {
+	//		return err
+	//	}
+	//	convertFee, err = decimal.NewFromString(configs[i+5].Value)
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//	if address.InviteNum >= inviteNum {
+	//		address.ConvertFee = convertFee
+	//	}
+	//}
 
 	err = db.UpdateAddress(address)
 	if err != nil {

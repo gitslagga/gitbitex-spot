@@ -5,7 +5,6 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
-	"time"
 )
 
 // 获取用户余额
@@ -148,23 +147,6 @@ func AccountScanService(ctx *gin.Context) {
 	if err != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	nowTime := time.Now()
-	startTime := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), models.AccountScanStartHour, 0, 0, 0, nowTime.Location())
-	endTime := time.Date(nowTime.Year(), nowTime.Month(), nowTime.Day(), models.AccountScanEndHour, 0, 0, 0, nowTime.Location())
-	if nowTime.Before(startTime) || nowTime.After(endTime) {
-		out.RespCode = EC_OUT_SERVICE_TIME
-		out.RespDesc = ErrorCodeMessage(EC_OUT_SERVICE_TIME)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	if accountScan.Number < models.AccountScanMinPayment || accountScan.Number > models.AccountScanMaxPayment {
-		out.RespCode = EC_NUMBER_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NUMBER_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

@@ -8,10 +8,9 @@ const (
 )
 
 const (
-	AccountCurrencyYtl    = "YTL"
-	AccountCurrencyBite   = "BITE"
-	AccountCurrencyUsdt   = "USDT"
-	AccountCurrencyEnergy = "ENERGY" // Deprecated
+	AccountCurrencyYtl  = "YTL"
+	AccountCurrencyBite = "BITE"
+	AccountCurrencyUsdt = "USDT"
 
 	// 1-资产账户，2-矿池账户，3-币币账户，4-商城账户
 	AccountAssetTransfer = 1
@@ -23,12 +22,6 @@ const (
 	AccountScanCurrency  = "BITE"
 	AccountScanUnPayment = 1
 	AccountScanPayment   = 2
-
-	AccountScanStartHour  = 9
-	AccountScanEndHour    = 18
-	AccountScanMinPayment = 20
-	AccountScanMaxPayment = 100
-	AccountScanDayPayment = 500
 )
 
 const (
@@ -43,16 +36,14 @@ const (
 
 	// 有效推荐数（活跃的大于1）
 	MachineValidInvite = 1
-)
 
-const (
 	// 0-普通用户，1-一级达人，2-二级达人，3-三级达人，4-四级达人，5-五级达人
-	MachineLevelZero = iota
-	MachineLevelOne
-	MachineLevelTwo
-	MachineLevelThree
-	MachineLevelFour
-	MachineLevelFive
+	MachineLevelZero  = 0
+	MachineLevelOne   = 1
+	MachineLevelTwo   = 2
+	MachineLevelThree = 3
+	MachineLevelFour  = 4
+	MachineLevelFive  = 5
 )
 
 const (
@@ -62,25 +53,20 @@ const (
 	ConfigHoldCoinProfit
 	ConfigPromoteProfit
 
-	YtlConvertInviteOne
-	YtlConvertInviteTwo
-	YtlConvertInviteThree
-	YtlConvertInviteFour
-	YtlConvertInviteFive
-	YtlConvertFeeOne
-	YtlConvertFeeTwo
-	YtlConvertFeeThree
-	YtlConvertFeeFour
-	YtlConvertFeeFive
-
 	ConfigYtlConvertUsdt
-	ConfigEnergyConvertUsdt // Deprecated
 	ConfigBiteConvertUsdt
 	ConfigUsdtConvertCny
+	ConfigYtlConvertBiteFee
 
-	UsdtMinDepositNumber
-	UsdtMinWithdrawNumber
-	UsdtWithdrawFee
-	UsdtCollectionAddress
-	UsdtCollectFeeAddress
+	// 扫一扫支付条件
+	ConfigScanStartHour
+	ConfigScanEndHour
+	ConfigScanMinPayment
+	ConfigScanMaxPayment
+	ConfigScanDayPayment
+	ConfigScanFeePayment
+)
+
+const (
+	CurrencyWalletUsdt = "USDT"
 )
