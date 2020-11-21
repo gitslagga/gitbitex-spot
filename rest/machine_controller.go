@@ -146,6 +146,8 @@ func MachineConvertService(ctx *gin.Context) {
 		return
 	}
 
+	mylog.Logger.Info().Msgf("[Rest] MachineConvertService request param: %v", machineConvert)
+
 	// ConvertType: 1-ytl兑换bite, 2-bite兑换ytl
 	err = service.MachineConvert(address, machineConvert.ConvertType, machineConvert.Number)
 	if err != nil {
