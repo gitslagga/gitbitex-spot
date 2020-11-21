@@ -58,7 +58,7 @@ func (server *HttpServer) Start() {
 
 	frontend := r.Group("/api", checkFrontendToken())
 	{
-		frontend.GET("/api/config/info", GetConfigService)
+		frontend.GET("/address/config", GetConfigService)
 		frontend.GET("/address/info", AddressService)
 		frontend.DELETE("/address/logout", LogoutService)
 		frontend.POST("/address/findPassword", FindPasswordService)
@@ -77,6 +77,7 @@ func (server *HttpServer) Start() {
 		frontend.POST("/machine/convert", MachineConvertService)
 		frontend.GET("/machine/convertInfo", MachineConvertInfoService)
 		frontend.GET("/machine/level", MachineLevelService)
+		frontend.GET("/machine/config", MachineConfigService)
 
 		frontend.GET("/account/address", AccountAddressService)
 		frontend.POST("/account/transfer", AccountTransferService)

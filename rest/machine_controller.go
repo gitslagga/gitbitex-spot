@@ -203,3 +203,21 @@ func MachineLevelService(ctx *gin.Context) {
 	out.RespData = machineLevel
 	ctx.JSON(http.StatusOK, out)
 }
+
+// GET /machine/config
+func MachineConfigService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	config, err := service.GetMachineConfigs()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = config
+	ctx.JSON(http.StatusOK, out)
+}
