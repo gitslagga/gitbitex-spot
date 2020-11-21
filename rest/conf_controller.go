@@ -23,7 +23,7 @@ func GetConfigs(ctx *gin.Context) {
 }
 
 // Get /config/info
-func GetConfigService(ctx *gin.Context) {
+func GetConfigsService(ctx *gin.Context) {
 	out := CommonResp{}
 	config, err := service.GetConfigs()
 	if err != nil {

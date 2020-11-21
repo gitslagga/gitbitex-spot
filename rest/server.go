@@ -59,7 +59,7 @@ func (server *HttpServer) Start() {
 	frontend := r.Group("/api", checkFrontendToken())
 	{
 		//钱包地址
-		frontend.GET("/address/config", GetConfigService)
+		frontend.GET("/address/configs", GetConfigsService)
 		frontend.GET("/address/info", AddressService)
 		frontend.DELETE("/address/logout", LogoutService)
 		frontend.POST("/address/findPassword", FindPasswordService)
