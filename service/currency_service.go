@@ -7,65 +7,65 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func GetValidCurrencies() ([]*models.Currency, error) {
-	return mysql.SharedStore().GetValidCurrencies()
+func GetValidAddressConfig() ([]*models.AddressConfig, error) {
+	return mysql.SharedStore().GetValidAddressConfig()
 }
 
-func GetCurrencyByCoin(coin string) (*models.Currency, error) {
-	return mysql.SharedStore().GetCurrencyByCoin(coin)
+func GetAddressConfigByCoin(coin string) (*models.AddressConfig, error) {
+	return mysql.SharedStore().GetAddressConfigByCoin(coin)
 }
 
-func UpdateCurrency(currency *models.Currency) error {
-	return mysql.SharedStore().UpdateCurrency(currency)
+func UpdateAddressConfig(config *models.AddressConfig) error {
+	return mysql.SharedStore().UpdateAddressConfig(config)
 }
 
-func AddCurrencyCollect(currencyCollect *models.CurrencyCollect) error {
-	return mysql.SharedStore().AddCurrencyCollect(currencyCollect)
+func AddAddressCollect(collect *models.AddressCollect) error {
+	return mysql.SharedStore().AddAddressCollect(collect)
 }
 
-func GetCurrencyDepositsByUserId(userId, before, after, limit int64) ([]*models.CurrencyDeposit, error) {
-	return mysql.SharedStore().GetCurrencyDepositsByUserId(userId, before, after, limit)
+func GetAddressDepositsByUserId(userId, before, after, limit int64) ([]*models.AddressDeposit, error) {
+	return mysql.SharedStore().GetAddressDepositsByUserId(userId, before, after, limit)
 }
 
-func AddCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
-	return mysql.SharedStore().AddCurrencyDeposit(currencyDeposit)
+func AddAddressDeposit(deposit *models.AddressDeposit) error {
+	return mysql.SharedStore().AddAddressDeposit(deposit)
 }
 
-func UpdateCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
-	return mysql.SharedStore().UpdateCurrencyDeposit(currencyDeposit)
+func UpdateAddressDeposit(deposit *models.AddressDeposit) error {
+	return mysql.SharedStore().UpdateAddressDeposit(deposit)
 }
 
-func GetCurrencyWithdrawsByUserId(userId, before, after, limit int64) ([]*models.CurrencyWithdraw, error) {
-	return mysql.SharedStore().GetCurrencyWithdrawsByUserId(userId, before, after, limit)
+func GetAddressWithdrawsByUserId(userId, before, after, limit int64) ([]*models.AddressWithdraw, error) {
+	return mysql.SharedStore().GetAddressWithdrawsByUserId(userId, before, after, limit)
 }
 
-func AddCurrencyWithdraw(currencyWithdraw *models.CurrencyWithdraw) error {
-	return mysql.SharedStore().AddCurrencyWithdraw(currencyWithdraw)
+func AddAddressWithdraw(withdraw *models.AddressWithdraw) error {
+	return mysql.SharedStore().AddAddressWithdraw(withdraw)
 }
 
-func UpdateCurrencyWithdraw(currencyWithdraw *models.CurrencyWithdraw) error {
-	return mysql.SharedStore().UpdateCurrencyWithdraw(currencyWithdraw)
+func UpdateAddressWithdraw(withdraw *models.AddressWithdraw) error {
+	return mysql.SharedStore().UpdateAddressWithdraw(withdraw)
 }
 
-func CurrencyWithdraw(address *models.Address, currency *models.Currency, toAddress string, numberF float64) error {
+func AddressWithdraw(address *models.Address, config *models.AddressConfig, toAddress string, numberF float64) error {
 	number := decimal.NewFromFloat(numberF)
-	if number.LessThan(currency.MinWithdraw) {
+	if number.LessThan(config.MinWithdraw) {
 		return errors.New("低于最小提币数量|Less than the minimum withdrawal amount")
 	}
 
-	actualNumber := number.Mul(decimal.New(1, 0).Add(currency.WithdrawFee))
+	actualNumber := number.Mul(decimal.New(1, 0).Add(config.WithdrawFee))
 
-	return currencyWithdraw(address, currency, toAddress, number, actualNumber)
+	return addressWithdraw(address, config, toAddress, number, actualNumber)
 }
 
-func currencyWithdraw(address *models.Address, currency *models.Currency, toAddress string, number, actualNumber decimal.Decimal) error {
+func addressWithdraw(address *models.Address, config *models.AddressConfig, toAddress string, number, actualNumber decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
 	}
 	defer func() { _ = db.Rollback() }()
 
-	coinAsset, err := db.GetAccountAssetForUpdate(address.Id, currency.Coin)
+	coinAsset, err := db.GetAccountAssetForUpdate(address.Id, config.Coin)
 	if err != nil {
 		return err
 	}
@@ -81,11 +81,11 @@ func currencyWithdraw(address *models.Address, currency *models.Currency, toAddr
 		return err
 	}
 
-	err = db.AddCurrencyWithdraw(&models.CurrencyWithdraw{
+	err = db.AddAddressWithdraw(&models.AddressWithdraw{
 		UserId:   address.Id,
 		BlockNum: 0,
 		TxId:     "",
-		Coin:     currency.Coin,
+		Coin:     config.Coin,
 		Address:  toAddress,
 		Value:    number,
 		Actual:   actualNumber,

@@ -8,11 +8,11 @@ import (
 	"strconv"
 )
 
-// GET /currency/config
-func CurrencyConfigService(ctx *gin.Context) {
+// GET /address/config
+func AddressConfigService(ctx *gin.Context) {
 	out := CommonResp{}
 
-	currencies, err := service.GetValidCurrencies()
+	configs, err := service.GetValidAddressConfig()
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -22,13 +22,13 @@ func CurrencyConfigService(ctx *gin.Context) {
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = currencies
+	out.RespData = configs
 
 	ctx.JSON(http.StatusOK, out)
 }
 
-// Get /currency/depositInfo
-func CurrencyDepositInfoService(ctx *gin.Context) {
+// Get /address/depositInfo
+func AddressDepositInfoService(ctx *gin.Context) {
 	out := CommonResp{}
 	address := GetCurrentAddress(ctx)
 	if address == nil {
@@ -48,8 +48,8 @@ func CurrencyDepositInfoService(ctx *gin.Context) {
 		return
 	}
 
-	machine, err := service.GetCurrencyDepositsByUserId(address.Id, before, after, limit)
-	if machine == nil || err != nil {
+	deposits, err := service.GetAddressDepositsByUserId(address.Id, before, after, limit)
+	if deposits == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -61,8 +61,8 @@ func CurrencyDepositInfoService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, out)
 }
 
-// POST /currency/withdraw
-func CurrencyWithdrawService(ctx *gin.Context) {
+// POST /address/withdraw
+func AddressWithdrawService(ctx *gin.Context) {
 	out := CommonResp{}
 	address := GetCurrentAddress(ctx)
 	if address == nil {
@@ -81,17 +81,17 @@ func CurrencyWithdrawService(ctx *gin.Context) {
 		return
 	}
 
-	mylog.Logger.Info().Msgf("[Rest] CurrencyWithdrawService request param: %v", withdraw)
+	mylog.Logger.Info().Msgf("[Rest] AddressWithdrawService request param: %v", withdraw)
 
-	currency, err := service.GetCurrencyByCoin(withdraw.Coin)
-	if currency == nil || err != nil {
+	config, err := service.GetAddressConfigByCoin(withdraw.Coin)
+	if config == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
 
-	err = service.CurrencyWithdraw(address, currency, withdraw.Address, withdraw.Number)
+	err = service.AddressWithdraw(address, config, withdraw.Address, withdraw.Number)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = err.Error()
@@ -105,8 +105,8 @@ func CurrencyWithdrawService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, out)
 }
 
-// Get /currency/withdrawInfo
-func CurrencyWithdrawInfoService(ctx *gin.Context) {
+// Get /address/withdrawInfo
+func AddressWithdrawInfoService(ctx *gin.Context) {
 	out := CommonResp{}
 	address := GetCurrentAddress(ctx)
 	if address == nil {
@@ -126,8 +126,8 @@ func CurrencyWithdrawInfoService(ctx *gin.Context) {
 		return
 	}
 
-	machine, err := service.GetCurrencyWithdrawsByUserId(address.Id, before, after, limit)
-	if machine == nil || err != nil {
+	withdraws, err := service.GetAddressWithdrawsByUserId(address.Id, before, after, limit)
+	if withdraws == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)

@@ -66,6 +66,11 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/modifyPassword", ModifyPasswordService)
 		frontend.POST("/address/activation", ActivationService)
 
+		frontend.GET("/address/config", AddressConfigService)
+		frontend.GET("/address/depositInfo", AddressDepositInfoService)
+		frontend.POST("/address/withdraw", AddressWithdrawService)
+		frontend.GET("/address/withdrawInfo", AddressWithdrawInfoService)
+
 		//币币交易
 		frontend.GET("/order/info", GetOrderService)
 		frontend.POST("/order/place", PlaceOrderService)
@@ -88,12 +93,6 @@ func (server *HttpServer) Start() {
 		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		frontend.POST("/account/scan", AccountScanService)
 		frontend.GET("/account/scanInfo", AccountScanInfoService)
-
-		//充币提币
-		frontend.GET("/currency/config", CurrencyConfigService)
-		frontend.GET("/currency/depositInfo", CurrencyDepositInfoService)
-		frontend.POST("/currency/withdraw", CurrencyWithdrawService)
-		frontend.GET("/currency/withdrawInfo", CurrencyWithdrawInfoService)
 
 	}
 

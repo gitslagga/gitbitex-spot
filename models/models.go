@@ -391,7 +391,7 @@ type AccountScan struct {
 	Status       int
 }
 
-type Currency struct {
+type AddressConfig struct {
 	Id                int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
@@ -406,7 +406,7 @@ type Currency struct {
 	Status            int
 }
 
-type CurrencyCollect struct {
+type AddressCollect struct {
 	Id          int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -419,7 +419,7 @@ type CurrencyCollect struct {
 	Status      decimal.Decimal
 }
 
-type CurrencyDeposit struct {
+type AddressDeposit struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -433,7 +433,7 @@ type CurrencyDeposit struct {
 	Status    int
 }
 
-type CurrencyWithdraw struct {
+type AddressWithdraw struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -5,33 +5,33 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func (s *Store) GetValidCurrencies() ([]*models.Currency, error) {
-	var currencies []*models.Currency
-	err := s.db.Find(&currencies).Where("status=2").Order("id ASC").Error
+func (s *Store) GetValidAddressConfig() ([]*models.AddressConfig, error) {
+	var configs []*models.AddressConfig
+	err := s.db.Find(&configs).Where("status=2").Order("id ASC").Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return currencies, err
+	return configs, err
 }
 
-func (s *Store) GetCurrencyByCoin(coin string) (*models.Currency, error) {
-	var currency models.Currency
-	err := s.db.Raw("SELECT * FROM g_currency WHERE coin=?", coin).Scan(&currency).Error
+func (s *Store) GetAddressConfigByCoin(coin string) (*models.AddressConfig, error) {
+	var config models.AddressConfig
+	err := s.db.Where("coin=?", coin).First(&config).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return &currency, err
+	return &config, err
 }
 
-func (s *Store) UpdateCurrency(currency *models.Currency) error {
-	return s.db.Save(currency).Error
+func (s *Store) UpdateAddressConfig(config *models.AddressConfig) error {
+	return s.db.Save(config).Error
 }
 
-func (s *Store) AddCurrencyCollect(currencyCollect *models.CurrencyCollect) error {
-	return s.db.Create(currencyCollect).Error
+func (s *Store) AddAddressCollect(collect *models.AddressCollect) error {
+	return s.db.Create(collect).Error
 }
 
-func (s *Store) GetCurrencyDepositsByUserId(userId, beforeId, afterId, limit int64) ([]*models.CurrencyDeposit, error) {
+func (s *Store) GetAddressDepositsByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressDeposit, error) {
 	db := s.db.Where("user_id =?", userId)
 
 	if beforeId > 0 {
@@ -44,23 +44,23 @@ func (s *Store) GetCurrencyDepositsByUserId(userId, beforeId, afterId, limit int
 		limit = 10
 	}
 
-	var currencyDeposits []*models.CurrencyDeposit
-	err := db.Order("id DESC").Limit(limit).Find(&currencyDeposits).Error
+	var deposits []*models.AddressDeposit
+	err := db.Order("id DESC").Limit(limit).Find(&deposits).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return currencyDeposits, err
+	return deposits, err
 }
 
-func (s *Store) AddCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
-	return s.db.Create(currencyDeposit).Error
+func (s *Store) AddAddressDeposit(deposit *models.AddressDeposit) error {
+	return s.db.Create(deposit).Error
 }
 
-func (s *Store) UpdateCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
-	return s.db.Save(currencyDeposit).Error
+func (s *Store) UpdateAddressDeposit(deposit *models.AddressDeposit) error {
+	return s.db.Save(deposit).Error
 }
 
-func (s *Store) GetCurrencyWithdrawsByUserId(userId, beforeId, afterId, limit int64) ([]*models.CurrencyWithdraw, error) {
+func (s *Store) GetAddressWithdrawsByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressWithdraw, error) {
 	db := s.db.Where("user_id =?", userId)
 
 	if beforeId > 0 {
@@ -73,18 +73,18 @@ func (s *Store) GetCurrencyWithdrawsByUserId(userId, beforeId, afterId, limit in
 		limit = 10
 	}
 
-	var currencyWithdraws []*models.CurrencyWithdraw
-	err := db.Order("id DESC").Limit(limit).Find(&currencyWithdraws).Error
+	var withdraws []*models.AddressWithdraw
+	err := db.Order("id DESC").Limit(limit).Find(&withdraws).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return currencyWithdraws, err
+	return withdraws, err
 }
 
-func (s *Store) AddCurrencyWithdraw(currencyWithdraw *models.CurrencyWithdraw) error {
-	return s.db.Create(currencyWithdraw).Error
+func (s *Store) AddAddressWithdraw(withdraw *models.AddressWithdraw) error {
+	return s.db.Create(withdraw).Error
 }
 
-func (s *Store) UpdateCurrencyWithdraw(currencyWithdraw *models.CurrencyWithdraw) error {
-	return s.db.Save(currencyWithdraw).Error
+func (s *Store) UpdateAddressWithdraw(withdraw *models.AddressWithdraw) error {
+	return s.db.Save(withdraw).Error
 }

@@ -107,14 +107,14 @@ type Store interface {
 	GetAccountScanSumFee() (decimal.Decimal, error)
 	AddAccountScan(accountScan *AccountScan) error
 
-	GetValidCurrencies() ([]*Currency, error)
-	GetCurrencyByCoin(coin string) (*Currency, error)
-	UpdateCurrency(currency *Currency) error
-	AddCurrencyCollect(currencyCollect *CurrencyCollect) error
-	GetCurrencyDepositsByUserId(userId, before, after, limit int64) ([]*CurrencyDeposit, error)
-	AddCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
-	UpdateCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
-	GetCurrencyWithdrawsByUserId(userId, before, after, limit int64) ([]*CurrencyWithdraw, error)
-	AddCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
-	UpdateCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
+	GetValidAddressConfig() ([]*AddressConfig, error)
+	GetAddressConfigByCoin(coin string) (*AddressConfig, error)
+	UpdateAddressConfig(config *AddressConfig) error
+	AddAddressCollect(collect *AddressCollect) error
+	GetAddressDepositsByUserId(userId, before, after, limit int64) ([]*AddressDeposit, error)
+	AddAddressDeposit(deposit *AddressDeposit) error
+	UpdateAddressDeposit(deposit *AddressDeposit) error
+	GetAddressWithdrawsByUserId(userId, before, after, limit int64) ([]*AddressWithdraw, error)
+	AddAddressWithdraw(withdraw *AddressWithdraw) error
+	UpdateAddressWithdraw(withdraw *AddressWithdraw) error
 }
