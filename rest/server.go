@@ -85,6 +85,11 @@ func (server *HttpServer) Start() {
 		frontend.POST("/account/scan", AccountScanService)
 		frontend.GET("/account/scanInfo", AccountScanInfoService)
 
+		frontend.GET("/currency/config", CurrencyConfigService)
+		frontend.GET("/currency/depositInfo", CurrencyDepositInfoService)
+		frontend.POST("/currency/withdraw", CurrencyWithdrawService)
+		frontend.GET("/currency/withdrawInfo", CurrencyWithdrawInfoService)
+
 	}
 
 	err := r.Run(server.addr)

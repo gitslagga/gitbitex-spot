@@ -106,4 +106,15 @@ type Store interface {
 	GetAccountScanSumNumber(userId int64) (decimal.Decimal, error)
 	GetAccountScanSumFee() (decimal.Decimal, error)
 	AddAccountScan(accountScan *AccountScan) error
+
+	GetValidCurrencies() ([]*Currency, error)
+	GetCurrencyByCoin(coin string) (*Currency, error)
+	UpdateCurrency(currency *Currency) error
+	AddCurrencyCollect(currencyCollect *CurrencyCollect) error
+	GetCurrencyDepositsByUserId(userId int64) ([]*CurrencyDeposit, error)
+	AddCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
+	UpdateCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
+	GetCurrencyWithdrawsByUserId(userId int64) ([]*CurrencyWithdraw, error)
+	AddCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
+	UpdateCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
 }

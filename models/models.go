@@ -390,3 +390,59 @@ type AccountScan struct {
 	Amount       decimal.Decimal
 	Status       int
 }
+
+type Currency struct {
+	Id                int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Coin              string
+	Decimals          int
+	MinDeposit        decimal.Decimal
+	MinWithdraw       decimal.Decimal
+	WithdrawFee       decimal.Decimal
+	ContractAddress   string
+	CollectAddress    string
+	CollectFeeAddress string
+	Status            int
+}
+
+type CurrencyCollect struct {
+	Id          int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	UserId      int64
+	Coin        string
+	TxId        string
+	FromAddress string
+	ToAddress   string
+	Value       decimal.Decimal
+	Status      decimal.Decimal
+}
+
+type CurrencyDeposit struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	BlockNum  int64
+	TxId      string
+	Coin      string
+	Address   string
+	Value     decimal.Decimal
+	Actual    decimal.Decimal
+	Status    int
+}
+
+type CurrencyWithdraw struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	BlockNum  int64
+	TxId      string
+	Coin      string
+	Address   string
+	Value     decimal.Decimal
+	Actual    decimal.Decimal
+	Status    int
+}
