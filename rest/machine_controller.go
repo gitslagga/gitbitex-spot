@@ -6,6 +6,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -85,7 +86,17 @@ func AddressMachineService(ctx *gin.Context) {
 		return
 	}
 
-	machineAddress, err := service.GetMachineAddressByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machineAddress, err := service.GetMachineAddressByUserId(address.Id, before, after, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -111,7 +122,17 @@ func LogMachineService(ctx *gin.Context) {
 		return
 	}
 
-	machineLog, err := service.GetMachineLogByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machineLog, err := service.GetMachineLogByUserId(address.Id, before, after, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -174,7 +195,17 @@ func MachineConvertInfoService(ctx *gin.Context) {
 		return
 	}
 
-	machineConvert, err := service.GetMachineConvertByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machineConvert, err := service.GetMachineConvertByUserId(address.Id, before, after, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)

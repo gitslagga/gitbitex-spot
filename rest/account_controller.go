@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"strconv"
 )
 
 // 获取用户余额
@@ -117,7 +118,17 @@ func AccountTransferInfoService(ctx *gin.Context) {
 		return
 	}
 
-	accountTransfer, err := service.GetAccountTransferByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	accountTransfer, err := service.GetAccountTransferByUserId(address.Id, before, after, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -176,7 +187,17 @@ func AccountScanInfoService(ctx *gin.Context) {
 		return
 	}
 
-	accountScan, err := service.GetAccountScanByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	accountScan, err := service.GetAccountScanByUserId(address.Id, before, after, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)

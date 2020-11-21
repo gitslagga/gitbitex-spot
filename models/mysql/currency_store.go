@@ -31,9 +31,21 @@ func (s *Store) AddCurrencyCollect(currencyCollect *models.CurrencyCollect) erro
 	return s.db.Create(currencyCollect).Error
 }
 
-func (s *Store) GetCurrencyDepositsByUserId(userId int64) ([]*models.CurrencyDeposit, error) {
+func (s *Store) GetCurrencyDepositsByUserId(userId, beforeId, afterId, limit int64) ([]*models.CurrencyDeposit, error) {
+	db := s.db.Where("user_id =?", userId)
+
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
 	var currencyDeposits []*models.CurrencyDeposit
-	err := s.db.Raw("SELECT * FROM g_currency_deposit WHERE user_id=?", userId).Scan(&currencyDeposits).Error
+	err := db.Order("id DESC").Limit(limit).Find(&currencyDeposits).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
@@ -48,9 +60,21 @@ func (s *Store) UpdateCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) e
 	return s.db.Save(currencyDeposit).Error
 }
 
-func (s *Store) GetCurrencyWithdrawsByUserId(userId int64) ([]*models.CurrencyWithdraw, error) {
+func (s *Store) GetCurrencyWithdrawsByUserId(userId, beforeId, afterId, limit int64) ([]*models.CurrencyWithdraw, error) {
+	db := s.db.Where("user_id =?", userId)
+
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
 	var currencyWithdraws []*models.CurrencyWithdraw
-	err := s.db.Raw("SELECT * FROM g_currency_withdraw WHERE user_id=?", userId).Scan(&currencyWithdraws).Error
+	err := db.Order("id DESC").Limit(limit).Find(&currencyWithdraws).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}

@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"strconv"
 )
 
 // GET /currency/config
@@ -37,7 +38,17 @@ func CurrencyDepositInfoService(ctx *gin.Context) {
 		return
 	}
 
-	machine, err := service.GetCurrencyDepositsByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machine, err := service.GetCurrencyDepositsByUserId(address.Id, before, after, limit)
 	if machine == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -105,7 +116,17 @@ func CurrencyWithdrawInfoService(ctx *gin.Context) {
 		return
 	}
 
-	machine, err := service.GetCurrencyWithdrawsByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	machine, err := service.GetCurrencyWithdrawsByUserId(address.Id, before, after, limit)
 	if machine == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)

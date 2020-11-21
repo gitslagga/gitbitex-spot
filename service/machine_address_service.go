@@ -5,8 +5,8 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 )
 
-func GetMachineAddressByUserId(userId int64) ([]*models.MachineAddress, error) {
-	return mysql.SharedStore().GetMachineAddressByUserId(userId)
+func GetMachineAddressByUserId(userId, before, after, limit int64) ([]*models.MachineAddress, error) {
+	return mysql.SharedStore().GetMachineAddressByUserId(userId, before, after, limit)
 }
 
 func AddMachineAddress(machineAddress *models.MachineAddress) error {

@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func GetMachineConvertByUserId(userId int64) ([]*models.MachineConvert, error) {
-	return mysql.SharedStore().GetMachineConvertByUserId(userId)
+func GetMachineConvertByUserId(userId, before, after, limit int64) ([]*models.MachineConvert, error) {
+	return mysql.SharedStore().GetMachineConvertByUserId(userId, before, after, limit)
 }
 
 func GetMachineConvertSumNumber() (float64, error) {

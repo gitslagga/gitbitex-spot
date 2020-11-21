@@ -5,13 +5,25 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-func (s *Store) GetMachineLogByUserId(userId int64) ([]*models.MachineLog, error) {
-	var machineLog []*models.MachineLog
-	err := s.db.Raw("SELECT * FROM g_machine_log WHERE user_id=?", userId).Order("id DESC").Scan(&machineLog).Error
+func (s *Store) GetMachineLogByUserId(userId, beforeId, afterId, limit int64) ([]*models.MachineLog, error) {
+	db := s.db.Where("user_id =?", userId)
+
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
+	var machineLogs []*models.MachineLog
+	err := db.Order("id DESC").Limit(limit).Find(&machineLogs).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return machineLog, err
+	return machineLogs, err
 }
 
 func (s *Store) GetLastMachineLog(machineAddressId int64) (*models.MachineLog, error) {

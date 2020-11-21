@@ -80,16 +80,16 @@ type Store interface {
 
 	GetBuyMachine() ([]*Machine, error)
 	GetMachineById(machineId int64) (*Machine, error)
-	GetMachineAddressByUserId(userId int64) ([]*MachineAddress, error)
+	GetMachineAddressByUserId(userId, before, after, limit int64) ([]*MachineAddress, error)
 	CountMachineAddressUsed(userId int64, machineId int64) (int, error)
 	GetMachineAddressUsedList() ([]*MachineAddress, error)
 	AddMachineAddress(machineAddress *MachineAddress) error
 	UpdateMachineAddress(machineAddress *MachineAddress) error
-	GetMachineLogByUserId(userId int64) ([]*MachineLog, error)
+	GetMachineLogByUserId(userId, before, after, limit int64) ([]*MachineLog, error)
 	GetLastMachineLog(machineAddressId int64) (*MachineLog, error)
 	AddMachineLog(machineLog *MachineLog) error
 
-	GetMachineConvertByUserId(userId int64) ([]*MachineConvert, error)
+	GetMachineConvertByUserId(userId, before, after, limit int64) ([]*MachineConvert, error)
 	GetMachineConvertSumNumber() (decimal.Decimal, error)
 	GetMachineConvertSumFee() (decimal.Decimal, error)
 	AddMachineConvert(machineConvert *MachineConvert) error
@@ -100,9 +100,9 @@ type Store interface {
 	GetMachineConfigById(id int64) (*MachineConfig, error)
 	UpdateMachineConfig(config *MachineConfig) error
 
-	GetAccountTransferByUserId(userId int64) ([]*AccountTransfer, error)
+	GetAccountTransferByUserId(userId, before, after, limit int64) ([]*AccountTransfer, error)
 	AddAccountTransfer(accountTransfer *AccountTransfer) error
-	GetAccountScanByUserId(userId int64) ([]*AccountScan, error)
+	GetAccountScanByUserId(userId, before, after, limit int64) ([]*AccountScan, error)
 	GetAccountScanSumNumber(userId int64) (decimal.Decimal, error)
 	GetAccountScanSumFee() (decimal.Decimal, error)
 	AddAccountScan(accountScan *AccountScan) error
@@ -111,10 +111,10 @@ type Store interface {
 	GetCurrencyByCoin(coin string) (*Currency, error)
 	UpdateCurrency(currency *Currency) error
 	AddCurrencyCollect(currencyCollect *CurrencyCollect) error
-	GetCurrencyDepositsByUserId(userId int64) ([]*CurrencyDeposit, error)
+	GetCurrencyDepositsByUserId(userId, before, after, limit int64) ([]*CurrencyDeposit, error)
 	AddCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
 	UpdateCurrencyDeposit(currencyDeposit *CurrencyDeposit) error
-	GetCurrencyWithdrawsByUserId(userId int64) ([]*CurrencyWithdraw, error)
+	GetCurrencyWithdrawsByUserId(userId, before, after, limit int64) ([]*CurrencyWithdraw, error)
 	AddCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
 	UpdateCurrencyWithdraw(currencyWithdraw *CurrencyWithdraw) error
 }

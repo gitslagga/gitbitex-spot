@@ -7,8 +7,8 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func GetAccountTransferByUserId(userId int64) ([]*models.AccountTransfer, error) {
-	return mysql.SharedStore().GetAccountTransferByUserId(userId)
+func GetAccountTransferByUserId(userId, before, after, limit int64) ([]*models.AccountTransfer, error) {
+	return mysql.SharedStore().GetAccountTransferByUserId(userId, before, after, limit)
 }
 
 func AddAccountTransfer(accountTransfer *models.AccountTransfer) error {

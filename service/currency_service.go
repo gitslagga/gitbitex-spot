@@ -23,8 +23,8 @@ func AddCurrencyCollect(currencyCollect *models.CurrencyCollect) error {
 	return mysql.SharedStore().AddCurrencyCollect(currencyCollect)
 }
 
-func GetCurrencyDepositsByUserId(userId int64) ([]*models.CurrencyDeposit, error) {
-	return mysql.SharedStore().GetCurrencyDepositsByUserId(userId)
+func GetCurrencyDepositsByUserId(userId, before, after, limit int64) ([]*models.CurrencyDeposit, error) {
+	return mysql.SharedStore().GetCurrencyDepositsByUserId(userId, before, after, limit)
 }
 
 func AddCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
@@ -35,8 +35,8 @@ func UpdateCurrencyDeposit(currencyDeposit *models.CurrencyDeposit) error {
 	return mysql.SharedStore().UpdateCurrencyDeposit(currencyDeposit)
 }
 
-func GetCurrencyWithdrawsByUserId(userId int64) ([]*models.CurrencyWithdraw, error) {
-	return mysql.SharedStore().GetCurrencyWithdrawsByUserId(userId)
+func GetCurrencyWithdrawsByUserId(userId, before, after, limit int64) ([]*models.CurrencyWithdraw, error) {
+	return mysql.SharedStore().GetCurrencyWithdrawsByUserId(userId, before, after, limit)
 }
 
 func AddCurrencyWithdraw(currencyWithdraw *models.CurrencyWithdraw) error {

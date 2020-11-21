@@ -9,8 +9,8 @@ import (
 	"time"
 )
 
-func GetAccountScanByUserId(userId int64) ([]*models.AccountScan, error) {
-	return mysql.SharedStore().GetAccountScanByUserId(userId)
+func GetAccountScanByUserId(userId, before, after, limit int64) ([]*models.AccountScan, error) {
+	return mysql.SharedStore().GetAccountScanByUserId(userId, before, after, limit)
 }
 
 func GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {

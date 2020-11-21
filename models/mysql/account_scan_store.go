@@ -6,12 +6,25 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func (s *Store) GetAccountScanByUserId(userId int64) ([]*models.AccountScan, error) {
-	db := s.db.Where("user_id=?", userId).Order("id DESC")
+func (s *Store) GetAccountScanByUserId(userId, beforeId, afterId, limit int64) ([]*models.AccountScan, error) {
+	db := s.db.Where("user_id =?", userId)
 
-	var accountScan []*models.AccountScan
-	err := db.Find(&accountScan).Error
-	return accountScan, err
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
+	var accountScans []*models.AccountScan
+	err := db.Order("id DESC").Limit(limit).Find(&accountScans).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return accountScans, err
 }
 
 func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {

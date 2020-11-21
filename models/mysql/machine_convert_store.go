@@ -6,12 +6,25 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-func (s *Store) GetMachineConvertByUserId(userId int64) ([]*models.MachineConvert, error) {
-	db := s.db.Where("user_id=?", userId).Order("id DESC")
+func (s *Store) GetMachineConvertByUserId(userId, beforeId, afterId, limit int64) ([]*models.MachineConvert, error) {
+	db := s.db.Where("user_id =?", userId)
 
-	var machineConvert []*models.MachineConvert
-	err := db.Find(&machineConvert).Error
-	return machineConvert, err
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
+	var machineConverts []*models.MachineConvert
+	err := db.Order("id DESC").Limit(limit).Find(&machineConverts).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return machineConverts, err
 }
 
 func (s *Store) GetMachineConvertSumNumber() (decimal.Decimal, error) {

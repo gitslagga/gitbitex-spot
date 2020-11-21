@@ -222,8 +222,8 @@ func GetOrderService(ctx *gin.Context) {
 	out := CommonResp{}
 	productId := ctx.Query("productId")
 	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "101"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "100"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
 
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR

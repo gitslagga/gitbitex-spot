@@ -58,6 +58,7 @@ func (server *HttpServer) Start() {
 
 	frontend := r.Group("/api", checkFrontendToken())
 	{
+		//钱包地址
 		frontend.GET("/address/config", GetConfigService)
 		frontend.GET("/address/info", AddressService)
 		frontend.DELETE("/address/logout", LogoutService)
@@ -65,11 +66,13 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/modifyPassword", ModifyPasswordService)
 		frontend.POST("/address/activation", ActivationService)
 
+		//币币交易
 		frontend.GET("/order/info", GetOrderService)
 		frontend.POST("/order/place", PlaceOrderService)
 		frontend.DELETE("/order/cancel/:orderId", CancelOrderService)
 		frontend.DELETE("/order/cancelAll", CancelAllOrderService)
 
+		//矿机模块
 		frontend.GET("/machine/info", GetMachineService)
 		frontend.POST("/machine/buy", BuyMachineService)
 		frontend.GET("/machine/address", AddressMachineService)
@@ -79,12 +82,14 @@ func (server *HttpServer) Start() {
 		frontend.GET("/machine/level", MachineLevelService)
 		frontend.GET("/machine/config", MachineConfigService)
 
+		//账户资产
 		frontend.GET("/account/address", AccountAddressService)
 		frontend.POST("/account/transfer", AccountTransferService)
 		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		frontend.POST("/account/scan", AccountScanService)
 		frontend.GET("/account/scanInfo", AccountScanInfoService)
 
+		//充币提币
 		frontend.GET("/currency/config", CurrencyConfigService)
 		frontend.GET("/currency/depositInfo", CurrencyDepositInfoService)
 		frontend.POST("/currency/withdraw", CurrencyWithdrawService)
