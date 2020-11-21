@@ -22,7 +22,7 @@ func GetConfigs(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, m)
 }
 
-// Get /config/info
+// Get /configs/info
 func GetConfigsService(ctx *gin.Context) {
 	out := CommonResp{}
 	config, err := service.GetConfigs()
