@@ -58,6 +58,7 @@ func AddressDepositInfoService(ctx *gin.Context) {
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
+	out.RespData = deposits
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -136,5 +137,6 @@ func AddressWithdrawInfoService(ctx *gin.Context) {
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
+	out.RespData = withdraws
 	ctx.JSON(http.StatusOK, out)
 }

@@ -102,20 +102,20 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		return err
 	}
 
-	//增加上级直推奖励
-	parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.AccountCurrencyYtl)
-	if err != nil {
-		return err
-	}
-
-	parentAddressAsset.Available = parentAddressAsset.Available.Add(machine.Number.Mul(machine.Invite))
-	err = db.UpdateAccountAsset(parentAddressAsset)
-	if err != nil {
-		return err
-	}
-
-	//增加上级有效账户，更改上级糖果兑换手续费
 	if address.ParentId > 0 {
+		//增加上级直推奖励
+		parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.AccountCurrencyYtl)
+		if err != nil {
+			return err
+		}
+
+		parentAddressAsset.Available = parentAddressAsset.Available.Add(machine.Number.Mul(machine.Invite))
+		err = db.UpdateAccountAsset(parentAddressAsset)
+		if err != nil {
+			return err
+		}
+
+		//增加上级有效账户，更改上级糖果兑换手续费
 		parentAddress, err := GetAddressById(address.ParentId)
 		if err != nil {
 			return err
