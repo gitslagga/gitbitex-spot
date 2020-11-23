@@ -109,7 +109,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return address, UpdateAddress(address)
 	}
 
-	config, err := GetConfigById(models.ConfigYtlConvertBiteFee)
+	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	}
 
 	address.Username = "Account1"
-	config, err := GetConfigById(models.ConfigYtlConvertBiteFee)
+	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
 		return nil, err
 	}
