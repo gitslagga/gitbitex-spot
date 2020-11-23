@@ -8,7 +8,6 @@ import (
 	"github.com/gitslagga/gitbitex-spot/pushing"
 	"github.com/gitslagga/gitbitex-spot/rest"
 	"github.com/gitslagga/gitbitex-spot/service"
-	"github.com/gitslagga/gitbitex-spot/task"
 	"github.com/gitslagga/gitbitex-spot/worker"
 	"github.com/prometheus/common/log"
 	"net/http"
@@ -43,7 +42,7 @@ func main() {
 
 	rest.StartServer()
 
-	go task.StartMachineRelease()
+	go worker.StartMachineRelease()
 
 	select {}
 }
