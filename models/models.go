@@ -353,7 +353,6 @@ type MachineConfig struct {
 	UpdatedAt  time.Time
 	CandyLevel int
 	InviteNum  int
-	Standard   int
 	ConvertFee decimal.Decimal `gorm:"column:convert_fee" sql:"type:decimal(32,16);"`
 }
 

@@ -319,11 +319,10 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 		return errors.New("地址已经激活|Address is always activation")
 	}
 
-	return activationAddress(address, decimal.NewFromFloat(number), targetAddress, configs)
+	return activationAddress(address, decimal.NewFromFloat(number), targetAddress)
 }
 
-func activationAddress(address *models.Address, number decimal.Decimal,
-	targetAddress *models.Address, configs []*models.Config) error {
+func activationAddress(address *models.Address, number decimal.Decimal, targetAddress *models.Address) error {
 	//进行激活
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {

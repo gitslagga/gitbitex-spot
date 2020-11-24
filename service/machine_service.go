@@ -117,6 +117,8 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 			return err
 		}
 
+	}
+	if address.ParentId > 0 && machine.Id >= models.MachineEffectInvite {
 		//增加上级有效账户，更改上级糖果兑换手续费
 		parentAddress, err := GetAddressById(address.ParentId)
 		if err != nil {
@@ -129,7 +131,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 			return err
 		}
 		for _, v := range configs {
-			if parentAddress.InviteNum >= v.InviteNum && machine.Id >= int64(v.Standard) {
+			if parentAddress.InviteNum >= v.InviteNum {
 				address.ConvertFee = v.ConvertFee
 			}
 		}

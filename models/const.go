@@ -34,8 +34,10 @@ const (
 	MachineYtlConvertBite = 1
 	MachineBiteConvertYtl = 2
 
-	// 有效推荐数（活跃的大于1）
+	// 达人等级有效推荐数（活跃的大于1）
 	MachineValidInvite = 1
+	// YTL兑换BITE有效推荐数（购买矿机）
+	MachineEffectInvite = 2
 
 	// 0-普通用户，1-一级达人，2-二级达人，3-三级达人，4-四级达人，5-五级达人
 	MachineLevelZero  = 0
