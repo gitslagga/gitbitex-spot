@@ -31,36 +31,38 @@ func BuyMachine(address *models.Address, machine *models.Machine, currency strin
 		return err
 	}
 
+	//获取YTL兑换USDT费率
+	ytlRate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
+	if err != nil {
+		return err
+	}
+	if ytlRate.LessThanOrEqual(decimal.Zero) {
+		return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
+	}
+
 	var amount decimal.Decimal
 	switch currency {
 	case models.AccountCurrencyYtl:
-		rate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
-		if err != nil {
-			return err
-		}
-		if rate.LessThanOrEqual(decimal.Zero) {
-			return errors.New("YTL兑换USDT价格错误|YTL convert USDT price error")
-		}
-		amount = machine.Number.Div(rate)
+		amount = machine.Number.Div(ytlRate)
 	case models.AccountCurrencyBite:
-		rate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
+		biteRate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
 		if err != nil {
 			return err
 		}
-		if rate.LessThanOrEqual(decimal.Zero) {
+		if biteRate.LessThanOrEqual(decimal.Zero) {
 			return errors.New("BITE兑换USDT价格错误|BITE convert USDT price error")
 		}
-		amount = machine.Number.Div(rate)
+		amount = machine.Number.Div(biteRate)
 	case models.AccountCurrencyUsdt:
 		amount = machine.Number
 	default:
 		return errors.New("无效的币种|Invalid of currency")
 	}
 
-	return buyMachine(address, machine, currency, amount)
+	return buyMachine(address, machine, currency, amount, ytlRate)
 }
 
-func buyMachine(address *models.Address, machine *models.Machine, currency string, amount decimal.Decimal) error {
+func buyMachine(address *models.Address, machine *models.Machine, currency string, amount, ytlRate decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -109,7 +111,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 			return err
 		}
 
-		parentAddressAsset.Available = parentAddressAsset.Available.Add(machine.Number.Mul(machine.Invite))
+		parentAddressAsset.Available = parentAddressAsset.Available.Add(machine.Number.Mul(machine.Invite).Div(ytlRate))
 		err = db.UpdateAccountAsset(parentAddressAsset)
 		if err != nil {
 			return err

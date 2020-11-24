@@ -4,6 +4,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/gitslagga/gitbitex-spot/mylog"
+	"github.com/shopspring/decimal"
 	"time"
 )
 
@@ -20,6 +21,22 @@ func StartMachineRelease() {
 }
 
 func MachineRelease() {
+	//获取YTL兑换USDT费率
+	configs, err := mysql.SharedStore().GetConfigs()
+	if err != nil {
+		mylog.DataLogger.Error().Msgf("MachineRelease GetConfigs err: %v", err)
+		return
+	}
+	ytlRate, err := decimal.NewFromString(configs[models.ConfigYtlConvertUsdt].Value)
+	if err != nil {
+		mylog.DataLogger.Error().Msgf("MachineRelease ytlRate err: %v", err)
+		return
+	}
+	if ytlRate.LessThanOrEqual(decimal.Zero) {
+		mylog.DataLogger.Error().Msgf("MachineRelease YTL convert USDT price error")
+		return
+	}
+
 	machineAddress, err := mysql.SharedStore().GetMachineAddressUsedList()
 	if err == nil && len(machineAddress) > 0 {
 		for i := 0; i < len(machineAddress); i++ {
@@ -39,7 +56,10 @@ func MachineRelease() {
 				}
 			}
 
-			err = machineRelease(machineAddress[i])
+			//获取实际应得的YTL数量
+			number := machineAddress[i].Number.Div(ytlRate)
+
+			err = machineRelease(machineAddress[i], number)
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("MachineRelease machineRelease err: %v", err)
 			}
@@ -47,7 +67,7 @@ func MachineRelease() {
 	}
 }
 
-func machineRelease(machineAddress *models.MachineAddress) error {
+func machineRelease(machineAddress *models.MachineAddress, number decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -64,7 +84,7 @@ func machineRelease(machineAddress *models.MachineAddress) error {
 		UserId:           machineAddress.UserId,
 		MachineId:        machineAddress.MachineId,
 		MachineAddressId: machineAddress.Id,
-		Number:           machineAddress.Number,
+		Number:           number,
 	})
 	if err != nil {
 		return err
@@ -75,7 +95,7 @@ func machineRelease(machineAddress *models.MachineAddress) error {
 		return err
 	}
 
-	addressAsset.Available = addressAsset.Available.Add(machineAddress.Number)
+	addressAsset.Available = addressAsset.Available.Add(number)
 	err = db.UpdateAccountAsset(addressAsset)
 	if err != nil {
 		return err
