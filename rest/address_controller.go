@@ -15,7 +15,7 @@ func MnemonicService(ctx *gin.Context) {
 
 	mnemonic, err := service.CreateMnemonic()
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -52,7 +52,7 @@ func RegisterService(ctx *gin.Context) {
 
 	address, err := service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -61,7 +61,7 @@ func RegisterService(ctx *gin.Context) {
 
 	err = service.AddressAsset(address.Id)
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -96,7 +96,7 @@ func LoginService(ctx *gin.Context) {
 
 	address, err := service.AddressLogin(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -105,7 +105,7 @@ func LoginService(ctx *gin.Context) {
 
 	err = service.AddressAsset(address.Id)
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -114,7 +114,7 @@ func LoginService(ctx *gin.Context) {
 
 	token, err := service.CreateFrontendToken(address)
 	if err != nil {
-		mylog.Logger.Error().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
+		mylog.DataLogger.Error().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
