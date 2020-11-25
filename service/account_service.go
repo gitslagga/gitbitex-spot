@@ -196,25 +196,49 @@ func AccountAddress(userId int64) (map[string]interface{}, error) {
 	}
 
 	var calculateUsdt decimal.Decimal
-	calculateUsdt = calculateUsdt.Add(accountAsset[0].Available.Mul(ytlRate))
-	calculateUsdt = calculateUsdt.Add(accountAsset[1].Available.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountAsset[2].Available)
-	calculateUsdt = calculateUsdt.Add(accountAsset[0].Hold.Mul(ytlRate))
-	calculateUsdt = calculateUsdt.Add(accountAsset[1].Hold.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountAsset[2].Hold)
+	for _, v := range accountAsset {
+		switch v.Currency {
+		case models.AccountCurrencyYtl:
+			calculateUsdt = calculateUsdt.Add(ytlRate.Mul(v.Available.Add(v.Hold)))
+			v.Calculate = usdtRate.Mul(ytlRate.Mul(v.Available.Add(v.Hold)))
+		case models.AccountCurrencyBite:
+			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
+			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+		case models.AccountCurrencyUsdt:
+			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
+			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+		}
+	}
 
-	calculateUsdt = calculateUsdt.Add(accountPool[0].Available.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountPool[0].Hold.Mul(biteRate))
+	for _, v := range accountPool {
+		switch v.Currency {
+		case models.AccountCurrencyBite:
+			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
+			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+		}
+	}
 
-	calculateUsdt = calculateUsdt.Add(accountSpot[0].Available.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountSpot[1].Available)
-	calculateUsdt = calculateUsdt.Add(accountSpot[0].Hold.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountSpot[1].Hold)
+	for _, v := range accountSpot {
+		switch v.Currency {
+		case models.AccountCurrencyBite:
+			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
+			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+		case models.AccountCurrencyUsdt:
+			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
+			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+		}
+	}
 
-	calculateUsdt = calculateUsdt.Add(accountShop[0].Available.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountShop[1].Hold)
-	calculateUsdt = calculateUsdt.Add(accountShop[0].Available.Mul(biteRate))
-	calculateUsdt = calculateUsdt.Add(accountShop[1].Hold)
+	for _, v := range accountShop {
+		switch v.Currency {
+		case models.AccountCurrencyBite:
+			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
+			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+		case models.AccountCurrencyUsdt:
+			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
+			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+		}
+	}
 
 	calculateCny := calculateUsdt.Mul(usdtRate)
 

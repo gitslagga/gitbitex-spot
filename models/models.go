@@ -111,6 +111,7 @@ type Account struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+	Calculate decimal.Decimal
 }
 
 type Bill struct {
@@ -264,6 +265,7 @@ type AccountAsset struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+	Calculate decimal.Decimal
 }
 
 type AccountPool struct {
@@ -274,6 +276,7 @@ type AccountPool struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+	Calculate decimal.Decimal
 }
 
 type AccountShop struct {
@@ -284,6 +287,7 @@ type AccountShop struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
+	Calculate decimal.Decimal
 }
 
 type Machine struct {
