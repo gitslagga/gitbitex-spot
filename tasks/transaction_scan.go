@@ -288,7 +288,7 @@ func ERC20transactionLogHandle(transactionLog *TransactionReceiptLog, txId strin
 		Address:  toAddress,
 		Value:    valueF,
 		Actual:   valueF,
-		Status:   0,
+		Status:   models.CurrencyDepositUnConfirm,
 	})
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("[ERC20transactionLogHandle] SaveEthTransactionToDB, err:%v, blockNum:%v, txId:%s, value:%v", err, blockNum, txId, value)

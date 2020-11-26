@@ -126,8 +126,6 @@ func startSendTokenToMainTask2() {
 					addressItem.Count += 1
 
 					if addressItem.Count <= 21 {
-						//手续费不够时，打入ETH手续费。打入的手续费大于最低充币数量时，会被充币轮询。
-						//所以配置的最小充币数量，应该大于代币归集手续费。
 						addressItem.SendTimestamp = time.Now().Unix() + 300*int64(addressItem.Count*3) //300s后重试
 						tokenToMainChan <- addressItem
 					} else {
@@ -170,13 +168,13 @@ func SendRowEthToMainWallet(address string) error {
 	}
 
 	//发送到main address
-	txid, err := EthPersonalSendTransactionToBlockWithFee(address, account.PrivateKey, ethColdAddress1, bigAmount)
+	txId, err := EthPersonalSendTransactionToBlockWithFee(address, account.PrivateKey, ethColdAddress1, bigAmount)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("[COLD] SendTransactionToMainWallet error! err:%v", err)
 		return err
 	}
 
-	mylog.DataLogger.Info().Msgf("[COLD] sendToMainWallet success eth, txid: %v, token: %v, value: %v", txid, EthName, strAmount)
+	mylog.DataLogger.Info().Msgf("[COLD] sendToMainWallet success eth, txId: %v, token: %v, value: %v", txId, EthName, strAmount)
 
 	return nil
 }
@@ -187,13 +185,13 @@ func sendEthFeeToTokenAddress(address, token, ethFee string) error {
 	mylog.DataLogger.Info().Msgf("[COLD] SendEthFee, token:%v, address:%v", token, address)
 
 	//发送eth手续费给此地址
-	txid, err := PersonalSendTransactionToBlock(EthMainAddress, address, EthName, ethFee)
+	txId, err := PersonalSendTransactionToBlock(EthMainAddress, address, EthName, ethFee)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("[COLD] PersonalSendTransactionToBlock err:%v", err)
 		return err
 	}
 
-	mylog.DataLogger.Info().Msgf("[COLD] SendEthFeeToTokenaddress, address:%v, fee:%v, txid:%v", address, ethFee, txid)
+	mylog.DataLogger.Info().Msgf("[COLD] SendEthFeeToTokenaddress, address:%v, fee:%v, txId:%v", address, ethFee, txId)
 
 	return nil
 }

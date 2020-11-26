@@ -120,11 +120,11 @@ func GetBlockByNumber(curblock uint64) ([]*Transaction, error) {
 	return resp.Result.Transactions, nil
 }
 
-func GetTransactionReceipt(txid string) (*RowTransactionReceipt, error) {
+func GetTransactionReceipt(txId string) (*RowTransactionReceipt, error) {
 	var err error
 
-	var jsonStr = fmt.Sprintf(`{"jsonrpc": "2.0", "id":"exchange", "method": "eth_getTransactionReceipt", "params": ["%v"]}`, txid)
-	//mylog.DataLogger.Info().Msgf("eth_getTransactionReceipt, txid: %v", txid)
+	var jsonStr = fmt.Sprintf(`{"jsonrpc": "2.0", "id":"exchange", "method": "eth_getTransactionReceipt", "params": ["%v"]}`, txId)
+	//mylog.DataLogger.Info().Msgf("eth_getTransactionReceipt, txId: %v", txId)
 	respBody, _, statusCode := utils.SharedProxy().PostJson("", BaseUrl, []byte(jsonStr), func(*http.Request) {})
 	//mylog.DataLogger.Info().Msgf("eth_getTransactionReceipt, respBody: %v", string(respBody))
 	if statusCode != 200 {
@@ -173,9 +173,9 @@ func EthGetBalance(address string, tag string) (string, error) {
 func TokenGetBalance(address string, contractAddress string) (string, error) {
 	var amount string = "0"
 
-	jsondata := fmt.Sprintf("%v%064s", EthTokenBalanceOfHex, address[2:])
+	jsonData := fmt.Sprintf("%v%064s", EthTokenBalanceOfHex, address[2:])
 
-	var jsonStr = fmt.Sprintf(`{"jsonrpc": "2.0", "id":"exchange", "method": "eth_call", "params": [{"to":"%v", "data":"%v"},"latest"]}`, contractAddress, jsondata)
+	var jsonStr = fmt.Sprintf(`{"jsonrpc": "2.0", "id":"exchange", "method": "eth_call", "params": [{"to":"%v", "data":"%v"},"latest"]}`, contractAddress, jsonData)
 	//mylog.DataLogger.Info().Msgf("token_getBalance, reqbody=%v", jsonStr)
 	respBody, _, statusCode := utils.SharedProxy().PostJson("", BaseUrl, []byte(jsonStr), func(*http.Request) {})
 	//mylog.DataLogger.Info().Msgf("token_getBalance, respBody=%v", string(respBody))
@@ -240,13 +240,13 @@ func EthGetTransactionCount(address string) (uint64, error) {
 }
 
 func EthSendRawTransaction(raw string) (string, error) {
-	var txid string
+	var txId string
 
 	parasStr := fmt.Sprintf(`"%v"`, raw)
 
 	jsonStr, err := getEthJsonStr("eth_sendRawTransaction", parasStr)
 	if err != nil {
-		return txid, err
+		return txId, err
 	}
 
 	respBody, _, statusCode := utils.SharedProxy().PostJson("", BaseUrl, []byte(jsonStr), func(*http.Request) {})
@@ -255,19 +255,19 @@ func EthSendRawTransaction(raw string) (string, error) {
 		var resp SendRawTransactionResp
 		err = json.Unmarshal(respBody, &resp)
 		if err != nil {
-			return txid, err
+			return txId, err
 		}
 
 		if resp.Error != nil {
-			return txid, errors.New(resp.Error.Message)
+			return txId, errors.New(resp.Error.Message)
 		}
 
-		txid = resp.Txid
+		txId = resp.Txid
 	} else {
-		return txid, StatusCodeError
+		return txId, StatusCodeError
 	}
 
-	return txid, nil
+	return txId, nil
 }
 
 //--sign transaction
@@ -293,12 +293,12 @@ func EthPersonalSendTransactionToBlockWithFee(fromAddress string, password strin
 		return "", err
 	}
 
-	txid, err := EthSendRawTransaction(raw)
+	txId, err := EthSendRawTransaction(raw)
 	if err != nil {
 		return "", err
 	}
 
-	return txid, nil
+	return txId, nil
 }
 
 func Erc20PersonalSendTransactionToBlock(fromAddress string, password string, toAddress string, token string, bigAmount *big.Int) (string, error) {
@@ -341,12 +341,12 @@ func PersonalSendTransactionToBlock(fromAddress, toAddress, token, amount string
 		return "", err
 	}
 
-	txid, err := EthSendRawTransaction(raw)
+	txId, err := EthSendRawTransaction(raw)
 	if err != nil {
 		return "", err
 	}
 
-	return txid, nil
+	return txId, nil
 }
 
 func checkMainAddressTokenIsEnough(amount, contractAddress, token string, decimals int) bool {

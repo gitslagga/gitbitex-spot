@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-func GetBigFromHex(hexamount string) (*big.Int, error) {
-	s := hexamount
+func GetBigFromHex(hexAmount string) (*big.Int, error) {
+	s := hexAmount
 	if s[0] == '0' && len(s) > 1 && (s[1] == 'x' || s[1] == 'X') {
 		s = s[2:]
 	}
@@ -29,79 +29,63 @@ func GetBigFromHex(hexamount string) (*big.Int, error) {
 }
 
 //eth wei -> eth count
-func EthFromWei(bigs *big.Int) (strvalue string, err error) {
-
-	strvalue = "0"
-	decimals := EthDecimals
-
-	strn := bigs.String()
-	if strn == "0" {
+func EthFromWei(bigS *big.Int) (strValue string, err error) {
+	strValue = "0"
+	strN := bigS.String()
+	if strN == "0" {
 		return
 	}
 
-	if len(strn) > decimals {
-		if decimals > Erc20Decimals {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+Erc20Decimals])
-		} else {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+decimals])
-		}
-	} else {
-		if decimals > Erc20Decimals {
-			if len(strn) > decimals-Erc20Decimals {
-				strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", Erc20Decimals, "s")
-				strvalue = fmt.Sprintf(strFormat, strn[:len(strn)-(decimals-Erc20Decimals)])
-			}
-		} else {
-			strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", decimals, "s")
-			strvalue = fmt.Sprintf(strFormat, strn)
-		}
+	if len(strN) > EthDecimals {
+		strValue = fmt.Sprintf("%v.%v", strN[:len(strN)-EthDecimals], strN[len(strN)-EthDecimals:len(strN)-EthDecimals+Erc20Decimals])
+	} else if len(strN) > EthDecimals-Erc20Decimals {
+		strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", Erc20Decimals, "s")
+		strValue = fmt.Sprintf(strFormat, strN[:len(strN)-(EthDecimals-Erc20Decimals)])
 	}
 
-	//mylog.DataLogger.Info().Msgf("HexParseEthvalue: %v", strvalue)
+	//mylog.DataLogger.Info().Msgf("HexParseEthValue: %v", strValue)
 	return
 }
 
 //eth wei -> eth count
-func FromWeiWithBigintAndToken(bigs *big.Int, token string) (strvalue string, err error) {
-
-	strvalue = "0"
+func FromWeiWithBigintAndToken(bigS *big.Int, token string) (strValue string, err error) {
+	strValue = "0"
 	var decimals int
 	decimals, err = getDecimals(token)
 	if err != nil {
 		return
 	}
 
-	strn := bigs.String()
-	if strn == "0" {
+	strN := bigS.String()
+	if strN == "0" {
 		return
 	}
 
-	if len(strn) > decimals {
+	if len(strN) > decimals {
 		if decimals > Erc20Decimals {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+Erc20Decimals])
+			strValue = fmt.Sprintf("%v.%v", strN[:len(strN)-decimals], strN[len(strN)-decimals:len(strN)-decimals+Erc20Decimals])
 		} else {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+decimals])
+			strValue = fmt.Sprintf("%v.%v", strN[:len(strN)-decimals], strN[len(strN)-decimals:len(strN)-decimals+decimals])
 		}
 	} else {
 		if decimals > Erc20Decimals {
-			if len(strn) > decimals-Erc20Decimals {
+			if len(strN) > decimals-Erc20Decimals {
 				strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", Erc20Decimals, "s")
-				strvalue = fmt.Sprintf(strFormat, strn[:len(strn)-(decimals-Erc20Decimals)])
+				strValue = fmt.Sprintf(strFormat, strN[:len(strN)-(decimals-Erc20Decimals)])
 			}
 		} else {
 			strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", decimals, "s")
-			strvalue = fmt.Sprintf(strFormat, strn)
+			strValue = fmt.Sprintf(strFormat, strN)
 		}
 	}
 
-	//mylog.DataLogger.Info().Msgf("HexParseEthvalue: %v", strvalue)
+	//mylog.DataLogger.Info().Msgf("HexParseEthValue: %v", strValue)
 	return
 }
 
 //eth wei -> eth count
-func FromWeiWithDecimals(s string, decimals int) (strvalue string, err error) {
-
-	strvalue = "0"
+func FromWeiWithDecimals(s string, decimals int) (strValue string, err error) {
+	strValue = "0"
 
 	if len(s) < 1 {
 		err = errors.New("invalid syntax")
@@ -122,26 +106,26 @@ func FromWeiWithDecimals(s string, decimals int) (strvalue string, err error) {
 		return
 	}
 
-	strn := n.String()
-	if strn == "0" {
+	strN := n.String()
+	if strN == "0" {
 		return
 	}
 
-	if len(strn) > decimals {
+	if len(strN) > decimals {
 		if decimals > Erc20Decimals {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+Erc20Decimals])
+			strValue = fmt.Sprintf("%v.%v", strN[:len(strN)-decimals], strN[len(strN)-decimals:len(strN)-decimals+Erc20Decimals])
 		} else {
-			strvalue = fmt.Sprintf("%v.%v", strn[:len(strn)-decimals], strn[len(strn)-decimals:len(strn)-decimals+decimals])
+			strValue = fmt.Sprintf("%v.%v", strN[:len(strN)-decimals], strN[len(strN)-decimals:len(strN)-decimals+decimals])
 		}
 	} else {
 		if decimals > Erc20Decimals {
-			if len(strn) > decimals-Erc20Decimals {
+			if len(strN) > decimals-Erc20Decimals {
 				strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", Erc20Decimals, "s")
-				strvalue = fmt.Sprintf(strFormat, strn[:len(strn)-(decimals-Erc20Decimals)])
+				strValue = fmt.Sprintf(strFormat, strN[:len(strN)-(decimals-Erc20Decimals)])
 			}
 		} else {
 			strFormat := fmt.Sprintf(`0.%v%v%v`, "%0", decimals, "s")
-			strvalue = fmt.Sprintf(strFormat, strn)
+			strValue = fmt.Sprintf(strFormat, strN)
 		}
 	}
 
@@ -200,46 +184,46 @@ func getDecimals(token string) (decimals int, err error) {
 	return
 }
 
-func ToWei(svalue string, decimals int) (*big.Int, error) {
-	bigdecimals := big.NewInt(10)
-	bigdecimals = bigdecimals.Exp(bigdecimals, big.NewInt(int64(decimals)), nil)
+func ToWei(sValue string, decimals int) (*big.Int, error) {
+	bigDecimals := big.NewInt(10)
+	bigDecimals = bigDecimals.Exp(bigDecimals, big.NewInt(int64(decimals)), nil)
 
-	priceparts := strings.Split(svalue, ".")
-	if len(priceparts) == 1 {
-		count, err := strconv.ParseUint(svalue, 10, 64)
+	priceParts := strings.Split(sValue, ".")
+	if len(priceParts) == 1 {
+		count, err := strconv.ParseUint(sValue, 10, 64)
 		if err != nil {
 			return nil, err
 		}
 
-		iamount := big.NewInt(int64(count))
-		amount := iamount.Mul(iamount, bigdecimals)
+		iAmount := big.NewInt(int64(count))
+		amount := iAmount.Mul(iAmount, bigDecimals)
 		return amount, nil
-	} else if len(priceparts) == 2 {
-		uprice1, err := strconv.ParseUint(priceparts[0], 10, 64)
+	} else if len(priceParts) == 2 {
+		uPrice1, err := strconv.ParseUint(priceParts[0], 10, 64)
 		if err != nil {
 			return nil, err
 		}
 
-		if len(priceparts[1]) <= 0 {
-			iamount := big.NewInt(int64(uprice1))
-			amount := iamount.Mul(iamount, bigdecimals)
+		if len(priceParts[1]) <= 0 {
+			iAmount := big.NewInt(int64(uPrice1))
+			amount := iAmount.Mul(iAmount, bigDecimals)
 			return amount, nil
 		}
 
-		if len(priceparts[1]) > decimals {
-			priceparts[1] = priceparts[1][:decimals]
+		if len(priceParts[1]) > decimals {
+			priceParts[1] = priceParts[1][:decimals]
 		}
-		uprice2, err2 := strconv.ParseUint(priceparts[1], 10, 64)
+		uPrice2, err2 := strconv.ParseUint(priceParts[1], 10, 64)
 		if err2 != nil {
 			err = err2
 			return nil, err
 		}
 
-		iamount1 := big.NewInt(int64(uprice1))
-		iamount1.Mul(iamount1, bigdecimals)
-		iamount2 := big.NewInt(int64(uprice2))
-		iamount2.Mul(iamount2, bigdecimals.Exp(big.NewInt(10), big.NewInt(int64(decimals-len(priceparts[1]))), nil))
-		amount := iamount1.Add(iamount1, iamount2)
+		iAmount1 := big.NewInt(int64(uPrice1))
+		iAmount1.Mul(iAmount1, bigDecimals)
+		iAmount2 := big.NewInt(int64(uPrice2))
+		iAmount2.Mul(iAmount2, bigDecimals.Exp(big.NewInt(10), big.NewInt(int64(decimals-len(priceParts[1]))), nil))
+		amount := iAmount1.Add(iAmount1, iAmount2)
 		return amount, nil
 	}
 

@@ -89,7 +89,7 @@ func addressWithdraw(address *models.Address, config *models.AddressConfig, toAd
 		Address:  toAddress,
 		Value:    number,
 		Actual:   actualNumber,
-		Status:   models.CurrencyDepositUnConfirm,
+		Status:   models.CurrencyWithdrawReview,
 	})
 	if err != nil {
 		return err

@@ -76,7 +76,7 @@ const (
 	CurrencyDepositUnConfirm = 1
 	CurrencyDepositConfirmed = 2
 
-	CurrencyWithdrawFailed   = 1
+	CurrencyWithdrawReview   = 1
 	CurrencyWithdrawSuccess  = 2
 	CurrencyWithdrawPassed   = 3
 	CurrencyWithdrawUnPass   = 4
