@@ -109,10 +109,13 @@ type Store interface {
 
 	GetValidAddressConfig() ([]*AddressConfig, error)
 	GetAddressConfigByCoin(coin string) (*AddressConfig, error)
+	GetAddressConfigByContract(contract string) (*AddressConfig, error)
 	UpdateAddressConfig(config *AddressConfig) error
 	AddAddressCollect(collect *AddressCollect) error
 	GetAddressDepositsByUserId(userId, before, after, limit int64) ([]*AddressDeposit, error)
+	GetAddressDepositsByBNStatus(blockNum uint64, status int) ([]*AddressDeposit, error)
 	AddAddressDeposit(deposit *AddressDeposit) error
+	AddAddressDepositEth(deposit *AddressDepositEth) error
 	UpdateAddressDeposit(deposit *AddressDeposit) error
 	GetAddressWithdrawsByUserId(userId, before, after, limit int64) ([]*AddressWithdraw, error)
 	AddAddressWithdraw(withdraw *AddressWithdraw) error

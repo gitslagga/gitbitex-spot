@@ -11,6 +11,8 @@ import (
 const (
 	MachineConvertSumFee = "machine_convert_sum_fee"
 	AccountScanSumFee    = "account_scan_sum_fee"
+
+	EthLatestHeightKey = "wallet_latest_height_eth"
 )
 
 var redisClient *redis.Client
@@ -77,4 +79,26 @@ func (b *box) GetAccountScanSumFee() (decimal.Decimal, error) {
 	}
 
 	return decimal.NewFromFloat(sumFee), nil
+}
+
+func (b *box) SetEthLatestHeight(height uint64, exp time.Duration) error {
+	err := b.redis.Set(EthLatestHeightKey, height, exp).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *box) GetEthLatestHeight() (uint64, error) {
+	height, err := b.redis.Get(EthLatestHeightKey).Uint64()
+	if err != nil {
+		return 0, err
+	}
+
+	if err == redis.Nil {
+		return 0, nil
+	}
+
+	return height, nil
 }

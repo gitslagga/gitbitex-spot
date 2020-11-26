@@ -1,4 +1,4 @@
-package worker
+package tasks
 
 import (
 	"github.com/gitslagga/gitbitex-spot/models"

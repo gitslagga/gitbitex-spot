@@ -23,6 +23,15 @@ func (s *Store) GetAddressConfigByCoin(coin string) (*models.AddressConfig, erro
 	return &config, err
 }
 
+func (s *Store) GetAddressConfigByContract(contract string) (*models.AddressConfig, error) {
+	var config models.AddressConfig
+	err := s.db.Where("contract_address=?", contract).First(&config).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &config, err
+}
+
 func (s *Store) UpdateAddressConfig(config *models.AddressConfig) error {
 	return s.db.Save(config).Error
 }
@@ -52,7 +61,20 @@ func (s *Store) GetAddressDepositsByUserId(userId, beforeId, afterId, limit int6
 	return deposits, err
 }
 
+func (s *Store) GetAddressDepositsByBNStatus(blockNum uint64, status int) ([]*models.AddressDeposit, error) {
+	var deposits []*models.AddressDeposit
+	err := s.db.Where("block_num=? AND status=?", blockNum, status).Find(&deposits).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return deposits, err
+}
+
 func (s *Store) AddAddressDeposit(deposit *models.AddressDeposit) error {
+	return s.db.Create(deposit).Error
+}
+
+func (s *Store) AddAddressDepositEth(deposit *models.AddressDepositEth) error {
 	return s.db.Create(deposit).Error
 }
 

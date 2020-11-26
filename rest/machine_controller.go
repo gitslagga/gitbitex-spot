@@ -61,7 +61,7 @@ func BuyMachineService(ctx *gin.Context) {
 
 	err = service.BuyMachine(address, machine, strings.ToUpper(buyMachine.Currency))
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
+		mylog.Logger.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)

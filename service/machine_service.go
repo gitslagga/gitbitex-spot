@@ -239,13 +239,13 @@ func getTotalActiveNumber(userId int64) (int, error) {
 func StartMachineLevel(userId int64) {
 	address, err := GetAddressById(userId)
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("StartMachineLevel GetAddressById err: %v", err)
+		mylog.Logger.Error().Msgf("StartMachineLevel GetAddressById err: %v", err)
 		return
 	}
 
 	machineLevel, err := GetMachineLevel()
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("StartMachineLevel GetMachineLevel err: %v", err)
+		mylog.Logger.Error().Msgf("StartMachineLevel GetMachineLevel err: %v", err)
 		return
 	}
 
@@ -257,7 +257,7 @@ func machineLevelStepOne(address *models.Address, machineLevel []*models.Machine
 	case models.MachineLevelZero:
 		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelZero])
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne getConditionMachineLevel err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne getConditionMachineLevel err: %v", err)
 			return
 		}
 		if !valid {
@@ -266,27 +266,27 @@ func machineLevelStepOne(address *models.Address, machineLevel []*models.Machine
 
 		err = machineLevelStepTwo(machineLevel[models.MachineLevelZero], address, models.MachineLevelOne)
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelOne:
 		err := machineLevelStepTwo(machineLevel[models.MachineLevelOne], address, models.MachineLevelTwo)
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelTwo:
 		err := machineLevelStepTwo(machineLevel[models.MachineLevelTwo], address, models.MachineLevelThree)
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelThree:
 		err := machineLevelStepTwo(machineLevel[models.MachineLevelThree], address, models.MachineLevelFour)
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelFour:
 		err := machineLevelStepTwo(machineLevel[models.MachineLevelFour], address, models.MachineLevelFive)
 		if err != nil {
-			mylog.DataLogger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
 		}
 	}
 }

@@ -432,6 +432,20 @@ type AddressDeposit struct {
 	Status    int
 }
 
+type AddressDepositEth struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	BlockNum  uint64
+	TxId      string
+	Coin      string
+	Address   string
+	Value     decimal.Decimal
+	Actual    decimal.Decimal
+	Status    int
+}
+
 type AddressWithdraw struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
