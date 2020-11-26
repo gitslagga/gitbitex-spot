@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
+	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/shopspring/decimal"
 )
 
@@ -196,57 +197,65 @@ func AccountAddress(userId int64) (map[string]interface{}, error) {
 	}
 
 	var calculateUsdt decimal.Decimal
-	for _, v := range accountAsset {
+	accountAssetMap := make(map[int]map[string]interface{}, len(accountAsset))
+	accountPoolMap := make(map[int]map[string]interface{}, len(accountPool))
+	accountSpotMap := make(map[int]map[string]interface{}, len(accountSpot))
+	accountShopMap := make(map[int]map[string]interface{}, len(accountShop))
+	for k, v := range accountAsset {
+		accountAssetMap[k] = utils.StructToMapViaJson(v)
 		switch v.Currency {
 		case models.AccountCurrencyYtl:
 			calculateUsdt = calculateUsdt.Add(ytlRate.Mul(v.Available.Add(v.Hold)))
-			v.Calculate = usdtRate.Mul(ytlRate.Mul(v.Available.Add(v.Hold)))
+			accountAssetMap[k]["Calculate"] = usdtRate.Mul(ytlRate.Mul(v.Available.Add(v.Hold)))
 		case models.AccountCurrencyBite:
 			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
-			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+			accountAssetMap[k]["Calculate"] = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
 		case models.AccountCurrencyUsdt:
 			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
-			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+			accountAssetMap[k]["Calculate"] = usdtRate.Mul(v.Available.Add(v.Hold))
 		}
 	}
 
-	for _, v := range accountPool {
+	for k, v := range accountPool {
+		accountPoolMap[k] = utils.StructToMapViaJson(v)
 		switch v.Currency {
 		case models.AccountCurrencyBite:
 			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
-			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+			accountPoolMap[k]["Calculate"] = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
 		}
 	}
 
-	for _, v := range accountSpot {
+	for k, v := range accountSpot {
+		accountSpotMap[k] = utils.StructToMapViaJson(v)
 		switch v.Currency {
 		case models.AccountCurrencyBite:
 			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
-			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+			accountSpotMap[k]["Calculate"] = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
 		case models.AccountCurrencyUsdt:
 			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
-			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+			accountSpotMap[k]["Calculate"] = usdtRate.Mul(v.Available.Add(v.Hold))
 		}
 	}
 
-	for _, v := range accountShop {
+	for k, v := range accountShop {
+		accountShopMap[k] = utils.StructToMapViaJson(v)
 		switch v.Currency {
 		case models.AccountCurrencyBite:
 			calculateUsdt = calculateUsdt.Add(biteRate.Mul(v.Available.Add(v.Hold)))
-			v.Calculate = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
+			accountShopMap[k]["Calculate"] = usdtRate.Mul(biteRate.Mul(v.Available.Add(v.Hold)))
 		case models.AccountCurrencyUsdt:
 			calculateUsdt = calculateUsdt.Add(v.Available.Add(v.Hold))
-			v.Calculate = usdtRate.Mul(v.Available.Add(v.Hold))
+			accountShopMap[k]["Calculate"] = usdtRate.Mul(v.Available.Add(v.Hold))
 		}
 	}
 
 	calculateCny := calculateUsdt.Mul(usdtRate)
 
 	return map[string]interface{}{
-		"accountSpot":   accountSpot,
-		"accountAsset":  accountAsset,
-		"accountPool":   accountPool,
-		"accountShop":   accountShop,
+		"accountSpot":   accountSpotMap,
+		"accountAsset":  accountAssetMap,
+		"accountPool":   accountPoolMap,
+		"accountShop":   accountShopMap,
 		"calculateUsdt": calculateUsdt,
 		"calculateCny":  calculateCny,
 	}, nil

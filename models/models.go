@@ -111,7 +111,6 @@ type Account struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
-	Calculate decimal.Decimal
 }
 
 type Bill struct {
@@ -228,7 +227,7 @@ type Transaction struct {
 	UpdatedAt   time.Time
 	UserId      int64
 	Currency    string
-	BlockNum    int
+	BlockNum    uint64
 	ConfirmNum  int
 	Status      TransactionStatus
 	FromAddress string
@@ -265,7 +264,6 @@ type AccountAsset struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
-	Calculate decimal.Decimal
 }
 
 type AccountPool struct {
@@ -276,7 +274,6 @@ type AccountPool struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
-	Calculate decimal.Decimal
 }
 
 type AccountShop struct {
@@ -287,7 +284,6 @@ type AccountShop struct {
 	Currency  string          `gorm:"column:currency;unique_index:idx_uid_currency"`
 	Hold      decimal.Decimal `gorm:"column:hold" sql:"type:decimal(32,16);"`
 	Available decimal.Decimal `gorm:"column:available" sql:"type:decimal(32,16);"`
-	Calculate decimal.Decimal
 }
 
 type Machine struct {
@@ -427,7 +423,7 @@ type AddressDeposit struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserId    int64
-	BlockNum  int64
+	BlockNum  uint64
 	TxId      string
 	Coin      string
 	Address   string
@@ -441,7 +437,7 @@ type AddressWithdraw struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserId    int64
-	BlockNum  int64
+	BlockNum  uint64
 	TxId      string
 	Coin      string
 	Address   string

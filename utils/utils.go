@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"github.com/shopspring/decimal"
 	"strconv"
 	"unicode"
@@ -76,4 +77,20 @@ func SnakeCase(s string) string {
 	}
 
 	return string(out)
+}
+
+// struct to map
+func StructToMapViaJson(data interface{}) map[string]interface{} {
+	m := make(map[string]interface{})
+	j, _ := json.Marshal(data)
+	_ = json.Unmarshal(j, &m)
+	return m
+}
+
+// map to struct
+func MapToStructViaJson(data map[string]interface{}) interface{} {
+	var m interface{}
+	j, _ := json.Marshal(data)
+	_ = json.Unmarshal(j, &m)
+	return m
 }
