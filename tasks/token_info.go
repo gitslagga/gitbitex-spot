@@ -26,6 +26,4 @@ func TokenInfo() {
 	}
 
 	ethColdAddress2 = config.CollectAddress
-
-	mylog.DataLogger.Info().Msgf("TokenInfo GetAddressConfigByCoin %+v", *config)
 }
