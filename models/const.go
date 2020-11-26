@@ -70,8 +70,6 @@ const (
 )
 
 const (
-	CurrencyWalletUsdt = "USDT"
-
 	CurrencyCollectionMaster = 1
 	CurrencyCollectionCold   = 2
 

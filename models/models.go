@@ -415,7 +415,7 @@ type AddressCollect struct {
 	FromAddress string
 	ToAddress   string
 	Value       decimal.Decimal
-	Status      decimal.Decimal
+	Status      int
 }
 
 type AddressDeposit struct {

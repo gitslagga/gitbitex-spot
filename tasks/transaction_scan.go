@@ -8,12 +8,14 @@ import (
 	"time"
 )
 
-var minDeposit decimal.Decimal
+var minDeposit = decimal.NewFromFloat(0.1)
+var ethColdAddress1 = EthMainAddress
+var ethColdAddress2 string
 var blockHeight uint64
 
 func StartTransactionScan() {
 	var err error
-	blockHeight, err := models.SharedRedis().GetEthLatestHeight()
+	blockHeight, err = models.SharedRedis().GetEthLatestHeight()
 	if err != nil {
 		panic(err)
 	}
@@ -188,20 +190,12 @@ func ETHDataHandle(transaction *Transaction, blockNum uint64, value string) erro
 		return nil
 	}
 
-	err = mysql.SharedStore().AddAddressDepositEth(&models.AddressDepositEth{
-		UserId:   address.Id,
-		BlockNum: blockNum,
-		TxId:     transaction.Txid,
-		Coin:     "ETH",
-		Address:  transaction.ToAddress,
-		Value:    valueF,
-		Actual:   valueF,
-		Status:   models.CurrencyDepositUnConfirm,
-	})
-	if err != nil {
-		mylog.DataLogger.Error().Msgf("[ETHDataHandle] AddAddressDeposit err:%v, txId:%s, value:%v", err, transaction.Txid, value)
-		return err
+	//汇集
+	ethSendMainItem := ethAddressItem{
+		FromAddress: transaction.ToAddress,
+		Count:       0,
 	}
+	ethToMainChan <- &ethSendMainItem
 
 	mylog.DataLogger.Info().Msgf("[ETHDataHandle] deposit ETH, userID:%v, txId:%v", address.Id, transaction.Txid)
 
@@ -231,7 +225,7 @@ func ERC20DataHandle(transaction *Transaction, blockNum uint64) error {
 	}
 
 	for _, transactionLog := range transactionReceipt.Result.Logs {
-		err = ERC20transactionLogHandle(&transactionLog, transaction.Txid, blockNum, config.Coin, config.Decimals)
+		err = ERC20transactionLogHandle(&transactionLog, transaction.Txid, blockNum, config)
 		if err != nil {
 			mylog.DataLogger.Error().Msgf("[ERC20DataHandle] erc20transactionLogHandle, err:%v, txId:%v", err, transaction.Txid)
 			continue
@@ -241,9 +235,9 @@ func ERC20DataHandle(transaction *Transaction, blockNum uint64) error {
 	return nil
 }
 
-func ERC20transactionLogHandle(transactionLog *TransactionReceiptLog, txId string, blockNum uint64, coin string, decimals int) error {
+func ERC20transactionLogHandle(transactionLog *TransactionReceiptLog, txId string, blockNum uint64, config *models.AddressConfig) error {
 	//3 parse transaction log
-	isTransfer, toAddress, value, err := ParseTransactionLog(transactionLog, decimals)
+	isTransfer, toAddress, value, err := ParseTransactionLog(transactionLog, config.Decimals)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("[ERC20transactionLogHandle] ParseTransactionLog, err:%v, txId:%v", err, txId)
 		return err
@@ -262,35 +256,35 @@ func ERC20transactionLogHandle(transactionLog *TransactionReceiptLog, txId strin
 		return nil
 	}
 
-	mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] begin %v, userID:%v, txId:%v, address:%v, value:%v", coin, address.Id, txId, toAddress, value)
+	mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] begin %v, userID:%v, txId:%v, address:%v, value:%v", config.Coin, address.Id, txId, toAddress, value)
 
 	valueF, err := decimal.NewFromString(value)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("[ERC20transactionLogHandle] ParseFloat, err:%v, value:%v, txId:%v", err, value, txId)
 		return err
 	}
-	if valueF.LessThan(minDeposit) {
-		mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] ERC20 %v, value less than value:%v, minDeposit:%v, txId:%v", coin, value, minDeposit, txId)
+	if valueF.LessThan(config.MinDeposit) {
+		mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] ERC20 %v, value less than value:%v, minDeposit:%v, txId:%v", config.Coin, value, config.MinDeposit, txId)
 		return nil
 	}
 
 	//汇集
-	//toMainItem := tokenAddressItem{
-	//	FromAddress:   toAddress,
-	//	Token:         coin,
-	//	GasPrice:      config.Config.Block.EthGasPrice,
-	//	GasLimit:      block.ERC20_GAS_LIMIT,
-	//	SendTimestamp: time.Now().Unix(),
-	//	Count:         0,
-	//}
-	//tokenToMainChan <- &toMainItem
+	toMainItem := tokenAddressItem{
+		FromAddress:   toAddress,
+		Token:         config.Coin,
+		GasPrice:      EthGasPrice,
+		GasLimit:      Erc20GasLimit,
+		SendTimestamp: time.Now().Unix(),
+		Count:         0,
+	}
+	tokenToMainChan <- &toMainItem
 
 	//5, db
 	err = mysql.SharedStore().AddAddressDeposit(&models.AddressDeposit{
 		UserId:   address.Id,
 		BlockNum: blockNum,
 		TxId:     txId,
-		Coin:     coin,
+		Coin:     config.Coin,
 		Address:  toAddress,
 		Value:    valueF,
 		Actual:   valueF,
@@ -301,7 +295,7 @@ func ERC20transactionLogHandle(transactionLog *TransactionReceiptLog, txId strin
 		return err
 	}
 
-	mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] deposit %v, toAddress:%v, txId:%v, value:%v", coin, toAddress, txId, value)
+	mylog.DataLogger.Info().Msgf("[ERC20transactionLogHandle] deposit %v, toAddress:%v, txId:%v, value:%v", config.Coin, toAddress, txId, value)
 
 	return nil
 }

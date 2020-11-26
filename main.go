@@ -44,6 +44,9 @@ func main() {
 	rest.StartServer()
 
 	go tasks.StartMachineRelease()
+	go tasks.StartTokenInfo()
+	go tasks.StartTransactionScan()
+	go tasks.StartSendToMainTask()
 
 	select {}
 }

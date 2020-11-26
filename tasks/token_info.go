@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"time"
@@ -20,13 +19,13 @@ func StartTokenInfo() {
 }
 
 func TokenInfo() {
-	config, err := mysql.SharedStore().GetAddressConfigByCoin(models.CurrencyWalletUsdt)
+	config, err := mysql.SharedStore().GetAddressConfigByCoin(UsdtName)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("TokenInfo GetAddressConfigByCoin err: %v", err)
 		return
 	}
 
-	minDeposit = config.MinDeposit
+	ethColdAddress2 = config.CollectAddress
 
-	mylog.DataLogger.Info().Msgf("TokenInfo GetAddressConfigByCoin minDeposit %f", minDeposit)
+	mylog.DataLogger.Info().Msgf("TokenInfo GetAddressConfigByCoin %+v", *config)
 }

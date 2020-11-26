@@ -47,12 +47,12 @@ func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration)
 
 func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
 	sumFee, err := b.redis.Get(MachineConvertSumFee).Float64()
-	if err != nil {
-		return decimal.Zero, err
-	}
-
 	if err == redis.Nil {
 		return decimal.Zero, nil
+	}
+
+	if err != nil {
+		return decimal.Zero, err
 	}
 
 	return decimal.NewFromFloat(sumFee), nil
@@ -70,12 +70,12 @@ func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal, exp time.Duration) er
 
 func (b *box) GetAccountScanSumFee() (decimal.Decimal, error) {
 	sumFee, err := b.redis.Get(AccountScanSumFee).Float64()
-	if err != nil {
-		return decimal.Zero, err
-	}
-
 	if err == redis.Nil {
 		return decimal.Zero, nil
+	}
+
+	if err != nil {
+		return decimal.Zero, err
 	}
 
 	return decimal.NewFromFloat(sumFee), nil
@@ -92,12 +92,12 @@ func (b *box) SetEthLatestHeight(height uint64, exp time.Duration) error {
 
 func (b *box) GetEthLatestHeight() (uint64, error) {
 	height, err := b.redis.Get(EthLatestHeightKey).Uint64()
-	if err != nil {
-		return 0, err
-	}
-
 	if err == redis.Nil {
 		return 0, nil
+	}
+
+	if err != nil {
+		return 0, err
 	}
 
 	return height, nil

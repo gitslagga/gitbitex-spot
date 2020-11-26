@@ -32,4 +32,5 @@ func TestDecimalIsZero(t *testing.T) {
 	log.Infoln(num1, num1.Equal(decimal.New(0, 0))) //0 true
 	log.Infoln(num1, num1.Equal(decimal.New(0, 1))) //0 true
 	log.Infoln(decimal.New(1, 0))                   //1
+	log.Infoln(decimal.NewFromFloat(0.1))           //0.1
 }

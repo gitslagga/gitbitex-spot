@@ -74,10 +74,6 @@ func (s *Store) AddAddressDeposit(deposit *models.AddressDeposit) error {
 	return s.db.Create(deposit).Error
 }
 
-func (s *Store) AddAddressDepositEth(deposit *models.AddressDepositEth) error {
-	return s.db.Create(deposit).Error
-}
-
 func (s *Store) UpdateAddressDeposit(deposit *models.AddressDeposit) error {
 	return s.db.Save(deposit).Error
 }
