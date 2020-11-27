@@ -73,7 +73,7 @@ func AddressWithdrawService(ctx *gin.Context) {
 		return
 	}
 
-	var withdraw CurrencyWithdrawRequest
+	var withdraw AddressWithdrawRequest
 	err := ctx.ShouldBindJSON(&withdraw)
 	if err != nil {
 		out.RespCode = EC_PARAMS_ERR
@@ -138,5 +138,42 @@ func AddressWithdrawInfoService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	out.RespData = withdraws
+	ctx.JSON(http.StatusOK, out)
+}
+
+// Post /backend/address/withdraw
+func BackendWithdrawService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	var addressPassWithdraw AddressPassWithdrawRequest
+	err := ctx.ShouldBindJSON(&addressPassWithdraw)
+	if err != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	mylog.Logger.Info().Msgf("[Rest] BackendWithdrawService request param: %v", addressPassWithdraw)
+
+	withdraw, err := service.GetAddressWithdrawsByOrderSN(addressPassWithdraw.OrderSN)
+	if withdraw == nil || err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	err = service.BackendWithdraw(withdraw, addressPassWithdraw.Status)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = err.Error()
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+
 	ctx.JSON(http.StatusOK, out)
 }

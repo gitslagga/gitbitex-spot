@@ -93,8 +93,10 @@ func (server *HttpServer) Start() {
 		frontend.GET("/account/transferInfo", AccountTransferInfoService)
 		frontend.POST("/account/scan", AccountScanService)
 		frontend.GET("/account/scanInfo", AccountScanInfoService)
-
 	}
+
+	//Backend use
+	r.POST("/backend/address/withdraw", BackendWithdrawService)
 
 	err := r.Run(server.addr)
 	if err != nil {

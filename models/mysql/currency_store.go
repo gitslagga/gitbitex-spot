@@ -79,7 +79,7 @@ func (s *Store) UpdateAddressDeposit(deposit *models.AddressDeposit) error {
 }
 
 func (s *Store) GetAddressWithdrawsByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressWithdraw, error) {
-	db := s.db.Where("user_id =?", userId)
+	db := s.db.Where("user_id=?", userId)
 
 	if beforeId > 0 {
 		db = db.Where("id>?", beforeId)
@@ -97,6 +97,15 @@ func (s *Store) GetAddressWithdrawsByUserId(userId, beforeId, afterId, limit int
 		return nil, nil
 	}
 	return withdraws, err
+}
+
+func (s *Store) GetAddressWithdrawsByOrderSN(orderSN string) (*models.AddressWithdraw, error) {
+	var withdraw *models.AddressWithdraw
+	err := s.db.Where("order_sn =?", orderSN).Find(&withdraw).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return withdraw, err
 }
 
 func (s *Store) AddAddressWithdraw(withdraw *models.AddressWithdraw) error {

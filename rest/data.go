@@ -136,8 +136,13 @@ type AccountScanRequest struct {
 	Number float64 `json:"number" binding:"required"`
 }
 
-type CurrencyWithdrawRequest struct {
+type AddressWithdrawRequest struct {
 	Address string  `json:"address" binding:"required"`
 	Coin    string  `json:"coin" binding:"required"`
 	Number  float64 `json:"number" binding:"required"`
+}
+
+type AddressPassWithdrawRequest struct {
+	OrderSN string `json:"order_sn" binding:"required"`
+	Status  int    `json:"status" binding:"required"`
 }

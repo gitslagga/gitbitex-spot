@@ -455,6 +455,7 @@ type AddressWithdraw struct {
 	TxId      string
 	Coin      string
 	Address   string
+	OrderSN   string
 	Value     decimal.Decimal
 	Actual    decimal.Decimal
 	Status    int

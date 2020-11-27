@@ -2,8 +2,11 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/shopspring/decimal"
+	"math/rand"
 	"strconv"
+	"time"
 	"unicode"
 )
 
@@ -93,4 +96,18 @@ func MapToStructViaJson(data map[string]interface{}) interface{} {
 	j, _ := json.Marshal(data)
 	_ = json.Unmarshal(j, &m)
 	return m
+}
+
+// get orderSN
+func GetOrderSN() string {
+	letterByte := []byte(`abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`)
+	n := 6
+
+	b := make([]byte, n)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := range b {
+		b[i] = letterByte[r.Intn(len(letterByte))]
+	}
+
+	return fmt.Sprintf("%s%s", time.Now().Format("20060102150405"), b)
 }

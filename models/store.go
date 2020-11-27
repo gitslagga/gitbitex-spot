@@ -117,6 +117,7 @@ type Store interface {
 	AddAddressDeposit(deposit *AddressDeposit) error
 	UpdateAddressDeposit(deposit *AddressDeposit) error
 	GetAddressWithdrawsByUserId(userId, before, after, limit int64) ([]*AddressWithdraw, error)
+	GetAddressWithdrawsByOrderSN(orderSN string) (*AddressWithdraw, error)
 	AddAddressWithdraw(withdraw *AddressWithdraw) error
 	UpdateAddressWithdraw(withdraw *AddressWithdraw) error
 }
