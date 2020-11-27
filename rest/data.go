@@ -22,8 +22,12 @@ const (
 	EC_USERNAME_PASSWORD_ERR = 9004
 	EC_ACTIVATION_SELF_ERR   = 9005
 
-	EC_CLIENT_OID_ERR   = 8000
-	EC_ORDER_NOT_EXISTS = 8001
+	EC_CLIENT_OID_ERR      = 8000
+	EC_ORDER_NOT_EXISTS    = 8001
+	EC_THE_SAME_ACCOUNT    = 8002
+	EC_SHOP_ONLY_ENTER     = 8003
+	EC_CURRENCY_NOT_EXISTS = 8004
+	EC_POOL_ONLY_BITE      = 8005
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -70,6 +74,14 @@ func (c ErrorCode) String() (r string) {
 		r = "无效的客户ID: %v|invalid client_oid"
 	case EC_ORDER_NOT_EXISTS:
 		r = "订单不存在|order not found"
+	case EC_THE_SAME_ACCOUNT:
+		r = "相同账户不能划转|The same account cannot be transferred"
+	case EC_SHOP_ONLY_ENTER:
+		r = "商城账户只进不出|Mall account can only enter but not exit"
+	case EC_CURRENCY_NOT_EXISTS:
+		r = "币种不存在|Currency does not exist"
+	case EC_POOL_ONLY_BITE:
+		r = "矿池账户只支持BITE|Mining pool accounts only support BITE"
 
 	default:
 	}

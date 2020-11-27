@@ -85,10 +85,27 @@ func AccountTransferService(ctx *gin.Context) {
 		return
 	}
 
-	if a.From == a.To || (a.Currency != models.AccountCurrencyBite && a.Currency != models.AccountCurrencyUsdt) ||
-		((a.From == models.AccountPoolTransfer || a.To == models.AccountPoolTransfer) && a.Currency != models.AccountCurrencyBite) {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+	if a.From == a.To {
+		out.RespCode = EC_THE_SAME_ACCOUNT
+		out.RespDesc = ErrorCodeMessage(EC_THE_SAME_ACCOUNT)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+	if a.From == models.AccountShopTransfer {
+		out.RespCode = EC_SHOP_ONLY_ENTER
+		out.RespDesc = ErrorCodeMessage(EC_SHOP_ONLY_ENTER)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+	if a.Currency != models.AccountCurrencyBite && a.Currency != models.AccountCurrencyUsdt && a.Currency != models.AccountCurrencyYtl {
+		out.RespCode = EC_CURRENCY_NOT_EXISTS
+		out.RespDesc = ErrorCodeMessage(EC_CURRENCY_NOT_EXISTS)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+	if (a.From == models.AccountPoolTransfer || a.To == models.AccountPoolTransfer) && a.Currency != models.AccountCurrencyBite {
+		out.RespCode = EC_POOL_ONLY_BITE
+		out.RespDesc = ErrorCodeMessage(EC_POOL_ONLY_BITE)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

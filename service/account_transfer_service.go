@@ -44,14 +44,14 @@ func AccountTransfer(userId int64, from, to int, currency string, amount float64
 		} else if to == models.AccountShopTransfer {
 			err = transferFromSpotToShop(userId, from, to, currency, number)
 		}
-	case models.AccountShopTransfer:
-		if to == models.AccountAssetTransfer {
-			err = transferFromShopToAsset(userId, from, to, currency, number)
-		} else if to == models.AccountPoolTransfer {
-			err = transferFromShopToPool(userId, from, to, currency, number)
-		} else if to == models.AccountSpotTransfer {
-			err = transferFromShopToSpot(userId, from, to, currency, number)
-		}
+		//case models.AccountShopTransfer:
+		//	if to == models.AccountAssetTransfer {
+		//		err = transferFromShopToAsset(userId, from, to, currency, number)
+		//	} else if to == models.AccountPoolTransfer {
+		//		err = transferFromShopToPool(userId, from, to, currency, number)
+		//	} else if to == models.AccountSpotTransfer {
+		//		err = transferFromShopToSpot(userId, from, to, currency, number)
+		//	}
 	}
 
 	return err
@@ -453,134 +453,134 @@ func transferFromSpotToShop(userId int64, from, to int, currency string, number 
 	return db.CommitTx()
 }
 
-func transferFromShopToAsset(userId int64, from, to int, currency string, number decimal.Decimal) error {
-	db, err := mysql.SharedStore().BeginTx()
-	if err != nil {
-		return err
-	}
-	defer func() { _ = db.Rollback() }()
-
-	shop, err := db.GetAccountShopForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	if shop.Available.LessThan(number) {
-		return errors.New("资产余额不足|Insufficient number of asset")
-	}
-	shop.Available = shop.Available.Sub(number)
-	err = db.UpdateAccountShop(shop)
-	if err != nil {
-		return err
-	}
-
-	asset, err := db.GetAccountAssetForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	asset.Available = asset.Available.Add(number)
-	err = db.UpdateAccountAsset(asset)
-	if err != nil {
-		return err
-	}
-
-	err = db.AddAccountTransfer(&models.AccountTransfer{
-		UserId:   userId,
-		From:     from,
-		To:       to,
-		Currency: currency,
-		Number:   number,
-	})
-	if err != nil {
-		return err
-	}
-
-	return db.CommitTx()
-}
-
-func transferFromShopToPool(userId int64, from, to int, currency string, number decimal.Decimal) error {
-	db, err := mysql.SharedStore().BeginTx()
-	if err != nil {
-		return err
-	}
-	defer func() { _ = db.Rollback() }()
-
-	shop, err := db.GetAccountShopForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	if shop.Available.LessThan(number) {
-		return errors.New("资产余额不足|Insufficient number of asset")
-	}
-	shop.Available = shop.Available.Sub(number)
-	err = db.UpdateAccountShop(shop)
-	if err != nil {
-		return err
-	}
-
-	pool, err := db.GetAccountPoolForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	pool.Available = pool.Available.Add(number)
-	err = db.UpdateAccountPool(pool)
-	if err != nil {
-		return err
-	}
-
-	err = db.AddAccountTransfer(&models.AccountTransfer{
-		UserId:   userId,
-		From:     from,
-		To:       to,
-		Currency: currency,
-		Number:   number,
-	})
-	if err != nil {
-		return err
-	}
-
-	return db.CommitTx()
-}
-
-func transferFromShopToSpot(userId int64, from, to int, currency string, number decimal.Decimal) error {
-	db, err := mysql.SharedStore().BeginTx()
-	if err != nil {
-		return err
-	}
-	defer func() { _ = db.Rollback() }()
-
-	shop, err := db.GetAccountShopForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	if shop.Available.LessThan(number) {
-		return errors.New("资产余额不足|Insufficient number of asset")
-	}
-	shop.Available = shop.Available.Sub(number)
-	err = db.UpdateAccountShop(shop)
-	if err != nil {
-		return err
-	}
-
-	spot, err := db.GetAccountForUpdate(userId, currency)
-	if err != nil {
-		return err
-	}
-	spot.Available = spot.Available.Add(number)
-	err = db.UpdateAccount(spot)
-	if err != nil {
-		return err
-	}
-
-	err = db.AddAccountTransfer(&models.AccountTransfer{
-		UserId:   userId,
-		From:     from,
-		To:       to,
-		Currency: currency,
-		Number:   number,
-	})
-	if err != nil {
-		return err
-	}
-
-	return db.CommitTx()
-}
+//func transferFromShopToAsset(userId int64, from, to int, currency string, number decimal.Decimal) error {
+//	db, err := mysql.SharedStore().BeginTx()
+//	if err != nil {
+//		return err
+//	}
+//	defer func() { _ = db.Rollback() }()
+//
+//	shop, err := db.GetAccountShopForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	if shop.Available.LessThan(number) {
+//		return errors.New("资产余额不足|Insufficient number of asset")
+//	}
+//	shop.Available = shop.Available.Sub(number)
+//	err = db.UpdateAccountShop(shop)
+//	if err != nil {
+//		return err
+//	}
+//
+//	asset, err := db.GetAccountAssetForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	asset.Available = asset.Available.Add(number)
+//	err = db.UpdateAccountAsset(asset)
+//	if err != nil {
+//		return err
+//	}
+//
+//	err = db.AddAccountTransfer(&models.AccountTransfer{
+//		UserId:   userId,
+//		From:     from,
+//		To:       to,
+//		Currency: currency,
+//		Number:   number,
+//	})
+//	if err != nil {
+//		return err
+//	}
+//
+//	return db.CommitTx()
+//}
+//
+//func transferFromShopToPool(userId int64, from, to int, currency string, number decimal.Decimal) error {
+//	db, err := mysql.SharedStore().BeginTx()
+//	if err != nil {
+//		return err
+//	}
+//	defer func() { _ = db.Rollback() }()
+//
+//	shop, err := db.GetAccountShopForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	if shop.Available.LessThan(number) {
+//		return errors.New("资产余额不足|Insufficient number of asset")
+//	}
+//	shop.Available = shop.Available.Sub(number)
+//	err = db.UpdateAccountShop(shop)
+//	if err != nil {
+//		return err
+//	}
+//
+//	pool, err := db.GetAccountPoolForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	pool.Available = pool.Available.Add(number)
+//	err = db.UpdateAccountPool(pool)
+//	if err != nil {
+//		return err
+//	}
+//
+//	err = db.AddAccountTransfer(&models.AccountTransfer{
+//		UserId:   userId,
+//		From:     from,
+//		To:       to,
+//		Currency: currency,
+//		Number:   number,
+//	})
+//	if err != nil {
+//		return err
+//	}
+//
+//	return db.CommitTx()
+//}
+//
+//func transferFromShopToSpot(userId int64, from, to int, currency string, number decimal.Decimal) error {
+//	db, err := mysql.SharedStore().BeginTx()
+//	if err != nil {
+//		return err
+//	}
+//	defer func() { _ = db.Rollback() }()
+//
+//	shop, err := db.GetAccountShopForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	if shop.Available.LessThan(number) {
+//		return errors.New("资产余额不足|Insufficient number of asset")
+//	}
+//	shop.Available = shop.Available.Sub(number)
+//	err = db.UpdateAccountShop(shop)
+//	if err != nil {
+//		return err
+//	}
+//
+//	spot, err := db.GetAccountForUpdate(userId, currency)
+//	if err != nil {
+//		return err
+//	}
+//	spot.Available = spot.Available.Add(number)
+//	err = db.UpdateAccount(spot)
+//	if err != nil {
+//		return err
+//	}
+//
+//	err = db.AddAccountTransfer(&models.AccountTransfer{
+//		UserId:   userId,
+//		From:     from,
+//		To:       to,
+//		Currency: currency,
+//		Number:   number,
+//	})
+//	if err != nil {
+//		return err
+//	}
+//
+//	return db.CommitTx()
+//}
