@@ -175,7 +175,7 @@ func backendWithdraw(withdraw *models.AddressWithdraw) error {
 		return err
 	}
 
-	coinAsset.Hold = coinAsset.Hold.Sub(withdraw.Value)
+	coinAsset.Hold = coinAsset.Hold.Sub(withdraw.Actual)
 	err = db.UpdateAccountAsset(coinAsset)
 	if err != nil {
 		return err
@@ -201,8 +201,8 @@ func backendUnPassWithdraw(withdraw *models.AddressWithdraw) error {
 		return err
 	}
 
-	coinAsset.Available = coinAsset.Available.Add(withdraw.Value)
-	coinAsset.Hold = coinAsset.Hold.Sub(withdraw.Value)
+	coinAsset.Available = coinAsset.Available.Add(withdraw.Actual)
+	coinAsset.Hold = coinAsset.Hold.Sub(withdraw.Actual)
 	err = db.UpdateAccountAsset(coinAsset)
 	if err != nil {
 		return err

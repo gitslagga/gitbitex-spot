@@ -100,12 +100,12 @@ func (s *Store) GetAddressWithdrawsByUserId(userId, beforeId, afterId, limit int
 }
 
 func (s *Store) GetAddressWithdrawsByOrderSN(orderSN string) (*models.AddressWithdraw, error) {
-	var withdraw *models.AddressWithdraw
-	err := s.db.Where("order_sn =?", orderSN).Find(&withdraw).Error
+	var withdraw models.AddressWithdraw
+	err := s.db.Where("order_sn=?", orderSN).First(&withdraw).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return withdraw, err
+	return &withdraw, err
 }
 
 func (s *Store) AddAddressWithdraw(withdraw *models.AddressWithdraw) error {
