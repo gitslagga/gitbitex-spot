@@ -83,9 +83,6 @@ func PlaceOrder(ctx *gin.Context) {
 		}
 	}
 
-	//todo
-	//size, err := utils.StringToFloat64(req.size)
-	//price, err := utils.StringToFloat64(req.price)
 	size := decimal.NewFromFloat(req.Size)
 	price := decimal.NewFromFloat(req.Price)
 	funds := decimal.NewFromFloat(req.Funds)

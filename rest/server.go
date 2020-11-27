@@ -28,7 +28,6 @@ func (server *HttpServer) Start() {
 	r.POST("/api/users/token", GetToken)
 	r.GET("/api/products", GetProducts)
 	r.GET("/api/products/:productId/trades", GetProductTrades)
-	r.GET("/api/products/:productId/book", GetProductOrderBook)
 	r.GET("/api/products/:productId/candles", GetProductCandles)
 
 	private := r.Group("/", checkToken())
@@ -53,7 +52,6 @@ func (server *HttpServer) Start() {
 
 	r.GET("/api/product/info", GetProductService)
 	r.GET("/api/trade/:productId", GetProductTradeService)
-	r.GET("/api/book/:productId", GetProductOrderBookService)
 	r.GET("/api/candle/:productId", GetProductCandleService)
 
 	frontend := r.Group("/api", checkFrontendToken())

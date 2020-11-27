@@ -24,16 +24,6 @@ func GetProducts(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, productVos)
 }
 
-// GET /products/<product-id>/book?level=[1,2,3]
-func GetProductOrderBook(ctx *gin.Context) {
-	//todo
-}
-
-// GET /products/<product-id>/ticker
-func GetProductTicker() {
-	//todo
-}
-
 // GET /products/<product-id>/trades
 func GetProductTrades(ctx *gin.Context) {
 	productId := ctx.Param("productId")
@@ -115,16 +105,6 @@ func GetProductTradeService(ctx *gin.Context) {
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
 	out.RespData = trades
-	ctx.JSON(http.StatusOK, out)
-}
-
-// GET /book/:productId
-func GetProductOrderBookService(ctx *gin.Context) {
-	out := CommonResp{}
-
-	out.RespCode = EC_NONE.Code()
-	out.RespDesc = EC_NONE.String()
-	out.RespData = "Coming"
 	ctx.JSON(http.StatusOK, out)
 }
 
