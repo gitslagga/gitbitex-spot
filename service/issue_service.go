@@ -44,7 +44,7 @@ func BackendIssueList() ([]map[string]interface{}, error) {
 	return issueMap, nil
 }
 
-func BackendIssueRelease() error {
+func BackendIssueStart() error {
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
 		return err
@@ -73,16 +73,16 @@ func BackendIssueRelease() error {
 	}
 
 	for _, v := range accountAssets {
-		err = backendIssueRelease(v.UserId, v.Available.Div(total).Mul(issueReward).Mul(biteRate), issueConfigs)
+		err = backendIssueStart(v.UserId, v.Available.Div(total).Mul(issueReward).Mul(biteRate), issueConfigs)
 		if err != nil {
-			mylog.Logger.Error().Msgf("BackendIssueRelease userId:%v, err:%v", v.UserId, err)
+			mylog.Logger.Error().Msgf("BackendIssueStart userId:%v, err:%v", v.UserId, err)
 		}
 	}
 
 	return nil
 }
 
-func backendIssueRelease(userId int64, deduction decimal.Decimal, config []*models.IssueConfig) error {
+func backendIssueStart(userId int64, deduction decimal.Decimal, config []*models.IssueConfig) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err

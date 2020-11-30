@@ -26,10 +26,10 @@ func BackendIssueListService(ctx *gin.Context) {
 }
 
 // Post /backend/issue/release
-func BackendIssueReleaseService(ctx *gin.Context) {
+func BackendIssueStartService(ctx *gin.Context) {
 	out := CommonResp{}
 
-	err := service.BackendIssueRelease()
+	err := service.BackendIssueStart()
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = err.Error()
