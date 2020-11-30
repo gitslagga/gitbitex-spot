@@ -7,9 +7,9 @@ import (
 )
 
 func StartTokenInfo() {
-	t := time.NewTicker(60 * time.Minute)
 	TokenInfo()
 
+	t := time.NewTicker(60 * time.Minute)
 	for {
 		select {
 		case <-t.C:

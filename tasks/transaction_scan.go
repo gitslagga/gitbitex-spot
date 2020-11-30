@@ -33,9 +33,9 @@ func StartTransactionScan() {
 
 	mylog.DataLogger.Info().Msgf("first scan height:%v", blockHeight)
 
-	t := time.NewTicker(60 * time.Second)
-
 	TransactionScan()
+
+	t := time.NewTicker(60 * time.Second)
 	for {
 		select {
 		case <-t.C:

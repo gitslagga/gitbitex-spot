@@ -26,6 +26,15 @@ func (s *Store) GetIssueByUserId(userId, beforeId, afterId, limit int64) ([]*mod
 	return issues, err
 }
 
+func (s *Store) GetIssueUsedList() ([]*models.Issue, error) {
+	var issues []*models.Issue
+	err := s.db.Raw("SELECT * FROM g_issue WHERE remain>0").Scan(&issues).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return issues, err
+}
+
 func (s *Store) AddIssue(issue *models.Issue) error {
 	return s.db.Create(issue).Error
 }
@@ -62,6 +71,16 @@ func (s *Store) GetIssueLogByUserId(userId, beforeId, afterId, limit int64) ([]*
 		return nil, nil
 	}
 	return issueLogs, err
+}
+
+func (s *Store) GetLastIssueLog(issueId int64) (*models.IssueLog, error) {
+	var issueLog models.IssueLog
+	err := s.db.Raw("SELECT * FROM g_issue_log WHERE issue_id=? ORDER BY id DESC LIMIT 1",
+		issueId).Scan(&issueLog).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &issueLog, err
 }
 
 func (s *Store) AddIssueLog(issueLog *models.IssueLog) error {

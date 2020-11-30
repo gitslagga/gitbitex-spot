@@ -126,9 +126,11 @@ type Store interface {
 	UpdateAddressWithdraw(withdraw *AddressWithdraw) error
 
 	GetIssueByUserId(userId, beforeId, afterId, limit int64) ([]*Issue, error)
+	GetIssueUsedList() ([]*Issue, error)
 	AddIssue(issue *Issue) error
 	UpdateIssue(issue *Issue) error
 	GetIssueConfigs() ([]*IssueConfig, error)
 	GetIssueLogByUserId(userId, beforeId, afterId, limit int64) ([]*IssueLog, error)
+	GetLastIssueLog(issueId int64) (*IssueLog, error)
 	AddIssueLog(issueLog *IssueLog) error
 }

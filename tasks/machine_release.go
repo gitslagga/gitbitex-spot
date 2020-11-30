@@ -9,9 +9,9 @@ import (
 )
 
 func StartMachineRelease() {
-	t := time.NewTicker(6 * time.Hour)
 	MachineRelease()
 
+	t := time.NewTicker(24 * time.Hour)
 	for {
 		select {
 		case <-t.C:
@@ -38,7 +38,7 @@ func MachineRelease() {
 	}
 
 	machineAddress, err := mysql.SharedStore().GetMachineAddressUsedList()
-	if err == nil && len(machineAddress) > 0 {
+	if err == nil {
 		for i := 0; i < len(machineAddress); i++ {
 			//获取矿机最后一条挖矿记录
 			machineLog, err := mysql.SharedStore().GetLastMachineLog(machineAddress[i].Id)
