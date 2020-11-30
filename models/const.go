@@ -82,3 +82,10 @@ const (
 	CurrencyWithdrawUnPass   = 4
 	CurrencyWithdrawCanceled = 5
 )
+
+const (
+	IssueFirstEveryMonth  = 0
+	IssueSecondEveryMonth = 1
+	IssueThreeEveryMonth  = 2
+	IssueFourEveryMonth   = 3
+)

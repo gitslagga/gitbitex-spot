@@ -460,3 +460,36 @@ type AddressWithdraw struct {
 	Actual    decimal.Decimal
 	Status    int
 }
+
+type Issue struct {
+	Id           int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	UserId       int64
+	Coin         string
+	Number       decimal.Decimal `gorm:"column:number" sql:"type:decimal(32,16);"`
+	Remain       decimal.Decimal `gorm:"column:remain" sql:"type:decimal(32,16);"`
+	Count        int
+	ReleaseOne   decimal.Decimal
+	ReleaseTwo   decimal.Decimal
+	ReleaseThree decimal.Decimal
+	ReleaseFour  decimal.Decimal
+}
+
+type IssueConfig struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Key       string
+	Value     decimal.Decimal
+	Number    decimal.Decimal
+}
+
+type IssueLog struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	IssueId   int64
+	Number    decimal.Decimal
+}

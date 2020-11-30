@@ -3,6 +3,7 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
+	"github.com/shopspring/decimal"
 )
 
 func (s *Store) GetAccountAsset(userId int64, currency string) (*models.AccountAsset, error) {
@@ -30,6 +31,24 @@ func (s *Store) GetAccountAssetForUpdate(userId int64, currency string) (*models
 		return nil, nil
 	}
 	return &account, err
+}
+
+func (s *Store) GetIssueAccountAsset() ([]*models.AccountAsset, error) {
+	var assets []*models.AccountAsset
+	err := s.db.Raw("SELECT * FROM g_account_asset WHERE currency='USDT' AND available>0").Scan(&assets).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return assets, err
+}
+
+func (s *Store) SumIssueAccountAsset() (decimal.Decimal, error) {
+	var number models.SumNumber
+	err := s.db.Raw("SELECT SUM(available) FROM g_account_asset WHERE currency='USDT' AND available>0").Scan(&number).Error
+	if err == gorm.ErrRecordNotFound {
+		return decimal.Zero, nil
+	}
+	return number.Number, err
 }
 
 func (s *Store) AddAccountAsset(account *models.AccountAsset) error {

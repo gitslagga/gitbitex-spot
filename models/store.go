@@ -1,6 +1,8 @@
 package models
 
-import "github.com/shopspring/decimal"
+import (
+	"github.com/shopspring/decimal"
+)
 
 type Store interface {
 	BeginTx() (Store, error)
@@ -63,6 +65,8 @@ type Store interface {
 	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
 	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
+	GetIssueAccountAsset() ([]*AccountAsset, error)
+	SumIssueAccountAsset() (decimal.Decimal, error)
 	AddAccountAsset(account *AccountAsset) error
 	UpdateAccountAsset(account *AccountAsset) error
 
@@ -120,4 +124,11 @@ type Store interface {
 	GetAddressWithdrawsByOrderSN(orderSN string) (*AddressWithdraw, error)
 	AddAddressWithdraw(withdraw *AddressWithdraw) error
 	UpdateAddressWithdraw(withdraw *AddressWithdraw) error
+
+	GetIssueByUserId(userId, beforeId, afterId, limit int64) ([]*Issue, error)
+	AddIssue(issue *Issue) error
+	UpdateIssue(issue *Issue) error
+	GetIssueConfigs() ([]*IssueConfig, error)
+	GetIssueLogByUserId(userId, beforeId, afterId, limit int64) ([]*IssueLog, error)
+	AddIssueLog(issueLog *IssueLog) error
 }

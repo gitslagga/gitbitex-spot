@@ -95,6 +95,8 @@ func (server *HttpServer) Start() {
 
 	//Backend use
 	r.POST("/backend/address/withdraw", BackendWithdrawService)
+	r.GET("/backend/issue/list", BackendIssueListService)
+	r.POST("/backend/issue/release", BackendIssueReleaseService)
 
 	err := r.Run(server.addr)
 	if err != nil {
