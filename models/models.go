@@ -256,6 +256,19 @@ type Address struct {
 	MachineLevelId int64
 }
 
+type AddressList struct {
+	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	UserId     int64
+	Username   string
+	Password   string
+	Address    string
+	PublicKey  string
+	PrivateKey string
+	Mnemonic   string
+}
+
 type AccountAsset struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time

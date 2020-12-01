@@ -8,6 +8,9 @@ const (
 )
 
 const (
+	AccountDefaultName = "Account1"
+	AccountMaxAddress  = 100
+
 	AccountCurrencyYtl  = "YTL"
 	AccountCurrencyBite = "BITE"
 	AccountCurrencyUsdt = "USDT"

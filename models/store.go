@@ -62,6 +62,14 @@ type Store interface {
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
 
+	GetAddressListByAddress(address string) (*AddressList, error)
+	GetAddressListById(id int64) (*AddressList, error)
+	GetAddressListByUserId(userId int64) ([]*AddressList, error)
+	CountAddressListByUserId(userId int64) (int, error)
+	AddAddressList(addressList *AddressList) error
+	UpdateAddressList(addressList *AddressList) error
+	DeleteAddressList(addressList *AddressList) error
+
 	GetAccountAsset(userId int64, currency string) (*AccountAsset, error)
 	GetAccountsAssetByUserId(userId int64) ([]*AccountAsset, error)
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)

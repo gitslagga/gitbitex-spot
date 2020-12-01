@@ -158,3 +158,7 @@ type AddressPassWithdrawRequest struct {
 	OrderSN string `json:"order_sn" binding:"required"`
 	Status  int    `json:"status" binding:"required"`
 }
+
+type AddressListRequest struct {
+	Address string `json:"address" binding:"required"`
+}

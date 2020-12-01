@@ -69,6 +69,11 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/withdraw", AddressWithdrawService)
 		frontend.GET("/address/withdrawInfo", AddressWithdrawInfoService)
 
+		frontend.GET("/address/list", AddressListService)
+		frontend.POST("/address/addList", AddressAddListService)
+		frontend.DELETE("/address/delList", AddressDelListService)
+		frontend.POST("/address/switchList", AddressSwitchListService)
+
 		//币币交易
 		frontend.GET("/order/info", GetOrderService)
 		frontend.POST("/order/place", PlaceOrderService)

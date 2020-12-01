@@ -96,6 +96,15 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return nil, err
 	}
 
+	//子地址不能注册或登录，会引发地址混乱冲突
+	addressList, err := mysql.SharedStore().GetAddressListByAddress(address.Address)
+	if err != nil {
+		return nil, err
+	}
+	if addressList != nil {
+		return nil, errors.New("子地址不能注册或登录|Sub address cannot be registered or logged in")
+	}
+
 	address.Username = username
 	address.Password = password
 
@@ -132,6 +141,15 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 		return nil, err
 	}
 
+	//子地址不能注册或登录，会引发地址混乱冲突
+	addressList, err := mysql.SharedStore().GetAddressListByAddress(address.Address)
+	if err != nil {
+		return nil, err
+	}
+	if addressList != nil {
+		return nil, errors.New("子地址不能注册或登录|Sub address cannot be registered or logged in")
+	}
+
 	address.Password = password
 
 	addressExists, err := GetAddressByAddress(address.Address)
@@ -144,7 +162,7 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 		return address, UpdateAddress(address)
 	}
 
-	address.Username = "Account1"
+	address.Username = models.AccountDefaultName
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
 		return nil, err
