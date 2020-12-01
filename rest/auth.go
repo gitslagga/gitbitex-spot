@@ -91,3 +91,23 @@ func GetCurrentAddress(ctx *gin.Context) *models.Address {
 	}
 	return val.(*models.Address)
 }
+
+func BackendAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		out := CommonResp{}
+
+		// 定义ip白名单
+		whiteList := map[string]bool{
+			"127.0.0.1": true,
+		}
+
+		if _, ok := whiteList[c.ClientIP()]; !ok {
+			out.RespCode = EC_WHITE_LIST_ERR
+			out.RespDesc = ErrorCodeMessage(EC_WHITE_LIST_ERR)
+			c.AbortWithStatusJSON(http.StatusOK, out)
+			return
+		}
+
+		c.Next()
+	}
+}

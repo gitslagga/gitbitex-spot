@@ -14,6 +14,7 @@ const (
 	EC_TOKEN_INVALID               = 10003
 	EC_RESPONSE_DATA_ERR           = 10004
 	EC_REQUEST_DATA_ERR            = 10005
+	EC_WHITE_LIST_ERR              = 10006
 
 	EC_PASSWORD_ERR          = 9000
 	EC_MNEMONIC_INCORRECT    = 9001
@@ -56,6 +57,8 @@ func (c ErrorCode) String() (r string) {
 		r = "请重新登录|Please login again"
 	case EC_REQUEST_DATA_ERR:
 		r = "非法请求|Illegal request"
+	case EC_WHITE_LIST_ERR:
+		r = "不在白名单中|Not in whitelist"
 
 	case EC_PASSWORD_ERR:
 		r = "密码长度必须至少为6个字符|password must be of minimum 6 characters length"
