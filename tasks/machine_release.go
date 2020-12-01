@@ -39,9 +39,9 @@ func MachineRelease() {
 
 	machineAddress, err := mysql.SharedStore().GetMachineAddressUsedList()
 	if err == nil {
-		for i := 0; i < len(machineAddress); i++ {
+		for _, v := range machineAddress {
 			//获取矿机最后一条挖矿记录
-			machineLog, err := mysql.SharedStore().GetLastMachineLog(machineAddress[i].Id)
+			machineLog, err := mysql.SharedStore().GetLastMachineLog(v.Id)
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("MachineRelease GetLastMachineLog err: %v", err)
 				continue
@@ -57,9 +57,9 @@ func MachineRelease() {
 			}
 
 			//获取实际应得的YTL数量
-			number := machineAddress[i].Number.Div(ytlRate)
+			number := v.Number.Div(ytlRate)
 
-			err = machineRelease(machineAddress[i], number)
+			err = machineRelease(v, number)
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("MachineRelease machineRelease err: %v", err)
 			}

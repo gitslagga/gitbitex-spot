@@ -39,9 +39,9 @@ func IssueRelease() {
 
 	issueUsedList, err := mysql.SharedStore().GetIssueUsedList()
 	if err == nil {
-		for i := 0; i < len(issueUsedList); i++ {
+		for _, v := range issueUsedList {
 			//获取认购最后一条释放记录
-			issueLog, err := mysql.SharedStore().GetLastIssueLog(issueUsedList[i].Id)
+			issueLog, err := mysql.SharedStore().GetLastIssueLog(v.Id)
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("IssueRelease GetLastIssueLog err: %v", err)
 				continue
@@ -58,20 +58,20 @@ func IssueRelease() {
 
 			//获取实际应得的BITE数量
 			var number decimal.Decimal
-			if time.Now().Before(issueUsedList[i].CreatedAt.Add(90 * 24 * time.Hour)) {
-				number = issueUsedList[i].ReleaseOne
-			} else if time.Now().Before(issueUsedList[i].CreatedAt.Add(180 * 24 * time.Hour)) {
-				number = issueUsedList[i].ReleaseTwo
-			} else if time.Now().Before(issueUsedList[i].CreatedAt.Add(270 * 24 * time.Hour)) {
-				number = issueUsedList[i].ReleaseThree.Div(biteRate)
+			if time.Now().Before(v.CreatedAt.Add(90 * 24 * time.Hour)) {
+				number = v.Number.Mul(v.ReleaseOne)
+			} else if time.Now().Before(v.CreatedAt.Add(180 * 24 * time.Hour)) {
+				number = v.Number.Mul(v.ReleaseTwo)
+			} else if time.Now().Before(v.CreatedAt.Add(270 * 24 * time.Hour)) {
+				number = v.Number.Mul(v.ReleaseThree)
 			} else {
-				number = issueUsedList[i].ReleaseFour.Div(biteRate)
+				number = v.Number.Mul(v.ReleaseFour)
 			}
-			if issueUsedList[i].Remain.LessThan(number) {
-				number = issueUsedList[i].Remain
+			if v.Remain.LessThan(number) {
+				number = v.Remain
 			}
 
-			err = issueRelease(issueUsedList[i], number, number.Div(biteRate))
+			err = issueRelease(v, number, number.Div(biteRate))
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("IssueRelease machineRelease err: %v", err)
 			}

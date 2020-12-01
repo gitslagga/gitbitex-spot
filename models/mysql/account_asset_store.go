@@ -44,7 +44,7 @@ func (s *Store) GetIssueAccountAsset() ([]*models.AccountAsset, error) {
 
 func (s *Store) SumIssueAccountAsset() (decimal.Decimal, error) {
 	var number models.SumNumber
-	err := s.db.Raw("SELECT SUM(available) FROM g_account_asset WHERE currency='USDT' AND available>0").Scan(&number).Error
+	err := s.db.Raw("SELECT SUM(available) as number FROM g_account_asset WHERE currency='USDT' AND available>0").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}

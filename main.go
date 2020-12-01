@@ -47,6 +47,7 @@ func main() {
 	go tasks.StartTokenInfo()
 	go tasks.StartTransactionScan()
 	go tasks.StartSendToMainTask()
+	go tasks.StartIssueRelease()
 
 	select {}
 }
