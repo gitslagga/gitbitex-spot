@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
-	"github.com/gitslagga/gitbitex-spot/utils"
 )
 
 func GetAddressListByAddress(addressList string) (*models.AddressList, error) {
@@ -32,20 +31,13 @@ func UpdateAddressList(addressList *models.AddressList) error {
 	return mysql.SharedStore().UpdateAddressList(addressList)
 }
 
-func AddressListService(address *models.Address) ([]map[string]interface{}, error) {
+func AddressListService(address *models.Address) ([]*models.AddressList, error) {
 	addressList, err := GetAddressListByUserId(address.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	addressListMap := make([]map[string]interface{}, len(addressList)+1)
-	addressListMap[0] = utils.StructToMapViaJson(address)
-
-	for k, _ := range addressList {
-		addressListMap[k+1] = utils.StructToMapViaJson(addressList[k])
-	}
-
-	return addressListMap, nil
+	return addressList, nil
 }
 
 func AddressAddList(userId int64, mnemonic, privateKey, password string) error {
