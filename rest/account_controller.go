@@ -3,6 +3,7 @@ package rest
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gitslagga/gitbitex-spot/models"
+	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
 	"strconv"
@@ -53,7 +54,7 @@ func AccountAddressService(ctx *gin.Context) {
 	accountAddress, err := service.AccountAddress(address.Id)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -112,8 +113,9 @@ func AccountTransferService(ctx *gin.Context) {
 
 	err = service.AccountTransfer(address.Id, a.From, a.To, a.Currency, a.Number)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] AccountTransferService AccountTransfer err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -181,8 +183,9 @@ func AccountScanService(ctx *gin.Context) {
 
 	err = service.AccountScan(address.Id, accountScan.Url, accountScan.Number)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] AccountScanService AccountScan err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

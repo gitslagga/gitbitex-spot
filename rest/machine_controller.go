@@ -63,7 +63,7 @@ func BuyMachineService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BuyMachineService BuyMachine err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -172,8 +172,9 @@ func MachineConvertService(ctx *gin.Context) {
 	// ConvertType: 1-ytl兑换bite, 2-bite兑换ytl
 	err = service.MachineConvert(address, machineConvert.ConvertType, machineConvert.Number)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] MachineConvertService MachineConvert err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
