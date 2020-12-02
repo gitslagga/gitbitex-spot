@@ -132,7 +132,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		}
 		for _, v := range configs {
 			if parentAddress.InviteNum >= v.InviteNum {
-				address.ConvertFee = v.ConvertFee
+				parentAddress.ConvertFee = v.ConvertFee
 			}
 		}
 
