@@ -42,7 +42,7 @@ func AddressListService(address *models.Address) ([]map[string]interface{}, erro
 	addressListMap[0] = utils.StructToMapViaJson(address)
 
 	for k, _ := range addressList {
-		addressListMap[k+1] = utils.StructToMapViaJson(addressList)
+		addressListMap[k+1] = utils.StructToMapViaJson(addressList[k])
 	}
 
 	return addressListMap, nil
@@ -96,11 +96,14 @@ func DeleteAddressList(address string) error {
 	if err != nil {
 		return err
 	}
+	if addressList == nil {
+		return errors.New("子地址未找到|Sub address not found")
+	}
 
-	return mysql.SharedStore().DeleteAddressList(addressList)
+	return mysql.SharedStore().DeleteAddressList(addressList.Id)
 }
 
-func AddressSwitchList(address *models.Address, addressList *models.AddressList) error {
+func AddressSwitchList(address *models.Address, addressList *models.AddressList) (*models.Address, error) {
 	addressTemp := *address
 
 	address.Username = addressList.Username
@@ -117,7 +120,12 @@ func AddressSwitchList(address *models.Address, addressList *models.AddressList)
 	addressList.PrivateKey = addressTemp.PrivateKey
 	addressList.Mnemonic = addressTemp.Mnemonic
 
-	return addressSwitchList(address, addressList)
+	err := addressSwitchList(address, addressList)
+	if err != nil {
+		return nil, err
+	}
+
+	return address, nil
 }
 
 func addressSwitchList(address *models.Address, addressList *models.AddressList) error {

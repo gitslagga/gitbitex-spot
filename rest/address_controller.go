@@ -189,6 +189,7 @@ func FindPasswordService(ctx *gin.Context) {
 	address.Password = encryptPassword(findPassword.Password)
 	err = service.UpdateAddress(address)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] FindPasswordService UpdateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -232,6 +233,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 	address.Password = encryptPassword(modifyPassword.NewPassword)
 	err = service.UpdateAddress(address)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] ModifyPasswordService UpdateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -274,8 +276,9 @@ func ActivationService(ctx *gin.Context) {
 
 	err = service.ActivationAddress(address, activation.Number, activation.Address)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] ActivationService ActivationAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

@@ -98,7 +98,7 @@ func (server *HttpServer) Start() {
 		frontend.GET("/account/scanInfo", AccountScanInfoService)
 	}
 
-	//Backend use
+	//Backend
 	backend := r.Group("/backend", BackendAuth())
 	{
 		backend.POST("/address/withdraw", BackendWithdrawService)

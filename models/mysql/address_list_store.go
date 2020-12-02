@@ -49,6 +49,6 @@ func (s *Store) UpdateAddressList(addressList *models.AddressList) error {
 	return s.db.Save(addressList).Error
 }
 
-func (s *Store) DeleteAddressList(addressList *models.AddressList) error {
-	return s.db.Where("id=", addressList.Id).Delete(addressList).Error
+func (s *Store) DeleteAddressList(addressListId int64) error {
+	return s.db.Delete(&models.AddressList{}, addressListId).Error
 }

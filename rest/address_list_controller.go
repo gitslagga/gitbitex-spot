@@ -99,8 +99,9 @@ func AddressDelListService(ctx *gin.Context) {
 
 	err = service.DeleteAddressList(addressListRequest.Address)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] AddressDelListService DeleteAddressList err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -141,16 +142,27 @@ func AddressSwitchListService(ctx *gin.Context) {
 		return
 	}
 
-	err = service.AddressSwitchList(address, addressList)
+	address, err = service.AddressSwitchList(address, addressList)
 	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] AddressSwitchListService AddressSwitchList err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = err.Error()
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	token, err := service.CreateFrontendToken(address)
+	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] AddressSwitchListService CreateFrontendToken err: %v", err)
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
+	out.RespData = token
 
 	ctx.JSON(http.StatusOK, out)
 }
