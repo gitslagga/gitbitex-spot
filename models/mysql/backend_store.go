@@ -86,3 +86,53 @@ func (s *Store) GetLastIssueLog(issueId int64) (*models.IssueLog, error) {
 func (s *Store) AddIssueLog(issueLog *models.IssueLog) error {
 	return s.db.Create(issueLog).Error
 }
+
+func (s *Store) GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressHolding, error) {
+	db := s.db.Where("user_id=?", userId)
+
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
+	var holdings []*models.AddressHolding
+	err := db.Order("id DESC").Limit(limit).Find(&holdings).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return holdings, err
+}
+
+func (s *Store) AddAddressHolding(holding *models.AddressHolding) error {
+	return s.db.Create(holding).Error
+}
+
+func (s *Store) GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressPromote, error) {
+	db := s.db.Where("user_id=?", userId)
+
+	if beforeId > 0 {
+		db = db.Where("id>?", beforeId)
+	}
+	if afterId > 0 {
+		db = db.Where("id<?", afterId)
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+
+	var promotes []*models.AddressPromote
+	err := db.Order("id DESC").Limit(limit).Find(&promotes).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return promotes, err
+}
+
+func (s *Store) AddAddressPromote(promote *models.AddressPromote) error {
+	return s.db.Create(promote).Error
+}
