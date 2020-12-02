@@ -115,6 +115,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 
 	if addressExists != nil {
 		address.Id = addressExists.Id
+		address.ConvertFee = addressExists.ConvertFee
 		return address, UpdateAddress(address)
 	}
 
@@ -159,6 +160,7 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 	if addressExists != nil {
 		address.Id = addressExists.Id
 		address.Username = addressExists.Username
+		address.ConvertFee = addressExists.ConvertFee
 		return address, UpdateAddress(address)
 	}
 
