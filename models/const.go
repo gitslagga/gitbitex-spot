@@ -75,6 +75,10 @@ const (
 	ConfigScanMaxPayment
 	ConfigScanDayPayment
 	ConfigScanFeePayment
+
+	//最低持币量，最佳持币量
+	ConfigMinHolding
+	ConfigBestHolding
 )
 
 const (

@@ -506,3 +506,21 @@ type IssueLog struct {
 	IssueId   int64
 	Number    decimal.Decimal
 }
+
+type AddressHolding struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Coin      string
+	Number    decimal.Decimal
+}
+
+type AddressPromote struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Coin      string
+	Number    decimal.Decimal
+}

@@ -64,13 +64,51 @@ func BackendIssueListService(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, out)
 }
 
-// Post /backend/issue/release
+// Post /backend/issue/start
 func BackendIssueStartService(ctx *gin.Context) {
 	out := CommonResp{}
 
 	err := service.BackendIssueStart()
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendIssueStartService BackendIssueStart err: %v", err)
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+
+	ctx.JSON(http.StatusOK, out)
+}
+
+// Get /backend/holding/list
+func BackendHoldingListService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	list, err := service.BackendHoldingList()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = list
+
+	ctx.JSON(http.StatusOK, out)
+}
+
+// Post /backend/holding/start
+func BackendHoldingStartService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	err := service.BackendHoldingStart()
+	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] BackendHoldingStartService BackendHoldingStart err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)

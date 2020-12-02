@@ -61,6 +61,10 @@ type Store interface {
 	GetAddressByParentId(parentId int64) ([]*Address, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
+	GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64) ([]*AddressHolding, error)
+	AddAddressHolding(holding *AddressHolding) error
+	GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*AddressPromote, error)
+	AddAddressPromote(promote *AddressPromote) error
 
 	GetAddressListByAddress(address string) (*AddressList, error)
 	GetAddressListById(id int64) (*AddressList, error)
@@ -75,6 +79,7 @@ type Store interface {
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
 	GetIssueAccountAsset() ([]*AccountAsset, error)
 	SumIssueAccountAsset() (decimal.Decimal, error)
+	GetHoldingAccountAsset(minHolding decimal.Decimal) ([]*AccountAsset, error)
 	AddAccountAsset(account *AccountAsset) error
 	UpdateAccountAsset(account *AccountAsset) error
 
