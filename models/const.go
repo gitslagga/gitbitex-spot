@@ -25,6 +25,11 @@ const (
 	AccountScanCurrency  = "BITE"
 	AccountScanUnPayment = 1
 	AccountScanPayment   = 2
+
+	// 兑换收益和矿池收益的5%划分给商城账户
+	AccountConvertShopRate = 0.05
+	AccountHoldingShopRate = 0.05
+	AccountPromoteShopRate = 0.05
 )
 
 const (

@@ -114,8 +114,18 @@ func machineYtlConvertBite(address *models.Address, number, price, amount decima
 	if err != nil {
 		return err
 	}
-	biteAsset.Available = biteAsset.Available.Add(number)
+	biteAsset.Available = biteAsset.Available.Add(number.Mul(decimal.NewFromFloat(1 - models.AccountConvertShopRate)))
 	err = db.UpdateAccountAsset(biteAsset)
+	if err != nil {
+		return err
+	}
+
+	biteShop, err := db.GetAccountShopForUpdate(address.Id, models.AccountCurrencyBite)
+	if err != nil {
+		return err
+	}
+	biteShop.Available = biteShop.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountConvertShopRate)))
+	err = db.UpdateAccountShop(biteShop)
 	if err != nil {
 		return err
 	}
