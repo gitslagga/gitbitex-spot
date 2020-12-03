@@ -77,7 +77,7 @@ func AddressAddList(userId int64, mnemonic, privateKey, password string) error {
 		Password:   password,
 		Address:    address.Address,
 		PublicKey:  address.PublicKey,
-		PrivateKey: privateKey,
+		PrivateKey: address.PrivateKey,
 		Mnemonic:   address.Mnemonic,
 	}
 	return mysql.SharedStore().AddAddressList(addressList)
@@ -96,7 +96,14 @@ func DeleteAddressList(address string) error {
 }
 
 func AddressSwitchList(address *models.Address, addressList *models.AddressList) (*models.Address, error) {
-	addressTemp := *address
+	addressTemp := &models.Address{
+		Username:   address.Username,
+		Password:   address.Password,
+		Address:    address.Address,
+		PublicKey:  address.PublicKey,
+		PrivateKey: address.PrivateKey,
+		Mnemonic:   address.Mnemonic,
+	}
 
 	address.Username = addressList.Username
 	address.Password = addressList.Password

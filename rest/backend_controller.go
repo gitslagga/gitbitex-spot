@@ -142,3 +142,62 @@ func BackendHoldingStartService(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, out)
 }
+
+// Get /backend/promote/list
+func BackendPromoteListService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	list, err := service.BackendPromoteList()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = list
+
+	ctx.JSON(http.StatusOK, out)
+}
+
+// Post /backend/promote/start
+func BackendPromoteStartService(ctx *gin.Context) {
+	out := CommonResp{}
+
+	addressPromote, err := service.GetLastAddressPromote()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	if addressPromote != nil {
+		currentTime := time.Now()
+		startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		if addressPromote.CreatedAt.After(startTime) && addressPromote.CreatedAt.Before(endTime) {
+			out.RespCode = EC_DAY_PROFIT_RELEASED
+			out.RespDesc = ErrorCodeMessage(EC_DAY_PROFIT_RELEASED)
+			ctx.JSON(http.StatusOK, out)
+			return
+		}
+	}
+
+	err = service.BackendPromoteStart()
+	if err != nil {
+		mylog.Logger.Error().Msgf("[Rest] BackendPromoteStartService BackendPromoteStart err: %v", err)
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+
+	ctx.JSON(http.StatusOK, out)
+}

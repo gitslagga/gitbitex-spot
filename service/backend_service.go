@@ -213,7 +213,8 @@ func BackendHoldingStart() error {
 
 	for k, v := range holdingMap {
 		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
-		err = backendHoldingStart(int64(v["UserId"].(float64)), holdingMap[k]["profit"].(decimal.Decimal))
+		err = backendHoldingStart(int64(v["UserId"].(float64)), holdReward, holdingMap[k]["profit"].(decimal.Decimal),
+			totalRank, holdingMap[k]["rank"].(decimal.Decimal))
 		if err != nil {
 			mylog.Logger.Error().Msgf("backendHoldingStart userId:%v, err:%v", v["userId"], err)
 		}
@@ -222,7 +223,143 @@ func BackendHoldingStart() error {
 	return nil
 }
 
-func backendHoldingStart(userId int64, profit decimal.Decimal) error {
+func backendHoldingStart(userId int64, totalNum, number, totalRank, rank decimal.Decimal) error {
+	db, err := mysql.SharedStore().BeginTx()
+	if err != nil {
+		return err
+	}
+	defer func() { _ = db.Rollback() }()
+
+	accountAsset, err := db.GetAccountAssetForUpdate(userId, models.AccountCurrencyBite)
+	if err != nil {
+		return err
+	}
+
+	accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(1 - models.AccountHoldingShopRate)))
+	err = db.UpdateAccountAsset(accountAsset)
+	if err != nil {
+		return err
+	}
+
+	shopAsset, err := db.GetAccountShopForUpdate(userId, models.AccountCurrencyBite)
+	if err != nil {
+		return err
+	}
+
+	shopAsset.Available = shopAsset.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountHoldingShopRate)))
+	err = db.UpdateAccountShop(shopAsset)
+	if err != nil {
+		return err
+	}
+
+	err = db.AddAddressHolding(&models.AddressHolding{
+		UserId:    userId,
+		Coin:      "BITE",
+		TotalNum:  totalNum,
+		Number:    number,
+		TotalRank: int(totalRank.IntPart()),
+		Rank:      int(rank.IntPart()),
+	})
+	if err != nil {
+		return err
+	}
+
+	return db.CommitTx()
+}
+
+func BackendPromoteList() (map[string]interface{}, error) {
+	configs, err := mysql.SharedStore().GetConfigs()
+	if err != nil {
+		return nil, err
+	}
+
+	holdReward, err := decimal.NewFromString(configs[models.ConfigHoldCoinProfit].Value)
+	if err != nil {
+		return nil, err
+	}
+	minHolding, err := decimal.NewFromString(configs[models.ConfigMinHolding].Value)
+	if err != nil {
+		return nil, err
+	}
+
+	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
+	if err != nil {
+		return nil, err
+	}
+
+	var holdingMap = make([]map[string]interface{}, len(accountAssets))
+	var totalRank decimal.Decimal
+	var bestHolding decimal.Decimal
+	for k, v := range accountAssets {
+		holdingMap[k] = utils.StructToMapViaJson(v)
+
+		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
+		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
+			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
+		}
+
+		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
+
+		if k > 0 && holdingMap[k]["rank"].(decimal.Decimal).Div(v.Available).
+			GreaterThan(holdingMap[k-1]["rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
+			bestHolding = v.Available
+		}
+	}
+
+	for k, _ := range holdingMap {
+		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
+	}
+
+	return map[string]interface{}{
+		"holding_map":  holdingMap,
+		"best_holding": bestHolding,
+	}, nil
+}
+
+func BackendPromoteStart() error {
+	configs, err := mysql.SharedStore().GetConfigs()
+	if err != nil {
+		return err
+	}
+
+	holdReward, err := decimal.NewFromString(configs[models.ConfigHoldCoinProfit].Value)
+	if err != nil {
+		return err
+	}
+	minHolding, err := decimal.NewFromString(configs[models.ConfigMinHolding].Value)
+	if err != nil {
+		return err
+	}
+
+	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
+	if err != nil {
+		return err
+	}
+
+	var holdingMap = make([]map[string]interface{}, len(accountAssets))
+	var totalRank decimal.Decimal
+	for k, v := range accountAssets {
+		holdingMap[k] = utils.StructToMapViaJson(v)
+
+		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
+		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
+			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
+		}
+		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
+	}
+
+	for k, v := range holdingMap {
+		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
+		err = backendPromoteStart(int64(v["UserId"].(float64)), holdingMap[k]["profit"].(decimal.Decimal))
+		if err != nil {
+			mylog.Logger.Error().Msgf("backendHoldingStart userId:%v, err:%v", v["userId"], err)
+		}
+	}
+
+	return nil
+}
+
+func backendPromoteStart(userId int64, profit decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err

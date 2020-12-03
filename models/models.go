@@ -513,14 +513,20 @@ type AddressHolding struct {
 	UpdatedAt time.Time
 	UserId    int64
 	Coin      string
+	TotalNum  decimal.Decimal
 	Number    decimal.Decimal
+	TotalRank int
+	Rank      int
 }
 
 type AddressPromote struct {
-	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserId    int64
-	Coin      string
-	Number    decimal.Decimal
+	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	UserId     int64
+	Coin       string
+	TotalNum   decimal.Decimal
+	Number     decimal.Decimal
+	TotalPower int
+	Power      int
 }

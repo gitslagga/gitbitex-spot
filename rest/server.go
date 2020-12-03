@@ -106,6 +106,8 @@ func (server *HttpServer) Start() {
 		backend.POST("/issue/start", BackendIssueStartService)
 		backend.GET("/holding/list", BackendHoldingListService)
 		backend.POST("/holding/start", BackendHoldingStartService)
+		backend.GET("/promote/list", BackendPromoteListService)
+		backend.POST("/promote/start", BackendPromoteStartService)
 	}
 
 	err := r.Run(server.addr)
