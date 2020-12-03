@@ -105,25 +105,24 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 		return nil, errors.New("子地址不能注册或登录|Sub address cannot be registered or logged in")
 	}
 
-	address.Username = username
-	address.Password = password
-
 	addressExists, err := GetAddressByAddress(address.Address)
 	if err != nil {
 		return nil, err
 	}
 
 	if addressExists != nil {
-		address.Id = addressExists.Id
-		address.ConvertFee = addressExists.ConvertFee
-		return address, UpdateAddress(address)
+		addressExists.Username = username
+		addressExists.Password = password
+		return addressExists, UpdateAddress(addressExists)
 	}
+
+	address.Username = username
+	address.Password = password
 
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
 		return nil, err
 	}
-
 	address.ConvertFee, err = decimal.NewFromString(config.Value)
 	if err != nil {
 		return nil, err
@@ -151,25 +150,22 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 		return nil, errors.New("子地址不能注册或登录|Sub address cannot be registered or logged in")
 	}
 
-	address.Password = password
-
 	addressExists, err := GetAddressByAddress(address.Address)
 	if err != nil {
 		return nil, err
 	}
 	if addressExists != nil {
-		address.Id = addressExists.Id
-		address.Username = addressExists.Username
-		address.ConvertFee = addressExists.ConvertFee
-		return address, UpdateAddress(address)
+		addressExists.Password = password
+		return addressExists, UpdateAddress(addressExists)
 	}
 
 	address.Username = models.AccountDefaultName
+	address.Password = password
+
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
 		return nil, err
 	}
-
 	address.ConvertFee, err = decimal.NewFromString(config.Value)
 	if err != nil {
 		return nil, err
