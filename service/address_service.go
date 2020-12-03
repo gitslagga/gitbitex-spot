@@ -131,7 +131,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 	return address, AddAddress(address)
 }
 
-func AddressLogin(mnemonic, privateKey, password string) (address *models.Address, err error) {
+func AddressLogin(username, password, mnemonic, privateKey string) (address *models.Address, err error) {
 	if mnemonic != "" {
 		address, err = createAddressByMnemonic(mnemonic)
 	} else {
@@ -155,11 +155,12 @@ func AddressLogin(mnemonic, privateKey, password string) (address *models.Addres
 		return nil, err
 	}
 	if addressExists != nil {
+		addressExists.Password = username
 		addressExists.Password = password
 		return addressExists, UpdateAddress(addressExists)
 	}
 
-	address.Username = models.AccountDefaultName
+	address.Username = username
 	address.Password = password
 
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)

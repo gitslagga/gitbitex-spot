@@ -40,7 +40,7 @@ func AddressListService(address *models.Address) ([]*models.AddressList, error) 
 	return addressList, nil
 }
 
-func AddressAddList(userId int64, mnemonic, privateKey, password string) error {
+func AddressAddList(userId int64, username, password, mnemonic, privateKey string) error {
 	count, err := CountAddressListByUserId(userId)
 	if err != nil {
 		return err
@@ -73,7 +73,7 @@ func AddressAddList(userId int64, mnemonic, privateKey, password string) error {
 
 	addressList := &models.AddressList{
 		UserId:     userId,
-		Username:   models.AccountDefaultName,
+		Username:   username,
 		Password:   password,
 		Address:    address.Address,
 		PublicKey:  address.PublicKey,

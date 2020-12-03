@@ -16,12 +16,13 @@ const (
 	EC_REQUEST_DATA_ERR            = 10005
 	EC_WHITE_LIST_ERR              = 10006
 
-	EC_PASSWORD_ERR          = 9000
-	EC_MNEMONIC_INCORRECT    = 9001
-	EC_PRIVATE_KEY_INCORRECT = 9002
-	EC_PASSWORD_INCORRECT    = 9003
-	EC_USERNAME_PASSWORD_ERR = 9004
-	EC_ACTIVATION_SELF_ERR   = 9005
+	EC_USERNAME_ERR          = 9000
+	EC_PASSWORD_ERR          = 9001
+	EC_MNEMONIC_INCORRECT    = 9002
+	EC_PRIVATE_KEY_INCORRECT = 9003
+	EC_PASSWORD_INCORRECT    = 9004
+	EC_USERNAME_PASSWORD_ERR = 9005
+	EC_ACTIVATION_SELF_ERR   = 9006
 
 	EC_CLIENT_OID_ERR      = 8000
 	EC_ORDER_NOT_EXISTS    = 8001
@@ -112,9 +113,10 @@ type RegisterRequest struct {
 }
 
 type LoginRequest struct {
+	Username   string `json:"username" binding:"required"`
+	Password   string `json:"password" binding:"required"`
 	Mnemonic   string `json:"mnemonic"`
 	PrivateKey string `json:"private_key"`
-	Password   string `json:"password" binding:"required"`
 }
 
 type FindPasswordRequest struct {

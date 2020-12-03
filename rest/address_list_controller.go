@@ -43,8 +43,8 @@ func AddressAddListService(ctx *gin.Context) {
 		return
 	}
 
-	var loginRequest LoginRequest
-	err := ctx.ShouldBindJSON(&loginRequest)
+	var login LoginRequest
+	err := ctx.ShouldBindJSON(&login)
 	if err != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -52,16 +52,22 @@ func AddressAddListService(ctx *gin.Context) {
 		return
 	}
 
-	if len(loginRequest.Password) < 8 {
+	if len(login.Password) < 8 {
 		out.RespCode = EC_PASSWORD_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PASSWORD_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
+	if len(login.Username) < 3 {
+		out.RespCode = EC_USERNAME_ERR
+		out.RespDesc = ErrorCodeMessage(EC_USERNAME_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
 
-	mylog.Logger.Info().Msgf("[Rest] AddressAddListService request param: %v", loginRequest)
+	mylog.Logger.Info().Msgf("[Rest] AddressAddListService request param: %v", login)
 
-	err = service.AddressAddList(address.Id, loginRequest.Mnemonic, loginRequest.PrivateKey, encryptPassword(loginRequest.Password))
+	err = service.AddressAddList(address.Id, login.Username, encryptPassword(login.Password), login.Mnemonic, login.PrivateKey)
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] AddressAddListService AddressAddList err: %v", err)
 		out.RespCode = EC_NETWORK_ERR

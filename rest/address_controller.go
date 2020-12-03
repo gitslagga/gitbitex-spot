@@ -91,10 +91,16 @@ func LoginService(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
+	if len(login.Username) < 3 {
+		out.RespCode = EC_USERNAME_ERR
+		out.RespDesc = ErrorCodeMessage(EC_USERNAME_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
 
 	mylog.Logger.Info().Msgf("[Rest] LoginService request param: %v", login)
 
-	address, err := service.AddressLogin(login.Mnemonic, login.PrivateKey, encryptPassword(login.Password))
+	address, err := service.AddressLogin(login.Username, encryptPassword(login.Password), login.Mnemonic, login.PrivateKey)
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
