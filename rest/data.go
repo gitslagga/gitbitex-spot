@@ -29,6 +29,7 @@ const (
 	EC_SHOP_ONLY_ENTER     = 8003
 	EC_CURRENCY_NOT_EXISTS = 8004
 	EC_POOL_ONLY_BITE      = 8005
+	EC_DAY_PROFIT_RELEASED = 8006
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -85,6 +86,8 @@ func (c ErrorCode) String() (r string) {
 		r = "币种不存在|Currency does not exist"
 	case EC_POOL_ONLY_BITE:
 		r = "矿池账户只支持BITE|Mining pool accounts only support BITE"
+	case EC_DAY_PROFIT_RELEASED:
+		r = "今日收益已释放|Today's earnings have been released"
 
 	default:
 	}

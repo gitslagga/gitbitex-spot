@@ -122,7 +122,15 @@ func backendIssueStart(userId int64, deduction decimal.Decimal, config []*models
 	return db.CommitTx()
 }
 
-func BackendHoldingList() ([]map[string]interface{}, error) {
+func GetLastAddressHolding() (*models.AddressHolding, error) {
+	return mysql.SharedStore().GetLastAddressHolding()
+}
+
+func GetLastAddressPromote() (*models.AddressPromote, error) {
+	return mysql.SharedStore().GetLastAddressPromote()
+}
+
+func BackendHoldingList() (map[string]interface{}, error) {
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
 		return nil, err
@@ -144,6 +152,7 @@ func BackendHoldingList() ([]map[string]interface{}, error) {
 
 	var holdingMap = make([]map[string]interface{}, len(accountAssets))
 	var totalRank decimal.Decimal
+	var bestHolding decimal.Decimal
 	for k, v := range accountAssets {
 		holdingMap[k] = utils.StructToMapViaJson(v)
 
@@ -151,14 +160,23 @@ func BackendHoldingList() ([]map[string]interface{}, error) {
 		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
 			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
 		}
+
 		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
+
+		if k > 0 && holdingMap[k]["rank"].(decimal.Decimal).Div(v.Available).
+			GreaterThan(holdingMap[k-1]["rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
+			bestHolding = v.Available
+		}
 	}
 
 	for k, _ := range holdingMap {
 		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
 	}
 
-	return holdingMap, nil
+	return map[string]interface{}{
+		"holding_map":  holdingMap,
+		"best_holding": bestHolding,
+	}, nil
 }
 
 func BackendHoldingStart() error {
@@ -195,7 +213,7 @@ func BackendHoldingStart() error {
 
 	for k, v := range holdingMap {
 		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
-		err = backendHoldingStart(v["userId"].(int64), holdingMap[k]["profit"].(decimal.Decimal))
+		err = backendHoldingStart(int64(v["UserId"].(float64)), holdingMap[k]["profit"].(decimal.Decimal))
 		if err != nil {
 			mylog.Logger.Error().Msgf("backendHoldingStart userId:%v, err:%v", v["userId"], err)
 		}

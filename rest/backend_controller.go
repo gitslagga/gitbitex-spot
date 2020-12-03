@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"time"
 )
 
 // Post /backend/address/withdraw
@@ -106,7 +107,28 @@ func BackendHoldingListService(ctx *gin.Context) {
 func BackendHoldingStartService(ctx *gin.Context) {
 	out := CommonResp{}
 
-	err := service.BackendHoldingStart()
+	addressHolding, err := service.GetLastAddressHolding()
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	if addressHolding != nil {
+		currentTime := time.Now()
+		startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		if addressHolding.CreatedAt.After(startTime) && addressHolding.CreatedAt.Before(endTime) {
+			out.RespCode = EC_DAY_PROFIT_RELEASED
+			out.RespDesc = ErrorCodeMessage(EC_DAY_PROFIT_RELEASED)
+			ctx.JSON(http.StatusOK, out)
+			return
+		}
+	}
+
+	err = service.BackendHoldingStart()
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendHoldingStartService BackendHoldingStart err: %v", err)
 		out.RespCode = EC_NETWORK_ERR

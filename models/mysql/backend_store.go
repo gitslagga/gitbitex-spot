@@ -108,6 +108,15 @@ func (s *Store) GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64
 	return holdings, err
 }
 
+func (s *Store) GetLastAddressHolding() (*models.AddressHolding, error) {
+	var addressHolding models.AddressHolding
+	err := s.db.Raw("SELECT * FROM g_address_holding ORDER BY id DESC LIMIT 1").Scan(&addressHolding).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &addressHolding, err
+}
+
 func (s *Store) AddAddressHolding(holding *models.AddressHolding) error {
 	return s.db.Create(holding).Error
 }
@@ -131,6 +140,15 @@ func (s *Store) GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64
 		return nil, nil
 	}
 	return promotes, err
+}
+
+func (s *Store) GetLastAddressPromote() (*models.AddressPromote, error) {
+	var addressPromote models.AddressPromote
+	err := s.db.Raw("SELECT * FROM g_address_promote ORDER BY id DESC LIMIT 1").Scan(&addressPromote).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &addressPromote, err
 }
 
 func (s *Store) AddAddressPromote(promote *models.AddressPromote) error {
