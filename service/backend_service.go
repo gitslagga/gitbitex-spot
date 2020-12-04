@@ -156,7 +156,7 @@ func BackendHoldingList() (map[string]interface{}, error) {
 	for k, _ := range holdingMap {
 		holdingMap[k]["HoldReward"] = holdReward
 		holdingMap[k]["TotalRank"] = totalRank
-		holdingMap[k]["Profit"] = holdingMap[k]["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
+		holdingMap[k]["Profit"] = holdingMap[k]["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward).Truncate(8)
 	}
 
 	return map[string]interface{}{
@@ -241,7 +241,7 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 		return nil, err
 	}
 
-	var parentPower = make([]map[string]interface{}, len(totalPowerList))
+	var parentPower []map[string]interface{}
 	var userPower = make(map[string][]map[string]interface{}, len(totalPowerList))
 	var parentIds = make([]string, len(totalPowerList))
 
@@ -259,6 +259,7 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 	var maxKey int
 	var maxPower decimal.Decimal
 	var power decimal.Decimal
+	var availableF float64
 	var totalPower decimal.Decimal
 	for parentId, sonList := range userPower {
 		maxKey = 0
@@ -275,7 +276,8 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 		// 算力计算
 		for key, val := range sonList {
 			if key == maxKey {
-				userPower[parentId][key]["Power"] = decimal.NewFromFloat(math.Sqrt(math.Sqrt(val["Available"].(float64))))
+				availableF, _ = val["Available"].(decimal.Decimal).Float64()
+				userPower[parentId][key]["Power"] = decimal.NewFromFloat(math.Sqrt(math.Sqrt(availableF)))
 				power = power.Add(userPower[parentId][key]["Power"].(decimal.Decimal))
 				continue
 			}
@@ -291,16 +293,16 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 
 		parentPower = append(parentPower, map[string]interface{}{
 			"ParentId": parentId,
-			"Power":    power,
+			"Power":    power.Truncate(8),
 			"Currency": models.AccountPromoteCurrency,
 			"CountSon": len(sonList),
 		})
 		totalPower = totalPower.Add(power)
 	}
 
-	for key, _ := range parentPower {
-		parentPower[key]["TotalPower"] = totalPower
-		parentPower[key]["Profit"] = parentPower[key]["TotalPower"].(decimal.Decimal).Div(totalPower).Mul(promoteReward)
+	for _, val := range parentPower {
+		val["TotalPower"] = totalPower.Truncate(8)
+		val["Profit"] = val["Power"].(decimal.Decimal).Div(totalPower).Mul(promoteReward).Truncate(8)
 	}
 
 	return parentPower, nil
