@@ -519,14 +519,22 @@ type AddressHolding struct {
 	Rank      int
 }
 
+type TotalPower struct {
+	Id        int64
+	ParentId  int64
+	ParentIds string
+	Currency  string
+	Available decimal.Decimal
+}
+
 type AddressPromote struct {
 	Id         int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	UserId     int64
 	Coin       string
-	TotalNum   decimal.Decimal
 	Number     decimal.Decimal
-	TotalPower int
-	Power      int
+	Power      decimal.Decimal
+	TotalPower decimal.Decimal
+	CountSon   int
 }

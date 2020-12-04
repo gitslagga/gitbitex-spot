@@ -64,6 +64,7 @@ type Store interface {
 	GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64) ([]*AddressHolding, error)
 	GetLastAddressHolding() (*AddressHolding, error)
 	AddAddressHolding(holding *AddressHolding) error
+	GetTotalPowerList() ([]*TotalPower, error)
 	GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*AddressPromote, error)
 	GetLastAddressPromote() (*AddressPromote, error)
 	AddAddressPromote(promote *AddressPromote) error

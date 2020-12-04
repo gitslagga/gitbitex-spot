@@ -121,6 +121,17 @@ func (s *Store) AddAddressHolding(holding *models.AddressHolding) error {
 	return s.db.Create(holding).Error
 }
 
+func (s *Store) GetTotalPowerList() ([]*models.TotalPower, error) {
+	var totalPower []*models.TotalPower
+	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gaa.currency, gaa.available FROM g_address ga ` +
+		`INNER JOIN g_account_asset gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
+		Scan(&totalPower).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return totalPower, err
+}
+
 func (s *Store) GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*models.AddressPromote, error) {
 	db := s.db.Where("user_id=?", userId)
 

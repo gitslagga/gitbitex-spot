@@ -7,6 +7,8 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/shopspring/decimal"
+	"math"
+	"strings"
 )
 
 func BackendIssueList() ([]map[string]interface{}, error) {
@@ -36,34 +38,16 @@ func BackendIssueList() ([]map[string]interface{}, error) {
 	var issueMap = make([]map[string]interface{}, len(accountAssets))
 	for k, v := range accountAssets {
 		issueMap[k] = utils.StructToMapViaJson(v)
-		issueMap[k]["rate"] = v.Available.Div(total)
-		issueMap[k]["release"] = v.Available.Div(total).Mul(issueReward)
-		issueMap[k]["deduction"] = v.Available.Div(total).Mul(issueReward).Mul(biteRate)
+		issueMap[k]["Rate"] = v.Available.Div(total)
+		issueMap[k]["Release"] = v.Available.Div(total).Mul(issueReward)
+		issueMap[k]["Deduction"] = v.Available.Div(total).Mul(issueReward).Mul(biteRate)
 	}
 
 	return issueMap, nil
 }
 
 func BackendIssueStart() error {
-	configs, err := mysql.SharedStore().GetConfigs()
-	if err != nil {
-		return err
-	}
-
-	issueReward, err := decimal.NewFromString(configs[models.ConfigIssueReward].Value)
-	if err != nil {
-		return err
-	}
-	biteRate, err := decimal.NewFromString(configs[models.ConfigBiteConvertUsdt].Value)
-	if err != nil {
-		return err
-	}
-
-	accountAssets, err := mysql.SharedStore().GetIssueAccountAsset()
-	if err != nil {
-		return err
-	}
-	total, err := mysql.SharedStore().SumIssueAccountAsset()
+	issueList, err := BackendIssueList()
 	if err != nil {
 		return err
 	}
@@ -72,10 +56,10 @@ func BackendIssueStart() error {
 		return err
 	}
 
-	for _, v := range accountAssets {
-		err = backendIssueStart(v.UserId, v.Available.Div(total).Mul(issueReward).Mul(biteRate), issueConfigs)
+	for _, v := range issueList {
+		err = backendIssueStart(int64(v["UserId"].(float64)), v["Deduction"].(decimal.Decimal), issueConfigs)
 		if err != nil {
-			mylog.Logger.Error().Msgf("BackendIssueStart userId:%v, err:%v", v.UserId, err)
+			mylog.Logger.Error().Msgf("BackendIssueStart userId:%v, err:%v", v["UserId"], err)
 		}
 	}
 
@@ -156,65 +140,40 @@ func BackendHoldingList() (map[string]interface{}, error) {
 	for k, v := range accountAssets {
 		holdingMap[k] = utils.StructToMapViaJson(v)
 
-		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
+		holdingMap[k]["Rank"] = decimal.NewFromInt(int64(k + 1))
 		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
-			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
+			holdingMap[k]["Rank"] = holdingMap[k-1]["Rank"]
 		}
 
-		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
+		totalRank = totalRank.Add(holdingMap[k]["Rank"].(decimal.Decimal))
 
-		if k > 0 && holdingMap[k]["rank"].(decimal.Decimal).Div(v.Available).
-			GreaterThan(holdingMap[k-1]["rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
+		if k > 0 && holdingMap[k]["Rank"].(decimal.Decimal).Div(v.Available).
+			GreaterThan(holdingMap[k-1]["Rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
 			bestHolding = v.Available
 		}
 	}
 
 	for k, _ := range holdingMap {
-		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
+		holdingMap[k]["HoldReward"] = holdReward
+		holdingMap[k]["TotalRank"] = totalRank
+		holdingMap[k]["Profit"] = holdingMap[k]["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
 	}
 
 	return map[string]interface{}{
-		"holding_map":  holdingMap,
-		"best_holding": bestHolding,
+		"HoldingMap":  holdingMap,
+		"BestHolding": bestHolding,
 	}, nil
 }
 
 func BackendHoldingStart() error {
-	configs, err := mysql.SharedStore().GetConfigs()
+	holdingList, err := BackendHoldingList()
 	if err != nil {
 		return err
 	}
 
-	holdReward, err := decimal.NewFromString(configs[models.ConfigHoldCoinProfit].Value)
-	if err != nil {
-		return err
-	}
-	minHolding, err := decimal.NewFromString(configs[models.ConfigMinHolding].Value)
-	if err != nil {
-		return err
-	}
-
-	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
-	if err != nil {
-		return err
-	}
-
-	var holdingMap = make([]map[string]interface{}, len(accountAssets))
-	var totalRank decimal.Decimal
-	for k, v := range accountAssets {
-		holdingMap[k] = utils.StructToMapViaJson(v)
-
-		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
-		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
-			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
-		}
-		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
-	}
-
-	for k, v := range holdingMap {
-		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
-		err = backendHoldingStart(int64(v["UserId"].(float64)), holdReward, holdingMap[k]["profit"].(decimal.Decimal),
-			totalRank, holdingMap[k]["rank"].(decimal.Decimal))
+	for _, v := range holdingList["HoldingMap"].([]map[string]interface{}) {
+		err = backendHoldingStart(int64(v["UserId"].(float64)), v["HoldReward"].(decimal.Decimal), v["Profit"].(decimal.Decimal),
+			v["TotalRank"].(decimal.Decimal), v["Rank"].(decimal.Decimal))
 		if err != nil {
 			mylog.Logger.Error().Msgf("backendHoldingStart userId:%v, err:%v", v["userId"], err)
 		}
@@ -254,7 +213,7 @@ func backendHoldingStart(userId int64, totalNum, number, totalRank, rank decimal
 
 	err = db.AddAddressHolding(&models.AddressHolding{
 		UserId:    userId,
-		Coin:      "BITE",
+		Coin:      models.AccountHoldingCurrency,
 		TotalNum:  totalNum,
 		Number:    number,
 		TotalRank: int(totalRank.IntPart()),
@@ -267,99 +226,103 @@ func backendHoldingStart(userId int64, totalNum, number, totalRank, rank decimal
 	return db.CommitTx()
 }
 
-func BackendPromoteList() (map[string]interface{}, error) {
+func BackendPromoteList() ([]map[string]interface{}, error) {
 	configs, err := mysql.SharedStore().GetConfigs()
 	if err != nil {
 		return nil, err
 	}
-
-	holdReward, err := decimal.NewFromString(configs[models.ConfigHoldCoinProfit].Value)
-	if err != nil {
-		return nil, err
-	}
-	minHolding, err := decimal.NewFromString(configs[models.ConfigMinHolding].Value)
+	promoteReward, err := decimal.NewFromString(configs[models.ConfigPromoteProfit].Value)
 	if err != nil {
 		return nil, err
 	}
 
-	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
+	totalPowerList, err := mysql.SharedStore().GetTotalPowerList()
 	if err != nil {
 		return nil, err
 	}
 
-	var holdingMap = make([]map[string]interface{}, len(accountAssets))
-	var totalRank decimal.Decimal
-	var bestHolding decimal.Decimal
-	for k, v := range accountAssets {
-		holdingMap[k] = utils.StructToMapViaJson(v)
+	var parentPower = make([]map[string]interface{}, len(totalPowerList))
+	var userPower = make(map[string][]map[string]interface{}, len(totalPowerList))
+	var parentIds = make([]string, len(totalPowerList))
 
-		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
-		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
-			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
-		}
+	for _, v := range totalPowerList {
+		parentIds = strings.Split(v.ParentIds, ",")
 
-		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
-
-		if k > 0 && holdingMap[k]["rank"].(decimal.Decimal).Div(v.Available).
-			GreaterThan(holdingMap[k-1]["rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
-			bestHolding = v.Available
+		for _, parentId := range parentIds {
+			userPower[parentId] = append(userPower[parentId], map[string]interface{}{
+				"UserId":    v.Id,
+				"Available": v.Available,
+			})
 		}
 	}
 
-	for k, _ := range holdingMap {
-		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
+	var maxKey int
+	var maxPower decimal.Decimal
+	var power decimal.Decimal
+	var totalPower decimal.Decimal
+	for parentId, sonList := range userPower {
+		maxKey = 0
+		maxPower = sonList[0]["Available"].(decimal.Decimal)
+		power = decimal.Zero
+
+		for key, val := range sonList {
+			if val["Available"].(decimal.Decimal).GreaterThan(maxPower) {
+				maxKey = key
+				maxPower = val["Available"].(decimal.Decimal)
+			}
+		}
+
+		// 算力计算
+		for key, val := range sonList {
+			if key == maxKey {
+				userPower[parentId][key]["Power"] = decimal.NewFromFloat(math.Sqrt(math.Sqrt(val["Available"].(float64))))
+				power = power.Add(userPower[parentId][key]["Power"].(decimal.Decimal))
+				continue
+			}
+
+			if val["Available"].(decimal.Decimal).GreaterThan(decimal.NewFromInt(models.AccountPromoteStandard)) {
+				userPower[parentId][key]["Power"] = val["Available"].(decimal.Decimal).Add(decimal.NewFromInt(models.AccountPromoteMaxCal))
+				power = power.Add(userPower[parentId][key]["Power"].(decimal.Decimal))
+			} else if val["Available"].(decimal.Decimal).LessThanOrEqual(decimal.NewFromInt(models.AccountPromoteStandard)) {
+				userPower[parentId][key]["Power"] = val["Available"].(decimal.Decimal).Mul(decimal.NewFromInt(models.AccountPromoteMinCal))
+				power = power.Add(userPower[parentId][key]["Power"].(decimal.Decimal))
+			}
+		}
+
+		parentPower = append(parentPower, map[string]interface{}{
+			"ParentId": parentId,
+			"Power":    power,
+			"Currency": models.AccountPromoteCurrency,
+			"CountSon": len(sonList),
+		})
+		totalPower = totalPower.Add(power)
 	}
 
-	return map[string]interface{}{
-		"holding_map":  holdingMap,
-		"best_holding": bestHolding,
-	}, nil
+	for key, _ := range parentPower {
+		parentPower[key]["TotalPower"] = totalPower
+		parentPower[key]["Profit"] = parentPower[key]["TotalPower"].(decimal.Decimal).Div(totalPower).Mul(promoteReward)
+	}
+
+	return parentPower, nil
 }
 
 func BackendPromoteStart() error {
-	configs, err := mysql.SharedStore().GetConfigs()
+	parentPower, err := BackendPromoteList()
 	if err != nil {
 		return err
 	}
-
-	holdReward, err := decimal.NewFromString(configs[models.ConfigHoldCoinProfit].Value)
-	if err != nil {
-		return err
-	}
-	minHolding, err := decimal.NewFromString(configs[models.ConfigMinHolding].Value)
-	if err != nil {
-		return err
-	}
-
-	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
-	if err != nil {
-		return err
-	}
-
-	var holdingMap = make([]map[string]interface{}, len(accountAssets))
-	var totalRank decimal.Decimal
-	for k, v := range accountAssets {
-		holdingMap[k] = utils.StructToMapViaJson(v)
-
-		holdingMap[k]["rank"] = decimal.NewFromInt(int64(k + 1))
-		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
-			holdingMap[k]["rank"] = holdingMap[k-1]["rank"]
-		}
-		totalRank = totalRank.Add(holdingMap[k]["rank"].(decimal.Decimal))
-	}
-
-	for k, v := range holdingMap {
-		holdingMap[k]["profit"] = holdingMap[k]["rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward)
-		err = backendPromoteStart(int64(v["UserId"].(float64)), holdingMap[k]["profit"].(decimal.Decimal))
+	for _, val := range parentPower {
+		err = backendPromoteStart(int64(val["ParentId"].(float64)), val["TotalPower"].(decimal.Decimal),
+			val["Power"].(decimal.Decimal), val["Profit"].(decimal.Decimal), val["Currency"].(string), val["CountSon"].(int))
 		if err != nil {
-			mylog.Logger.Error().Msgf("backendHoldingStart userId:%v, err:%v", v["userId"], err)
+
 		}
 	}
 
 	return nil
 }
 
-func backendPromoteStart(userId int64, profit decimal.Decimal) error {
+func backendPromoteStart(userId int64, totalPower, power, profit decimal.Decimal, currency string, countSon int) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -371,7 +334,7 @@ func backendPromoteStart(userId int64, profit decimal.Decimal) error {
 		return err
 	}
 
-	accountAsset.Available = accountAsset.Available.Add(profit.Mul(decimal.NewFromFloat(1 - models.AccountHoldingShopRate)))
+	accountAsset.Available = accountAsset.Available.Add(profit.Mul(decimal.NewFromFloat(1 - models.AccountPromoteShopRate)))
 	err = db.UpdateAccountAsset(accountAsset)
 	if err != nil {
 		return err
@@ -382,16 +345,19 @@ func backendPromoteStart(userId int64, profit decimal.Decimal) error {
 		return err
 	}
 
-	shopAsset.Available = shopAsset.Available.Add(profit.Mul(decimal.NewFromFloat(models.AccountHoldingShopRate)))
+	shopAsset.Available = shopAsset.Available.Add(profit.Mul(decimal.NewFromFloat(models.AccountPromoteShopRate)))
 	err = db.UpdateAccountShop(shopAsset)
 	if err != nil {
 		return err
 	}
 
-	err = db.AddAddressHolding(&models.AddressHolding{
-		UserId: userId,
-		Coin:   "BITE",
-		Number: profit,
+	err = db.AddAddressPromote(&models.AddressPromote{
+		UserId:     userId,
+		Coin:       currency,
+		Number:     profit,
+		Power:      power,
+		TotalPower: totalPower,
+		CountSon:   countSon,
 	})
 	if err != nil {
 		return err

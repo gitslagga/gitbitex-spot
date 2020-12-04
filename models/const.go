@@ -29,6 +29,14 @@ const (
 	AccountConvertShopRate = 0.05
 	AccountHoldingShopRate = 0.05
 	AccountPromoteShopRate = 0.05
+
+	// 推广收益算力计算
+	AccountPromoteStandard = 10000
+	AccountPromoteMaxCal   = 90000
+	AccountPromoteMinCal   = 10
+
+	AccountHoldingCurrency = "BITE"
+	AccountPromoteCurrency = "BITE"
 )
 
 const (

@@ -98,7 +98,7 @@ func AccountTransferService(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
-	if a.Currency != models.AccountCurrencyBite && a.Currency != models.AccountCurrencyUsdt && a.Currency != models.AccountCurrencyYtl {
+	if a.Currency != models.AccountCurrencyBite && a.Currency != models.AccountCurrencyUsdt {
 		out.RespCode = EC_CURRENCY_NOT_EXISTS
 		out.RespDesc = ErrorCodeMessage(EC_CURRENCY_NOT_EXISTS)
 		ctx.JSON(http.StatusOK, out)
