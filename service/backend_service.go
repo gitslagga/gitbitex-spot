@@ -8,6 +8,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/shopspring/decimal"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -153,10 +154,10 @@ func BackendHoldingList() (map[string]interface{}, error) {
 		}
 	}
 
-	for k, _ := range holdingMap {
-		holdingMap[k]["HoldReward"] = holdReward
-		holdingMap[k]["TotalRank"] = totalRank
-		holdingMap[k]["Profit"] = holdingMap[k]["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward).Truncate(8)
+	for _, val := range holdingMap {
+		val["HoldReward"] = holdReward
+		val["TotalRank"] = totalRank
+		val["Profit"] = val["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward).Truncate(8)
 	}
 
 	return map[string]interface{}{
@@ -242,14 +243,21 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 	}
 
 	var parentPower []map[string]interface{}
-	var userPower = make(map[string][]map[string]interface{}, len(totalPowerList))
+	var userPower = make(map[int64][]map[string]interface{}, len(totalPowerList))
 	var parentIds = make([]string, len(totalPowerList))
 
+	var parentIdInt int64
 	for _, v := range totalPowerList {
 		parentIds = strings.Split(v.ParentIds, ",")
 
 		for _, parentId := range parentIds {
-			userPower[parentId] = append(userPower[parentId], map[string]interface{}{
+			parentIdInt, err = strconv.ParseInt(parentId, 10, 64)
+			if err != nil {
+				mylog.Logger.Error().Msgf("BackendPromoteList ParseInt parentId:%v, err:%v", parentId, err)
+				continue
+			}
+
+			userPower[parentIdInt] = append(userPower[parentIdInt], map[string]interface{}{
 				"UserId":    v.Id,
 				"Available": v.Available,
 			})
@@ -314,7 +322,7 @@ func BackendPromoteStart() error {
 		return err
 	}
 	for _, val := range parentPower {
-		err = backendPromoteStart(int64(val["ParentId"].(float64)), val["TotalPower"].(decimal.Decimal),
+		err = backendPromoteStart(val["ParentId"].(int64), val["TotalPower"].(decimal.Decimal),
 			val["Power"].(decimal.Decimal), val["Profit"].(decimal.Decimal), val["Currency"].(string), val["CountSon"].(int))
 		if err != nil {
 
