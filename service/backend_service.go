@@ -322,17 +322,17 @@ func BackendPromoteStart() error {
 		return err
 	}
 	for _, val := range parentPower {
-		err = backendPromoteStart(val["ParentId"].(int64), val["TotalPower"].(decimal.Decimal),
-			val["Power"].(decimal.Decimal), val["Profit"].(decimal.Decimal), val["Currency"].(string), val["CountSon"].(int))
+		err = backendPromoteStart(val["ParentId"].(int64), val["Power"].(decimal.Decimal), val["TotalPower"].(decimal.Decimal),
+			val["Profit"].(decimal.Decimal), val["Currency"].(string), val["CountSon"].(int))
 		if err != nil {
-
+			mylog.Logger.Error().Msgf("BackendPromoteStart userId:%v, err:%v", val["ParentId"], err)
 		}
 	}
 
 	return nil
 }
 
-func backendPromoteStart(userId int64, totalPower, power, profit decimal.Decimal, currency string, countSon int) error {
+func backendPromoteStart(userId int64, power, totalPower, profit decimal.Decimal, currency string, countSon int) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
