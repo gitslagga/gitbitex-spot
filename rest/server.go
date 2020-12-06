@@ -76,6 +76,12 @@ func (server *HttpServer) Start() {
 		frontend.DELETE("/address/delList", AddressDelListService)
 		frontend.POST("/address/switchList", AddressSwitchListService)
 
+		//拼团板块
+		frontend.POST("/address/group", AddressGroupService)
+		frontend.GET("/address/groupInfo", AddressGroupInfoService)
+		frontend.GET("/address/delegate", AddressDelegateService)
+		frontend.GET("/address/release", AddressReleaseService)
+
 		//币币交易
 		frontend.GET("/order/info", GetOrderService)
 		frontend.POST("/order/place", PlaceOrderService)

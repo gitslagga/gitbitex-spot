@@ -38,10 +38,15 @@ const (
 	// 团购
 	AccountGroupCurrencyUsdt = "USDT"
 	AccountGroupCurrencyBite = "BITE"
-	AccountGroupNumber       = 20
+	AccountGroupPersonNumber = 7
+	AccountGroupPlayNumber   = 20
 	AccountGroupReturnNumber = 21
+	AccountGroupIncreaseDay  = 30
 	AccountGroupStakeUsdt    = 500
 	AccountGroupStakeBite    = 500
+	AccountGroupDirectRate   = 0.02
+	AccountGroupIndirectRate = 0.02
+	AccountGroupNodeRate     = 0.02
 )
 
 const (

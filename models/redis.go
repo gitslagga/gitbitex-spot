@@ -115,10 +115,6 @@ func (b *box) SetAccountGroupWinTime(height uint64, exp time.Duration) error {
 
 func (b *box) GetAccountGroupWinTime() (time.Duration, error) {
 	winTime, err := b.redis.TTL(AccountGroupWinTime).Result()
-	if err == redis.Nil {
-		return 0, nil
-	}
-
 	if err != nil {
 		return 0, err
 	}
