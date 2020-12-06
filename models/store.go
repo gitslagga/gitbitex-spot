@@ -149,4 +149,9 @@ type Store interface {
 	GetIssueLogByUserId(userId, beforeId, afterId, limit int64) ([]*IssueLog, error)
 	GetLastIssueLog(issueId int64) (*IssueLog, error)
 	AddIssueLog(issueLog *IssueLog) error
+
+	GetAddressGroupByUserId(userId int64) ([]*AddressGroup, error)
+	GetAddressGroupForUpdate(currency string) (*AddressGroup, error)
+	AddAddressGroup(group *AddressGroup) error
+	UpdateAddressGroup(group *AddressGroup) error
 }

@@ -538,3 +538,15 @@ type AddressPromote struct {
 	TotalPower decimal.Decimal
 	CountSon   int
 }
+
+type AddressGroup struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Coin      string
+	OrderSN   string
+	Number    decimal.Decimal
+	Status    int
+	Count     int
+}

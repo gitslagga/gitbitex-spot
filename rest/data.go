@@ -170,3 +170,7 @@ type AddressPassWithdrawRequest struct {
 type AddressListRequest struct {
 	Address string `json:"address" binding:"required"`
 }
+
+type AddressGroupRequest struct {
+	Coin string `json:"coin" binding:"required"`
+}
