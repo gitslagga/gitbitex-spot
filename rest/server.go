@@ -64,11 +64,13 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/modifyPassword", ModifyPasswordService)
 		frontend.POST("/address/activation", ActivationService)
 
+		//充币提币
 		frontend.GET("/address/config", AddressConfigService)
 		frontend.GET("/address/depositInfo", AddressDepositInfoService)
 		frontend.POST("/address/withdraw", AddressWithdrawService)
 		frontend.GET("/address/withdrawInfo", AddressWithdrawInfoService)
 
+		//钱包子地址
 		frontend.GET("/address/list", AddressListService)
 		frontend.POST("/address/addList", AddressAddListService)
 		frontend.DELETE("/address/delList", AddressDelListService)

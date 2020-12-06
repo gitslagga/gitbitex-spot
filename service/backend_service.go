@@ -214,7 +214,7 @@ func backendHoldingStart(userId int64, totalNum, number, totalRank, rank decimal
 
 	err = db.AddAddressHolding(&models.AddressHolding{
 		UserId:    userId,
-		Coin:      models.AccountHoldingCurrency,
+		Coin:      models.AccountCurrencyBite,
 		TotalNum:  totalNum,
 		Number:    number,
 		TotalRank: int(totalRank.IntPart()),
@@ -302,7 +302,7 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 		parentPower = append(parentPower, map[string]interface{}{
 			"ParentId": parentId,
 			"Power":    power.Truncate(8),
-			"Currency": models.AccountPromoteCurrency,
+			"Currency": models.AccountCurrencyBite,
 			"CountSon": len(sonList),
 		})
 		totalPower = totalPower.Add(power)
@@ -323,7 +323,7 @@ func BackendPromoteStart() error {
 	}
 	for _, val := range parentPower {
 		err = backendPromoteStart(val["ParentId"].(int64), val["Power"].(decimal.Decimal), val["TotalPower"].(decimal.Decimal),
-			val["Profit"].(decimal.Decimal), val["Currency"].(string), val["CountSon"].(int))
+			val["Profit"].(decimal.Decimal), val["CountSon"].(int))
 		if err != nil {
 			mylog.Logger.Error().Msgf("BackendPromoteStart userId:%v, err:%v", val["ParentId"], err)
 		}
@@ -332,7 +332,7 @@ func BackendPromoteStart() error {
 	return nil
 }
 
-func backendPromoteStart(userId int64, power, totalPower, profit decimal.Decimal, currency string, countSon int) error {
+func backendPromoteStart(userId int64, power, totalPower, profit decimal.Decimal, countSon int) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -363,7 +363,7 @@ func backendPromoteStart(userId int64, power, totalPower, profit decimal.Decimal
 
 	err = db.AddAddressPromote(&models.AddressPromote{
 		UserId:     userId,
-		Coin:       currency,
+		Coin:       models.AccountCurrencyBite,
 		Number:     profit,
 		Power:      power,
 		TotalPower: totalPower,

@@ -35,8 +35,13 @@ const (
 	AccountPromoteMaxCal   = 90000
 	AccountPromoteMinCal   = 10
 
-	AccountHoldingCurrency = "BITE"
-	AccountPromoteCurrency = "BITE"
+	// 团购
+	AccountGroupCurrencyUsdt = "USDT"
+	AccountGroupCurrencyBite = "BITE"
+	AccountGroupNumber       = 20
+	AccountGroupReturnNumber = 21
+	AccountGroupStakeUsdt    = 500
+	AccountGroupStakeBite    = 500
 )
 
 const (

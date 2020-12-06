@@ -9,10 +9,11 @@ import (
 )
 
 const (
-	MachineConvertSumFee = "machine_convert_sum_fee"
+	AccountConvertSumFee = "account_convert_sum_fee"
 	AccountScanSumFee    = "account_scan_sum_fee"
 
-	EthLatestHeightKey = "wallet_latest_height_eth"
+	EthLatestHeightEth  = "wallet_latest_height_eth"
+	AccountGroupWinTime = "account_group_win_time"
 )
 
 var redisClient *redis.Client
@@ -37,7 +38,7 @@ func SharedRedis() *box {
 
 func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration) error {
 	sumFeeF, _ := sumFee.Float64()
-	err := b.redis.Set(MachineConvertSumFee, sumFeeF, exp).Err()
+	err := b.redis.Set(AccountConvertSumFee, sumFeeF, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -46,7 +47,7 @@ func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration)
 }
 
 func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
-	sumFee, err := b.redis.Get(MachineConvertSumFee).Float64()
+	sumFee, err := b.redis.Get(AccountConvertSumFee).Float64()
 	if err == redis.Nil {
 		return decimal.Zero, nil
 	}
@@ -82,7 +83,7 @@ func (b *box) GetAccountScanSumFee() (decimal.Decimal, error) {
 }
 
 func (b *box) SetEthLatestHeight(height uint64, exp time.Duration) error {
-	err := b.redis.Set(EthLatestHeightKey, height, exp).Err()
+	err := b.redis.Set(EthLatestHeightEth, height, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -91,7 +92,7 @@ func (b *box) SetEthLatestHeight(height uint64, exp time.Duration) error {
 }
 
 func (b *box) GetEthLatestHeight() (uint64, error) {
-	height, err := b.redis.Get(EthLatestHeightKey).Uint64()
+	height, err := b.redis.Get(EthLatestHeightEth).Uint64()
 	if err == redis.Nil {
 		return 0, nil
 	}
@@ -101,4 +102,26 @@ func (b *box) GetEthLatestHeight() (uint64, error) {
 	}
 
 	return height, nil
+}
+
+func (b *box) SetAccountGroupWinTime(height uint64, exp time.Duration) error {
+	err := b.redis.Set(AccountGroupWinTime, height, exp).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *box) GetAccountGroupWinTime() (time.Duration, error) {
+	winTime, err := b.redis.TTL(AccountGroupWinTime).Result()
+	if err == redis.Nil {
+		return 0, nil
+	}
+
+	if err != nil {
+		return 0, err
+	}
+
+	return winTime, nil
 }
