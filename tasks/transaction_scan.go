@@ -9,7 +9,7 @@ import (
 )
 
 var minDeposit = decimal.NewFromFloat(0.1)
-var ethColdAddress1 = "0x1C49b8CCee62b15F750C8D96e0258fB09B109F50"
+var ethColdAddress1 = "0x82d2658D3fF713fbDA59f39aEA584975D7442407"
 var ethColdAddress2 string
 var blockHeight uint64
 

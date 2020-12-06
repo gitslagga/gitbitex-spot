@@ -24,9 +24,9 @@ var StatusCodeError = errors.New("status code error")
 const (
 	BaseUrl         = "https://mainnet.infura.io/v3/eae18f8a2d38404f96848b6c5b64bcbd"
 	ChainID         = 1
-	EthMainAddress  = "0x1C49b8CCee62b15F750C8D96e0258fB09B109F50"
-	EthMainMnemonic = "poem police guide flip drip scout clutch now surround vacuum share page carpet demand alone"
-	EthMainPrivate  = "3e55c9310f04d55c74dbe0911951845c9fbe0fca5768fe696ba38a5d5af304b4"
+	EthMainAddress  = "0x2ee03Fbc52fEe0e2F967EC4e7f69BC1923cd869A"
+	EthMainMnemonic = "honey lottery must easy mouse lamp thrive walnut crush cake deposit day poem abandon anxiety"
+	EthMainPrivate  = "a18bb7be676dab3ee8bdb3eb1b870996a5f2f9f39a620d467e275e590189e43d"
 
 	UsdtName            = "USDT"
 	UsdtContractAddress = "0xdac17f958d2ee523a2206206994597c13d831ec7"
