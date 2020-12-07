@@ -99,10 +99,7 @@ func AccountScan(userId int64, url string, numberF float64) error {
 
 	sumFee, err := mysql.SharedStore().GetAccountScanSumFee()
 	if err == nil {
-		currentTime := time.Now()
-		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
-
-		_ = models.SharedRedis().SetAccountScanSumFee(sumFee, endTime.Sub(currentTime))
+		_ = models.SharedRedis().SetAccountScanSumFee(sumFee)
 	}
 
 	return nil

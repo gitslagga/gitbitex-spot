@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"github.com/gitslagga/gitbitex-spot/conf"
 	"github.com/go-redis/redis"
 	"github.com/shopspring/decimal"
@@ -11,6 +12,7 @@ import (
 const (
 	AccountConvertSumFee = "account_convert_sum_fee"
 	AccountScanSumFee    = "account_scan_sum_fee"
+	AccountGroupSumNum   = "account_group_sum_num"
 
 	EthLatestHeightEth  = "wallet_latest_height_eth"
 	AccountGroupWinTime = "account_group_win_time"
@@ -36,9 +38,9 @@ func SharedRedis() *box {
 	return &box{redis: redisClient}
 }
 
-func (b *box) SetMachineConvertSumFee(sumFee decimal.Decimal, exp time.Duration) error {
+func (b *box) SetAccountConvertSumFee(sumFee decimal.Decimal) error {
 	sumFeeF, _ := sumFee.Float64()
-	err := b.redis.Set(AccountConvertSumFee, sumFeeF, exp).Err()
+	err := b.redis.Set(AccountConvertSumFee, sumFeeF, 0).Err()
 	if err != nil {
 		return err
 	}
@@ -59,9 +61,9 @@ func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
 	return decimal.NewFromFloat(sumFee), nil
 }
 
-func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal, exp time.Duration) error {
+func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal) error {
 	sumFeeF, _ := sumFee.Float64()
-	err := b.redis.Set(AccountScanSumFee, sumFeeF, exp).Err()
+	err := b.redis.Set(AccountScanSumFee, sumFeeF, 0).Err()
 	if err != nil {
 		return err
 	}
@@ -82,8 +84,8 @@ func (b *box) GetAccountScanSumFee() (decimal.Decimal, error) {
 	return decimal.NewFromFloat(sumFee), nil
 }
 
-func (b *box) SetEthLatestHeight(height uint64, exp time.Duration) error {
-	err := b.redis.Set(EthLatestHeightEth, height, exp).Err()
+func (b *box) SetEthLatestHeight(height uint64) error {
+	err := b.redis.Set(EthLatestHeightEth, height, 0).Err()
 	if err != nil {
 		return err
 	}
@@ -104,8 +106,9 @@ func (b *box) GetEthLatestHeight() (uint64, error) {
 	return height, nil
 }
 
-func (b *box) SetAccountGroupWinTime(height uint64, exp time.Duration) error {
-	err := b.redis.Set(AccountGroupWinTime, height, exp).Err()
+func (b *box) SetAccountGroupSumNum(sumNum decimal.Decimal) error {
+	sumFeeF, _ := sumNum.Float64()
+	err := b.redis.Set(AccountGroupSumNum, sumFeeF, 0).Err()
 	if err != nil {
 		return err
 	}
@@ -113,8 +116,30 @@ func (b *box) SetAccountGroupWinTime(height uint64, exp time.Duration) error {
 	return nil
 }
 
-func (b *box) GetAccountGroupWinTime() (time.Duration, error) {
-	winTime, err := b.redis.TTL(AccountGroupWinTime).Result()
+func (b *box) GetAccountGroupSumNum() (decimal.Decimal, error) {
+	sumNum, err := b.redis.Get(AccountGroupSumNum).Float64()
+	if err == redis.Nil {
+		return decimal.Zero, nil
+	}
+
+	if err != nil {
+		return decimal.Zero, err
+	}
+
+	return decimal.NewFromFloat(sumNum), nil
+}
+
+func (b *box) SetAccountGroupWinTime(userId int64, exp time.Duration) error {
+	err := b.redis.Set(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId), exp, exp).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *box) GetAccountGroupWinTime(userId int64) (time.Duration, error) {
+	winTime, err := b.redis.TTL(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId)).Result()
 	if err != nil {
 		return 0, err
 	}

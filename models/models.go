@@ -254,6 +254,9 @@ type Address struct {
 	ConvertFee     decimal.Decimal
 	GlobalFee      decimal.Decimal
 	MachineLevelId int64
+	Status         int
+	GroupUsdt      int
+	GroupBite      int
 }
 
 type AddressList struct {

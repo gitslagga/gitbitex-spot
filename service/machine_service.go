@@ -104,7 +104,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		return err
 	}
 
-	if address.ParentId > 0 {
+	if address.ParentId != 0 {
 		//增加上级直推奖励
 		parentAddressAsset, err := db.GetAccountAssetForUpdate(address.ParentId, models.AccountCurrencyYtl)
 		if err != nil {
@@ -118,7 +118,7 @@ func buyMachine(address *models.Address, machine *models.Machine, currency strin
 		}
 
 	}
-	if address.ParentId > 0 && machine.Id >= models.MachineEffectInvite {
+	if address.ParentId != 0 && machine.Id >= models.MachineEffectInvite {
 		//增加上级有效账户，更改上级糖果兑换手续费
 		parentAddress, err := GetAddressById(address.ParentId)
 		if err != nil {

@@ -15,12 +15,30 @@ func (s *Store) GetAddressGroupByUserId(userId int64) ([]*models.AddressGroup, e
 
 func (s *Store) GetAddressGroupForUpdate(currency string) (*models.AddressGroup, error) {
 	var group models.AddressGroup
-	err := s.db.Raw("SELECT * FROM g_address_group WHERE currency=? FOR UPDATE ORDER BY id DESC LIMIT 1",
+	err := s.db.Raw("SELECT * FROM g_address_group WHERE coin=? ORDER BY id DESC LIMIT 1 FOR UPDATE",
 		currency).Scan(&group).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
 	return &group, err
+}
+
+func (s *Store) GetAddressGroupByUserIdOrderSN(userId int64, orderSN string) (*models.AddressGroup, error) {
+	var group models.AddressGroup
+	err := s.db.Raw("SELECT * FROM g_address_group WHERE user_id=? AND order_sn=?", userId, orderSN).Scan(&group).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &group, err
+}
+
+func (s *Store) GetAddressGroupsByOrderSN(orderSN string) ([]*models.AddressGroup, error) {
+	var groups []*models.AddressGroup
+	err := s.db.Raw("SELECT * FROM g_address_group WHERE order_sn=?", orderSN).Scan(&groups).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return groups, err
 }
 
 func (s *Store) AddAddressGroup(group *models.AddressGroup) error {

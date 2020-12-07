@@ -5,7 +5,6 @@ import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
 	"github.com/shopspring/decimal"
-	"time"
 )
 
 func GetMachineConvertByUserId(userId, before, after, limit int64) ([]*models.MachineConvert, error) {
@@ -81,10 +80,7 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 
 	sumFee, err := mysql.SharedStore().GetMachineConvertSumFee()
 	if err == nil {
-		currentTime := time.Now()
-		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
-
-		_ = models.SharedRedis().SetMachineConvertSumFee(sumFee, endTime.Sub(currentTime))
+		_ = models.SharedRedis().SetAccountConvertSumFee(sumFee)
 	}
 
 	return nil

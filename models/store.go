@@ -152,6 +152,8 @@ type Store interface {
 
 	GetAddressGroupByUserId(userId int64) ([]*AddressGroup, error)
 	GetAddressGroupForUpdate(currency string) (*AddressGroup, error)
+	GetAddressGroupByUserIdOrderSN(userId int64, orderSN string) (*AddressGroup, error)
+	GetAddressGroupsByOrderSN(orderSN string) ([]*AddressGroup, error)
 	AddAddressGroup(group *AddressGroup) error
 	UpdateAddressGroup(group *AddressGroup) error
 }

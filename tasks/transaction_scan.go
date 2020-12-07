@@ -25,7 +25,7 @@ func StartTransactionScan() {
 		if err != nil {
 			panic(err)
 		}
-		err = models.SharedRedis().SetEthLatestHeight(blockHeight, 0)
+		err = models.SharedRedis().SetEthLatestHeight(blockHeight)
 		if err != nil {
 			panic(err)
 		}
@@ -99,7 +99,7 @@ func TransactionScan() {
 
 		if index == len(transactions) {
 			blockHeight = curBlock
-			err = models.SharedRedis().SetEthLatestHeight(blockHeight, 0)
+			err = models.SharedRedis().SetEthLatestHeight(blockHeight)
 			if err != nil {
 				mylog.DataLogger.Error().Msgf("[TransactionScan] redis SetEthLatestHeight err:%v", err)
 			}

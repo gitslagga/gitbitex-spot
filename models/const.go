@@ -35,18 +35,24 @@ const (
 	AccountPromoteMaxCal   = 90000
 	AccountPromoteMinCal   = 10
 
-	// 团购
+	// 拼团
 	AccountGroupCurrencyUsdt = "USDT"
 	AccountGroupCurrencyBite = "BITE"
 	AccountGroupPersonNumber = 7
-	AccountGroupPlayNumber   = 20
-	AccountGroupReturnNumber = 21
+	AccountGroupPlayUsdt     = 20
+	AccountGroupPlayBite     = 20
+	AccountGroupDefault      = 0
+	AccountGroupWinning      = 1
+	AccountGroupRefundUsdt   = 21
+	AccountGroupRefundBite   = 21
 	AccountGroupIncreaseDay  = 30
-	AccountGroupStakeUsdt    = 500
-	AccountGroupStakeBite    = 500
 	AccountGroupDirectRate   = 0.02
 	AccountGroupIndirectRate = 0.02
 	AccountGroupNodeRate     = 0.02
+	AccountGroupStakeUsdt    = 500
+	AccountGroupStakeBite    = 500
+	AccountGroupReleaseMode  = 0
+	AccountGroupDelegateMode = 1
 )
 
 const (
