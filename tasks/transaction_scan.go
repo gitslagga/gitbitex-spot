@@ -13,6 +13,7 @@ var ethColdAddress1 = "0x82d2658D3fF713fbDA59f39aEA584975D7442407"
 var ethColdAddress2 string
 var blockHeight uint64
 
+// ETH归集任务
 func StartTransactionScan() {
 	var err error
 	blockHeight, err = models.SharedRedis().GetEthLatestHeight()

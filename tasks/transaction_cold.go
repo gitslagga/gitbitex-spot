@@ -50,6 +50,7 @@ func mutexRemoveTokenFromMainList(item *list.Element) {
 	tokenToMainListMutex.Unlock()
 }
 
+// 归集通道监听
 func StartSendToMainTask() {
 	go startSendEthToMainTask()
 	go startSendTokenToMainTask1()

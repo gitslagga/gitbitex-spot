@@ -48,6 +48,9 @@ func main() {
 	go tasks.StartTransactionScan()
 	go tasks.StartSendToMainTask()
 	go tasks.StartIssueRelease()
+	go tasks.StartConvertRelease()
+	go tasks.StartGroupRelease()
+	go tasks.StartScanRelease()
 
 	select {}
 }

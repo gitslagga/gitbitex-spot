@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// 认购释放任务
 func StartIssueRelease() {
 	IssueRelease()
 

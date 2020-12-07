@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// 设置代币信息任务
 func StartTokenInfo() {
 	TokenInfo()
 

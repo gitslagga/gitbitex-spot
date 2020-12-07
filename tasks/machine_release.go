@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// 矿机挖矿任务
 func StartMachineRelease() {
 	MachineRelease()
 
