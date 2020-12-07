@@ -328,15 +328,15 @@ func transferFromSpotToAsset(userId int64, from, to int, currency string, number
 	}
 	defer func() { _ = db.Rollback() }()
 
-	pool, err := db.GetAccountPoolForUpdate(userId, currency)
+	spot, err := db.GetAccountForUpdate(userId, currency)
 	if err != nil {
 		return err
 	}
-	if pool.Available.LessThan(number) {
+	if spot.Available.LessThan(number) {
 		return errors.New("资产余额不足|Insufficient number of asset")
 	}
-	pool.Available = pool.Available.Sub(number)
-	err = db.UpdateAccountPool(pool)
+	spot.Available = spot.Available.Sub(number)
+	err = db.UpdateAccount(spot)
 	if err != nil {
 		return err
 	}

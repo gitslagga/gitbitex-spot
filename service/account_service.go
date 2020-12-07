@@ -197,10 +197,10 @@ func AccountAddress(userId int64) (map[string]interface{}, error) {
 	}
 
 	var calculateUsdt decimal.Decimal
-	accountAssetMap := make(map[int]map[string]interface{}, len(accountAsset))
-	accountPoolMap := make(map[int]map[string]interface{}, len(accountPool))
-	accountSpotMap := make(map[int]map[string]interface{}, len(accountSpot))
-	accountShopMap := make(map[int]map[string]interface{}, len(accountShop))
+	accountAssetMap := make([]map[string]interface{}, len(accountAsset))
+	accountPoolMap := make([]map[string]interface{}, len(accountPool))
+	accountSpotMap := make([]map[string]interface{}, len(accountSpot))
+	accountShopMap := make([]map[string]interface{}, len(accountShop))
 	for k, v := range accountAsset {
 		accountAssetMap[k] = utils.StructToMapViaJson(v)
 		switch v.Currency {
