@@ -27,7 +27,7 @@ func (s *Store) GetMachineConvertByUserId(userId, beforeId, afterId, limit int64
 	return machineConverts, err
 }
 
-func (s *Store) GetMachineConvertSumNumber() (decimal.Decimal, error) {
+func (s *Store) GetMachineConvertSumNum() (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(number) as number FROM g_machine_convert WHERE " +
 		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error

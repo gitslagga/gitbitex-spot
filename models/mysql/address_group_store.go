@@ -3,6 +3,7 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
+	"github.com/shopspring/decimal"
 )
 
 func (s *Store) GetAddressGroupByUserId(userId int64) ([]*models.AddressGroup, error) {
@@ -39,6 +40,17 @@ func (s *Store) GetAddressGroupsByOrderSN(orderSN string) ([]*models.AddressGrou
 		return nil, nil
 	}
 	return groups, err
+}
+
+func (s *Store) GetAddressGroupSumNum(coin string) (decimal.Decimal, error) {
+	var number models.SumNumber
+	err := s.db.Raw("SELECT SUM(number) as number FROM g_address_group WHERE "+
+		"created_at >= DATE_SUB(CURDATE(),INTERVAL -1 DAY) AND coin=?", coin).Scan(&number).Error
+	if err == gorm.ErrRecordNotFound {
+		return decimal.Zero, nil
+	}
+
+	return number.Number, err
 }
 
 func (s *Store) AddAddressGroup(group *models.AddressGroup) error {

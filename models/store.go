@@ -115,7 +115,7 @@ type Store interface {
 	AddMachineLog(machineLog *MachineLog) error
 
 	GetMachineConvertByUserId(userId, before, after, limit int64) ([]*MachineConvert, error)
-	GetMachineConvertSumNumber() (decimal.Decimal, error)
+	GetMachineConvertSumNum() (decimal.Decimal, error)
 	GetMachineConvertSumFee() (decimal.Decimal, error)
 	AddMachineConvert(machineConvert *MachineConvert) error
 
@@ -159,6 +159,7 @@ type Store interface {
 	GetAddressGroupForUpdate(currency string) (*AddressGroup, error)
 	GetAddressGroupByUserIdOrderSN(userId int64, orderSN string) (*AddressGroup, error)
 	GetAddressGroupsByOrderSN(orderSN string) ([]*AddressGroup, error)
+	GetAddressGroupSumNum(coin string) (decimal.Decimal, error)
 	AddAddressGroup(group *AddressGroup) error
 	UpdateAddressGroup(group *AddressGroup) error
 }

@@ -12,7 +12,7 @@ func GetMachineConvertByUserId(userId, before, after, limit int64) ([]*models.Ma
 }
 
 func GetMachineConvertSumNumber() (float64, error) {
-	sumNumber, err := mysql.SharedStore().GetMachineConvertSumNumber()
+	sumNumber, err := mysql.SharedStore().GetMachineConvertSumNum()
 	if err != nil {
 		return 0, err
 	}
@@ -44,7 +44,7 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 		return err
 	}
 
-	count, err := mysql.SharedStore().GetMachineConvertSumNumber()
+	count, err := mysql.SharedStore().GetMachineConvertSumNum()
 	if err != nil {
 		return err
 	}
