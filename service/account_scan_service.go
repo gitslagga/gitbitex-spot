@@ -92,17 +92,7 @@ func AccountScan(userId int64, url string, numberF float64) error {
 	rate := usdtRate.Div(biteRate)
 	amount := actualNumber.Mul(rate)
 
-	err = accountScan(userId, url, number, feePayment, actualNumber, rate, amount)
-	if err != nil {
-		return err
-	}
-
-	sumFee, err := mysql.SharedStore().GetAccountScanSumFee()
-	if err == nil {
-		_ = models.SharedRedis().SetAccountScanSumFee(sumFee)
-	}
-
-	return nil
+	return accountScan(userId, url, number, feePayment, actualNumber, rate, amount)
 }
 
 func accountScan(userId int64, url string, number, fee, actualNumber, rate, amount decimal.Decimal) error {

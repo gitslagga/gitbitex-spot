@@ -21,9 +21,10 @@ const (
 	AccountShopTransfer  = 4
 
 	// 扫一扫支付币种, 1-未支付，2-已支付
-	AccountScanCurrency  = "BITE"
-	AccountScanUnPayment = 1
-	AccountScanPayment   = 2
+	AccountScanCurrency    = "BITE"
+	AccountScanUnPayment   = 1
+	AccountScanPayment     = 2
+	AccountScanReleaseRate = 0.05
 
 	// 兑换收益和矿池收益的5%划分给商城账户
 	AccountConvertShopRate = 0.05

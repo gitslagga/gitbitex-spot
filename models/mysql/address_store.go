@@ -41,6 +41,42 @@ func (s *Store) GetAddressByMachineLevelId(machineLevelId int64) ([]*models.Addr
 	return address, err
 }
 
+func (s *Store) CountAddressByGroupUsdt() (int, error) {
+	var count models.TotalCount
+	err := s.db.Raw("SELECT COUNT(*) as count FROM g_address WHERE group_usdt=1").Scan(&count).Error
+	if err == gorm.ErrRecordNotFound {
+		return 0, nil
+	}
+	return count.Count, err
+}
+
+func (s *Store) GetAddressByGroupUsdt() ([]*models.Address, error) {
+	var address []*models.Address
+	err := s.db.Raw("SELECT * FROM g_address WHERE group_usdt=1").Scan(&address).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return address, err
+}
+
+func (s *Store) CountAddressByGroupBite() (int, error) {
+	var count models.TotalCount
+	err := s.db.Raw("SELECT COUNT(*) as count FROM g_address WHERE group_bite=1").Scan(&count).Error
+	if err == gorm.ErrRecordNotFound {
+		return 0, nil
+	}
+	return count.Count, err
+}
+
+func (s *Store) GetAddressByGroupBite() ([]*models.Address, error) {
+	var address []*models.Address
+	err := s.db.Raw("SELECT * FROM g_address WHERE group_bite=1").Scan(&address).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return address, err
+}
+
 func (s *Store) GetAddressByParentId(parentId int64) ([]*models.Address, error) {
 	var address []*models.Address
 	err := s.db.Raw("SELECT * FROM g_address WHERE parent_id=?", parentId).Scan(&address).Error

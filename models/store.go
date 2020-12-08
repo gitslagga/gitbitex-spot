@@ -59,6 +59,10 @@ type Store interface {
 	GetAddressById(id int64) (*Address, error)
 	CountAddressByMachineLevelId(machineLevelId int64) (int, error)
 	GetAddressByMachineLevelId(machineLevelId int64) ([]*Address, error)
+	CountAddressByGroupUsdt() (int, error)
+	GetAddressByGroupUsdt() ([]*Address, error)
+	CountAddressByGroupBite() (int, error)
+	GetAddressByGroupBite() ([]*Address, error)
 	GetAddressByParentId(parentId int64) ([]*Address, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
