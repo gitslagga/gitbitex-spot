@@ -86,9 +86,9 @@ func AddressMachineService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -104,10 +104,19 @@ func AddressMachineService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(machineAddress) > 0 {
+		newBefore = machineAddress[0].Id
+		newAfter = machineAddress[len(machineAddress)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = machineAddress
-
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   machineAddress,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -122,9 +131,9 @@ func LogMachineService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -140,10 +149,19 @@ func LogMachineService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(machineLog) > 0 {
+		newBefore = machineLog[0].Id
+		newAfter = machineLog[len(machineLog)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = machineLog
-
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   machineLog,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -196,9 +214,9 @@ func MachineConvertInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -214,9 +232,18 @@ func MachineConvertInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(machineConvert) > 0 {
+		newBefore = machineConvert[0].Id
+		newAfter = machineConvert[len(machineConvert)-1].Id
+	}
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = machineConvert
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   machineConvert,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 

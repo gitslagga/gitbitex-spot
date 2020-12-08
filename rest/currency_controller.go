@@ -38,9 +38,9 @@ func AddressDepositInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -56,9 +56,19 @@ func AddressDepositInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(deposits) > 0 {
+		newBefore = deposits[0].Id
+		newAfter = deposits[len(deposits)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = deposits
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   deposits,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -118,9 +128,9 @@ func AddressWithdrawInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -136,8 +146,18 @@ func AddressWithdrawInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(withdraws) > 0 {
+		newBefore = withdraws[0].Id
+		newAfter = withdraws[len(withdraws)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = withdraws
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   withdraws,
+	}
 	ctx.JSON(http.StatusOK, out)
 }

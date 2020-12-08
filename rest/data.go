@@ -105,6 +105,12 @@ type CommonResp struct {
 	RespData interface{} `json:"respData,omitempty" form:"respData"`
 }
 
+type PageResp struct {
+	Before int64       `json:"before" form:"before"`
+	After  int64       `json:"after" form:"after"`
+	List   interface{} `json:"list,omitempty" form:"list"`
+}
+
 //rest api request
 type RegisterRequest struct {
 	Username string `json:"username" binding:"required"`

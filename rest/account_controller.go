@@ -137,9 +137,9 @@ func AccountTransferInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -155,9 +155,19 @@ func AccountTransferInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(accountTransfer) > 0 {
+		newBefore = accountTransfer[0].Id
+		newAfter = accountTransfer[len(accountTransfer)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = accountTransfer
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   accountTransfer,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 
@@ -207,9 +217,9 @@ func AccountScanInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.DefaultQuery("before", "0"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.DefaultQuery("after", "11"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.DefaultQuery("limit", "10"), 10, 64)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 	if err1 != nil || err2 != nil || err3 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -225,8 +235,18 @@ func AccountScanInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(accountScan) > 0 {
+		newBefore = accountScan[0].Id
+		newAfter = accountScan[len(accountScan)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = accountScan
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   accountScan,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
