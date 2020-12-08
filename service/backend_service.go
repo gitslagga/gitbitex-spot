@@ -155,6 +155,12 @@ func BackendHoldingList() (map[string]interface{}, error) {
 	}
 
 	for _, val := range holdingMap {
+		// 拼团成功，持币排名翻倍
+		if models.SharedRedis().ExistsAccountGroupWinTime(int64(val["UserId"].(float64))) {
+			val["Rank"] = val["Rank"].(decimal.Decimal).Add(val["Rank"].(decimal.Decimal))
+			val["Goal"] = "排名翻倍"
+		}
+
 		val["HoldReward"] = holdReward
 		val["TotalRank"] = totalRank
 		val["Profit"] = val["Rank"].(decimal.Decimal).Div(totalRank).Mul(holdReward).Truncate(8)

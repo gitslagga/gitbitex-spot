@@ -17,24 +17,9 @@ func GetAddressGroupByUserId(userId int64) ([]*models.AddressGroup, error) {
 	return mysql.SharedStore().GetAddressGroupByUserId(userId)
 }
 
-func AddAddressGroup(group *models.AddressGroup) error {
-	return mysql.SharedStore().AddAddressGroup(group)
-}
-
-func UpdateAddressGroup(group *models.AddressGroup) error {
-	return mysql.SharedStore().UpdateAddressGroup(group)
-}
-
 func AddressGroup(address *models.Address, coin string) error {
 	switch coin {
 	case models.AccountGroupCurrencyUsdt:
-
-		// TODO 兑换手续费，扫描手续费，节点收益 定时任务
-		//sumFee, err := mysql.SharedStore().GetMachineConvertSumFee()
-		//if err == nil {
-		//	_ = models.SharedRedis().SetAccountGroupSumNum(sumFee)
-		//}
-
 		return addressGroup(address, coin, decimal.NewFromInt(models.AccountGroupPlayUsdt), decimal.NewFromInt(models.AccountGroupRefundUsdt))
 	case models.AccountGroupCurrencyBite:
 		return addressGroup(address, coin, decimal.NewFromInt(models.AccountGroupPlayBite), decimal.NewFromInt(models.AccountGroupRefundBite))

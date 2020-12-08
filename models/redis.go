@@ -129,3 +129,12 @@ func (b *box) SetAccountGroupWinTime(userId int64, exp time.Duration) error {
 func (b *box) TtlAccountGroupWinTime(userId int64) time.Duration {
 	return b.redis.TTL(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId)).Val()
 }
+
+func (b *box) ExistsAccountGroupWinTime(userId int64) bool {
+	exists := b.redis.Exists(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId)).Val()
+	if exists == 0 {
+		return false
+	}
+
+	return true
+}
