@@ -73,17 +73,7 @@ func MachineYtlConvertBite(address *models.Address, num float64) error {
 	price := ytlRate.Div(biteRate)
 	amount := number.Div(price).Mul(address.ConvertFee.Add(decimal.New(1, 0)))
 
-	err = machineYtlConvertBite(address, number, price, amount)
-	if err != nil {
-		return err
-	}
-
-	sumFee, err := mysql.SharedStore().GetMachineConvertSumFee()
-	if err == nil {
-		_ = models.SharedRedis().SetAccountConvertSumFee(sumFee)
-	}
-
-	return nil
+	return machineYtlConvertBite(address, number, price, amount)
 }
 
 func machineYtlConvertBite(address *models.Address, number, price, amount decimal.Decimal) error {

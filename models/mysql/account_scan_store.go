@@ -41,7 +41,7 @@ func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {
 func (s *Store) GetAccountScanSumFee() (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(actual_number-number) as number FROM g_account_scan WHERE " +
-		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
+		"created_at >= DATE_SUB(CURDATE(),INTERVAL -1 DAY)").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}

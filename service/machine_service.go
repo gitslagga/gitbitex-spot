@@ -236,28 +236,18 @@ func getTotalActiveNumber(userId int64) (int, error) {
 	return totalNum, nil
 }
 
-func StartMachineLevel(userId int64) {
-	address, err := GetAddressById(userId)
-	if err != nil {
-		mylog.Logger.Error().Msgf("StartMachineLevel GetAddressById err: %v", err)
-		return
-	}
-
+func StartMachineLevel(address *models.Address) {
 	machineLevel, err := GetMachineLevel()
 	if err != nil {
 		mylog.Logger.Error().Msgf("StartMachineLevel GetMachineLevel err: %v", err)
 		return
 	}
 
-	machineLevelStepOne(address, machineLevel)
-}
-
-func machineLevelStepOne(address *models.Address, machineLevel []*models.MachineLevel) {
 	switch address.MachineLevelId {
 	case models.MachineLevelZero:
 		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelZero])
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne getConditionMachineLevel err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
 			return
 		}
 		if !valid {
@@ -266,50 +256,68 @@ func machineLevelStepOne(address *models.Address, machineLevel []*models.Machine
 
 		err = machineLevelStepTwo(machineLevel[models.MachineLevelZero], address, models.MachineLevelOne)
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelOne:
-		err := machineLevelStepTwo(machineLevel[models.MachineLevelOne], address, models.MachineLevelTwo)
+		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelOne])
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
+			return
+		}
+		if !valid {
+			return
+		}
+
+		err = machineLevelStepTwo(machineLevel[models.MachineLevelOne], address, models.MachineLevelTwo)
+		if err != nil {
+			mylog.Logger.Error().Msgf("StartMachineLevel machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelTwo:
-		err := machineLevelStepTwo(machineLevel[models.MachineLevelTwo], address, models.MachineLevelThree)
+		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelTwo])
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
+			return
+		}
+		if !valid {
+			return
+		}
+
+		err = machineLevelStepTwo(machineLevel[models.MachineLevelTwo], address, models.MachineLevelThree)
+		if err != nil {
+			mylog.Logger.Error().Msgf("StartMachineLevel machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelThree:
-		err := machineLevelStepTwo(machineLevel[models.MachineLevelThree], address, models.MachineLevelFour)
+		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelThree])
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
+			return
+		}
+		if !valid {
+			return
+		}
+
+		err = machineLevelStepTwo(machineLevel[models.MachineLevelThree], address, models.MachineLevelFour)
+		if err != nil {
+			mylog.Logger.Error().Msgf("StartMachineLevel machineLevelStepTwo err: %v", err)
 		}
 	case models.MachineLevelFour:
-		err := machineLevelStepTwo(machineLevel[models.MachineLevelFour], address, models.MachineLevelFive)
+		valid, err := getConditionMachineLevel(address, machineLevel[models.MachineLevelFour])
 		if err != nil {
-			mylog.Logger.Error().Msgf("machineLevelStepOne machineLevelStepTwo err: %v", err)
+			mylog.Logger.Error().Msgf("StartMachineLevel getConditionMachineLevel err: %v", err)
+			return
+		}
+		if !valid {
+			return
+		}
+
+		err = machineLevelStepTwo(machineLevel[models.MachineLevelFour], address, models.MachineLevelFive)
+		if err != nil {
+			mylog.Logger.Error().Msgf("StartMachineLevel machineLevelStepTwo err: %v", err)
 		}
 	}
 }
 
-func machineLevelStepTwo(machineLevel *models.MachineLevel, address *models.Address, countMachineLevelId int64) error {
-	// 获取兑换手续费
-	sumFee, err := models.SharedRedis().GetAccountConvertSumFee()
-	if err != nil {
-		return err
-	}
-
-	// 获取升级后的达人级别的数量
-	count, err := CountAddressByMachineLevelId(countMachineLevelId)
-	if err != nil {
-		return err
-	}
-
-	// 获取实际分红数量
-	amount := sumFee.Mul(machineLevel.GlobalFee)
-	if count > 0 {
-		amount = amount.Div(decimal.NewFromInt(int64(count)))
-	}
-
+func machineLevelStepTwo(machineLevel *models.MachineLevel, address *models.Address, machineLevelId int64) error {
 	// 获取赠送的矿机
 	machine, err := GetMachineById(machineLevel.MachineId)
 	if err != nil {
@@ -317,12 +325,12 @@ func machineLevelStepTwo(machineLevel *models.MachineLevel, address *models.Addr
 	}
 
 	address.GlobalFee = machineLevel.GlobalFee
-	address.MachineLevelId = countMachineLevelId
-	return machineLevelStepThree(address, amount, machine)
+	address.MachineLevelId = machineLevelId
+	return machineLevelStepThree(address, machine)
 }
 
-// 更改用户达人级别，进行分红，赠送矿机
-func machineLevelStepThree(address *models.Address, amount decimal.Decimal, machine *models.Machine) error {
+// 更改用户达人级别，赠送矿机
+func machineLevelStepThree(address *models.Address, machine *models.Machine) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {
 		return err
@@ -330,17 +338,6 @@ func machineLevelStepThree(address *models.Address, amount decimal.Decimal, mach
 	defer func() { _ = db.Rollback() }()
 
 	err = db.UpdateAddress(address)
-	if err != nil {
-		return err
-	}
-
-	ytlAsset, err := db.GetAccountAssetForUpdate(address.Id, models.AccountCurrencyYtl)
-	if err != nil {
-		return err
-	}
-
-	ytlAsset.Available = ytlAsset.Available.Add(amount)
-	err = db.UpdateAccountAsset(ytlAsset)
 	if err != nil {
 		return err
 	}

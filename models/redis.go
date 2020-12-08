@@ -38,9 +38,9 @@ func SharedRedis() *box {
 	return &box{redis: redisClient}
 }
 
-func (b *box) SetAccountConvertSumFee(sumFee decimal.Decimal) error {
+func (b *box) SetAccountConvertSumFee(sumFee decimal.Decimal, exp time.Duration) error {
 	sumFeeF, _ := sumFee.Float64()
-	err := b.redis.Set(AccountConvertSumFee, sumFeeF, 0).Err()
+	err := b.redis.Set(AccountConvertSumFee, sumFeeF, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -48,22 +48,18 @@ func (b *box) SetAccountConvertSumFee(sumFee decimal.Decimal) error {
 	return nil
 }
 
-func (b *box) GetAccountConvertSumFee() (decimal.Decimal, error) {
-	sumFee, err := b.redis.Get(AccountConvertSumFee).Float64()
-	if err == redis.Nil {
-		return decimal.Zero, nil
+func (b *box) ExistsAccountConvertSumFee() bool {
+	exists := b.redis.Exists(AccountConvertSumFee).Val()
+	if exists == 0 {
+		return false
 	}
 
-	if err != nil {
-		return decimal.Zero, err
-	}
-
-	return decimal.NewFromFloat(sumFee), nil
+	return true
 }
 
-func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal) error {
+func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal, exp time.Duration) error {
 	sumFeeF, _ := sumFee.Float64()
-	err := b.redis.Set(AccountScanSumFee, sumFeeF, 0).Err()
+	err := b.redis.Set(AccountScanSumFee, sumFeeF, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -71,17 +67,13 @@ func (b *box) SetAccountScanSumFee(sumFee decimal.Decimal) error {
 	return nil
 }
 
-func (b *box) GetAccountScanSumFee() (decimal.Decimal, error) {
-	sumFee, err := b.redis.Get(AccountScanSumFee).Float64()
-	if err == redis.Nil {
-		return decimal.Zero, nil
+func (b *box) ExistsAccountScanSumFee() bool {
+	exists := b.redis.Exists(AccountScanSumFee).Val()
+	if exists == 0 {
+		return false
 	}
 
-	if err != nil {
-		return decimal.Zero, err
-	}
-
-	return decimal.NewFromFloat(sumFee), nil
+	return true
 }
 
 func (b *box) SetEthLatestHeight(height uint64) error {
@@ -106,9 +98,9 @@ func (b *box) GetEthLatestHeight() (uint64, error) {
 	return height, nil
 }
 
-func (b *box) SetAccountGroupSumNum(sumNum decimal.Decimal) error {
+func (b *box) SetAccountGroupSumNum(sumNum decimal.Decimal, exp time.Duration) error {
 	sumFeeF, _ := sumNum.Float64()
-	err := b.redis.Set(AccountGroupSumNum, sumFeeF, 0).Err()
+	err := b.redis.Set(AccountGroupSumNum, sumFeeF, exp).Err()
 	if err != nil {
 		return err
 	}
@@ -116,17 +108,13 @@ func (b *box) SetAccountGroupSumNum(sumNum decimal.Decimal) error {
 	return nil
 }
 
-func (b *box) GetAccountGroupSumNum() (decimal.Decimal, error) {
-	sumNum, err := b.redis.Get(AccountGroupSumNum).Float64()
-	if err == redis.Nil {
-		return decimal.Zero, nil
+func (b *box) ExistsAccountGroupSumNum() bool {
+	exists := b.redis.Exists(AccountGroupSumNum).Val()
+	if exists == 0 {
+		return false
 	}
 
-	if err != nil {
-		return decimal.Zero, err
-	}
-
-	return decimal.NewFromFloat(sumNum), nil
+	return true
 }
 
 func (b *box) SetAccountGroupWinTime(userId int64, exp time.Duration) error {
@@ -138,11 +126,6 @@ func (b *box) SetAccountGroupWinTime(userId int64, exp time.Duration) error {
 	return nil
 }
 
-func (b *box) GetAccountGroupWinTime(userId int64) (time.Duration, error) {
-	winTime, err := b.redis.TTL(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId)).Result()
-	if err != nil {
-		return 0, err
-	}
-
-	return winTime, nil
+func (b *box) TtlAccountGroupWinTime(userId int64) time.Duration {
+	return b.redis.TTL(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId)).Val()
 }

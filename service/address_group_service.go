@@ -112,10 +112,8 @@ func addressGroup(address *models.Address, coin string, number, refund decimal.D
 			}
 
 			// 持币排名翻倍，再次成功持续时间翻倍
-			ttl, err := models.SharedRedis().GetAccountGroupWinTime(addressGroups[goal].UserId)
-			if err != nil {
-				mylog.Logger.Error().Msgf("addressGroup GetAccountGroupWinTime err:%v", err)
-			}
+			ttl := models.SharedRedis().TtlAccountGroupWinTime(addressGroups[goal].UserId)
+
 			var exp time.Duration
 			if ttl.Seconds() == -2 {
 				exp = models.AccountGroupIncreaseDay * 24 * time.Hour

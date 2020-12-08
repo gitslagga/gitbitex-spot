@@ -68,7 +68,7 @@ func BuyMachineService(ctx *gin.Context) {
 		return
 	}
 
-	go service.StartMachineLevel(address.Id)
+	go service.StartMachineLevel(address)
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
