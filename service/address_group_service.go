@@ -13,8 +13,8 @@ import (
 	"time"
 )
 
-func GetAddressGroupByUserId(userId int64) ([]*models.AddressGroup, error) {
-	return mysql.SharedStore().GetAddressGroupByUserId(userId)
+func GetAddressGroupByUserId(userId, before, after, limit int64) ([]*models.AddressGroup, error) {
+	return mysql.SharedStore().GetAddressGroupByUserId(userId, before, after, limit)
 }
 
 func AddressGroup(address *models.Address, coin string) error {

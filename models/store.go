@@ -155,7 +155,7 @@ type Store interface {
 	GetLastIssueLog(issueId int64) (*IssueLog, error)
 	AddIssueLog(issueLog *IssueLog) error
 
-	GetAddressGroupByUserId(userId int64) ([]*AddressGroup, error)
+	GetAddressGroupByUserId(userId, before, after, limit int64) ([]*AddressGroup, error)
 	GetAddressGroupForUpdate(currency string) (*AddressGroup, error)
 	GetAddressGroupByUserIdOrderSN(userId int64, orderSN string) (*AddressGroup, error)
 	GetAddressGroupsByOrderSN(orderSN string) ([]*AddressGroup, error)

@@ -5,6 +5,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/mylog"
 	"github.com/gitslagga/gitbitex-spot/service"
 	"net/http"
+	"strconv"
 )
 
 // Get /address/groupInfo
@@ -18,7 +19,17 @@ func AddressGroupInfoService(ctx *gin.Context) {
 		return
 	}
 
-	groups, err := service.GetAddressGroupByUserId(address.Id)
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	groups, err := service.GetAddressGroupByUserId(address.Id, before, after, limit)
 	if groups == nil || err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
@@ -26,9 +37,19 @@ func AddressGroupInfoService(ctx *gin.Context) {
 		return
 	}
 
+	var newBefore, newAfter int64 = 0, 0
+	if len(groups) > 0 {
+		newBefore = groups[0].Id
+		newAfter = groups[len(groups)-1].Id
+	}
+
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = groups
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   groups,
+	}
 	ctx.JSON(http.StatusOK, out)
 }
 

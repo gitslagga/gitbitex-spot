@@ -79,8 +79,8 @@ func (server *HttpServer) Start() {
 		//拼团板块
 		frontend.POST("/address/group", AddressGroupService)
 		frontend.GET("/address/groupInfo", AddressGroupInfoService)
-		frontend.GET("/address/delegate", AddressDelegateService)
-		frontend.GET("/address/release", AddressReleaseService)
+		frontend.POST("/address/delegate", AddressDelegateService)
+		frontend.POST("/address/release", AddressReleaseService)
 
 		//币币交易
 		frontend.GET("/order/info", GetOrderService)
