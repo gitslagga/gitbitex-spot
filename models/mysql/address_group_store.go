@@ -58,7 +58,7 @@ func (s *Store) GetAddressGroupsByOrderSN(orderSN string) ([]*models.AddressGrou
 func (s *Store) GetAddressGroupSumNum(coin string) (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(number) as number FROM g_address_group WHERE "+
-		"created_at >= DATE_SUB(CURDATE(),INTERVAL -1 DAY) AND coin=?", coin).Scan(&number).Error
+		"created_at BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND DATE_SUB(CURDATE(),INTERVAL 0 DAY) AND coin=?", coin).Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}

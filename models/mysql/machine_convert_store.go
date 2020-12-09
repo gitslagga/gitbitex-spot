@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Store) GetMachineConvertByUserId(userId, beforeId, afterId, limit int64) ([]*models.MachineConvert, error) {
-	db := s.db.Where("user_id =?", userId)
+	db := s.db.Where("user_id=?", userId)
 
 	if beforeId > 0 {
 		db = db.Where("id>?", beforeId)
@@ -30,7 +30,7 @@ func (s *Store) GetMachineConvertByUserId(userId, beforeId, afterId, limit int64
 func (s *Store) GetMachineConvertSumNum() (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(number) as number FROM g_machine_convert WHERE " +
-		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
+		"created_at >= DATE_FORMAT(CURDATE(),'%Y-%m-%d')").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}
@@ -41,7 +41,7 @@ func (s *Store) GetMachineConvertSumNum() (decimal.Decimal, error) {
 func (s *Store) GetMachineConvertSumFee() (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(amount-number) as number FROM g_machine_convert WHERE " +
-		"created_at >= DATE_SUB(CURDATE(),INTERVAL -1 DAY)").Scan(&number).Error
+		"created_at BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND DATE_SUB(CURDATE(),INTERVAL 0 DAY)").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}

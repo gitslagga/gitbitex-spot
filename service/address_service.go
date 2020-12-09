@@ -155,7 +155,7 @@ func AddressLogin(username, password, mnemonic, privateKey string) (address *mod
 		return nil, err
 	}
 	if addressExists != nil {
-		addressExists.Password = username
+		addressExists.Username = username
 		addressExists.Password = password
 		return addressExists, UpdateAddress(addressExists)
 	}

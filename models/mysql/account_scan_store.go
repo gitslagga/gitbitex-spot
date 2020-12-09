@@ -7,7 +7,7 @@ import (
 )
 
 func (s *Store) GetAccountScanByUserId(userId, beforeId, afterId, limit int64) ([]*models.AccountScan, error) {
-	db := s.db.Where("user_id =?", userId)
+	db := s.db.Where("user_id=?", userId)
 
 	if beforeId > 0 {
 		db = db.Where("id>?", beforeId)
@@ -30,7 +30,7 @@ func (s *Store) GetAccountScanByUserId(userId, beforeId, afterId, limit int64) (
 func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(number) as number FROM g_account_scan WHERE "+
-		"DATE_FORMAT(created_at,'%Y-%m-%d') = DATE_FORMAT(CURDATE(),'%Y-%m-%d') AND user_id=?", userId).Scan(&number).Error
+		"created_at >= DATE_FORMAT(CURDATE(),'%Y-%m-%d') AND user_id=?", userId).Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}
@@ -41,7 +41,7 @@ func (s *Store) GetAccountScanSumNumber(userId int64) (decimal.Decimal, error) {
 func (s *Store) GetAccountScanSumFee() (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(actual_number-number) as number FROM g_account_scan WHERE " +
-		"created_at >= DATE_SUB(CURDATE(),INTERVAL -1 DAY)").Scan(&number).Error
+		"created_at BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND DATE_SUB(CURDATE(),INTERVAL 0 DAY)").Scan(&number).Error
 	if err == gorm.ErrRecordNotFound {
 		return decimal.Zero, nil
 	}
