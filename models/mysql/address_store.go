@@ -25,7 +25,7 @@ func (s *Store) GetAddressById(id int64) (*models.Address, error) {
 
 func (s *Store) CountAddressByMachineLevelId(machineLevelId int64) (int, error) {
 	var count models.TotalCount
-	err := s.db.Raw("SELECT COUNT(*) as count FROM g_address WHERE g_machine_level_id=?", machineLevelId).Scan(&count).Error
+	err := s.db.Raw("SELECT COUNT(*) as count FROM g_address WHERE machine_level_id=?", machineLevelId).Scan(&count).Error
 	if err == gorm.ErrRecordNotFound {
 		return 0, nil
 	}
@@ -34,7 +34,7 @@ func (s *Store) CountAddressByMachineLevelId(machineLevelId int64) (int, error) 
 
 func (s *Store) GetAddressByMachineLevelId(machineLevelId int64) ([]*models.Address, error) {
 	var address []*models.Address
-	err := s.db.Raw("SELECT * FROM g_address WHERE g_machine_level_id=?", machineLevelId).Scan(&address).Error
+	err := s.db.Raw("SELECT * FROM g_address WHERE machine_level_id=?", machineLevelId).Scan(&address).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
