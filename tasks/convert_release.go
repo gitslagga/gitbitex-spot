@@ -23,9 +23,19 @@ func StartConvertRelease() {
 
 func ConvertRelease() {
 	// 查看当天是否释放过
-	if models.SharedRedis().ExistsAccountConvertSumFee() {
-		mylog.DataLogger.Info().Msgf("ConvertRelease today has been released")
+	addressRelease, err := mysql.SharedStore().GetLastAddressRelease(models.AddressReleaseConvert)
+	if err != nil {
+		mylog.DataLogger.Info().Msgf("ConvertRelease GetLastAddressRelease err: %v", err)
 		return
+	}
+	if addressRelease != nil {
+		currentTime := time.Now()
+		startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		if addressRelease.CreatedAt.After(startTime) && addressRelease.CreatedAt.Before(endTime) {
+			return
+		}
 	}
 
 	// 获取兑换手续费
@@ -72,12 +82,6 @@ func ConvertRelease() {
 			}
 		}
 	}
-
-	// 应该给予资金池足够的释放时间
-	err = models.SharedRedis().SetAccountConvertSumFee(sumFee, time.Hour*23)
-	if err != nil {
-		mylog.DataLogger.Error().Msgf("ConvertRelease SetAccountConvertSumFee err: %v", err)
-	}
 }
 
 func convertRelease(userId int64, amount decimal.Decimal) error {
@@ -94,6 +98,16 @@ func convertRelease(userId int64, amount decimal.Decimal) error {
 
 	accountAsset.Available = accountAsset.Available.Add(amount)
 	err = db.UpdateAccountAsset(accountAsset)
+	if err != nil {
+		return err
+	}
+
+	err = db.AddAddressRelease(&models.AddressRelease{
+		UserId: userId,
+		Coin:   models.AccountCurrencyYtl,
+		Number: amount,
+		Type:   models.AddressReleaseConvert,
+	})
 	if err != nil {
 		return err
 	}

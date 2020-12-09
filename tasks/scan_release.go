@@ -23,9 +23,19 @@ func StartScanRelease() {
 
 func ScanRelease() {
 	// 查看当天是否释放过
-	if models.SharedRedis().ExistsAccountScanSumFee() {
-		mylog.DataLogger.Info().Msgf("ScanRelease today has been released")
+	addressRelease, err := mysql.SharedStore().GetLastAddressRelease(models.AddressReleaseScan)
+	if err != nil {
+		mylog.DataLogger.Info().Msgf("ConvertRelease GetLastAddressRelease err: %v", err)
 		return
+	}
+	if addressRelease != nil {
+		currentTime := time.Now()
+		startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		if addressRelease.CreatedAt.After(startTime) && addressRelease.CreatedAt.Before(endTime) {
+			return
+		}
 	}
 
 	// 获取扫描手续费
@@ -63,12 +73,6 @@ func ScanRelease() {
 			mylog.DataLogger.Error().Msgf("ScanRelease scanRelease err: %v", err)
 		}
 	}
-
-	// 应该给予资金池足够的释放时间
-	err = models.SharedRedis().SetAccountScanSumFee(sumFee, time.Hour*23)
-	if err != nil {
-		mylog.DataLogger.Error().Msgf("ScanRelease SetAccountScanSumFee err: %v", err)
-	}
 }
 
 func scanRelease(userId int64, amount decimal.Decimal) error {
@@ -85,6 +89,16 @@ func scanRelease(userId int64, amount decimal.Decimal) error {
 
 	accountAsset.Available = accountAsset.Available.Add(amount)
 	err = db.UpdateAccountAsset(accountAsset)
+	if err != nil {
+		return err
+	}
+
+	err = db.AddAddressRelease(&models.AddressRelease{
+		UserId: userId,
+		Coin:   models.AccountCurrencyBite,
+		Number: amount,
+		Type:   models.AddressReleaseScan,
+	})
 	if err != nil {
 		return err
 	}

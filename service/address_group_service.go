@@ -28,6 +28,10 @@ func AddressGroup(address *models.Address, coin string) error {
 	return nil
 }
 
+func GetAddressReleaseByUserId(userId, before, after, limit int64) ([]*models.AddressRelease, error) {
+	return mysql.SharedStore().GetAddressReleaseByUserId(userId, before, after, limit)
+}
+
 func addressGroup(address *models.Address, coin string, number, refund decimal.Decimal) error {
 	db, err := mysql.SharedStore().BeginTx()
 	if err != nil {

@@ -100,12 +100,13 @@ const (
 	ConfigScanDayPayment
 	ConfigScanFeePayment
 
-	//最低持币量，最佳持币量
+	// 最低持币量，最佳持币量
 	ConfigMinHolding
 	ConfigBestHolding
 )
 
 const (
+	// 充币，提币
 	CurrencyCollectionMaster = 1
 	CurrencyCollectionCold   = 2
 
@@ -120,8 +121,14 @@ const (
 )
 
 const (
+	// 认购管理
 	IssueFirstEveryMonth  = 0
 	IssueSecondEveryMonth = 1
 	IssueThreeEveryMonth  = 2
 	IssueFourEveryMonth   = 3
+
+	// 兑换，扫码，拼团 资金池
+	AddressReleaseConvert = 1
+	AddressReleaseScan    = 2
+	AddressReleaseGroup   = 3
 )

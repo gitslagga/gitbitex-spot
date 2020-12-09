@@ -23,9 +23,19 @@ func StartGroupRelease() {
 
 func GroupRelease() {
 	// 查看当天是否释放过
-	if models.SharedRedis().ExistsAccountGroupSumNum() {
-		mylog.DataLogger.Info().Msgf("GroupRelease today has been released")
+	addressRelease, err := mysql.SharedStore().GetLastAddressRelease(models.AddressReleaseGroup)
+	if err != nil {
+		mylog.DataLogger.Info().Msgf("ConvertRelease GetLastAddressRelease err: %v", err)
 		return
+	}
+	if addressRelease != nil {
+		currentTime := time.Now()
+		startTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 00, 00, 00, 00, currentTime.Location())
+		endTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 23, 59, 59, 0, currentTime.Location())
+
+		if addressRelease.CreatedAt.After(startTime) && addressRelease.CreatedAt.Before(endTime) {
+			return
+		}
 	}
 
 	// 获取扫描手续费
@@ -93,12 +103,6 @@ func GroupRelease() {
 			}
 		}
 	}
-
-	// 应该给予资金池足够的释放时间
-	err = models.SharedRedis().SetAccountGroupSumNum(usdtNum.Add(biteNum), time.Hour*23)
-	if err != nil {
-		mylog.DataLogger.Error().Msgf("GroupRelease SetAccountGroupSumNum err: %v", err)
-	}
 }
 
 func groupRelease(userId int64, amount decimal.Decimal, coin string) error {
@@ -115,6 +119,16 @@ func groupRelease(userId int64, amount decimal.Decimal, coin string) error {
 
 	accountAsset.Available = accountAsset.Available.Add(amount)
 	err = db.UpdateAccountAsset(accountAsset)
+	if err != nil {
+		return err
+	}
+
+	err = db.AddAddressRelease(&models.AddressRelease{
+		UserId: userId,
+		Coin:   coin,
+		Number: amount,
+		Type:   models.AddressReleaseGroup,
+	})
 	if err != nil {
 		return err
 	}

@@ -82,6 +82,9 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/delegate", AddressDelegateService)
 		frontend.POST("/address/release", AddressReleaseService)
 
+		//资金池记录
+		frontend.GET("/address/taskRelease", AddressTaskReleaseService)
+
 		//币币交易
 		frontend.GET("/order/info", GetOrderService)
 		frontend.POST("/order/place", PlaceOrderService)

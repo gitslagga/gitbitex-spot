@@ -160,3 +160,48 @@ func AddressReleaseService(ctx *gin.Context) {
 	out.RespDesc = EC_NONE.String()
 	ctx.JSON(http.StatusOK, out)
 }
+
+// Get /address/taskRelease
+func AddressTaskReleaseService(ctx *gin.Context) {
+	out := CommonResp{}
+	address := GetCurrentAddress(ctx)
+	if address == nil {
+		out.RespCode = EC_TOKEN_INVALID
+		out.RespDesc = ErrorCodeMessage(EC_TOKEN_INVALID)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
+	if err1 != nil || err2 != nil || err3 != nil {
+		out.RespCode = EC_PARAMS_ERR
+		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	releases, err := service.GetAddressReleaseByUserId(address.Id, before, after, limit)
+	if releases == nil || err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
+	var newBefore, newAfter int64 = 0, 0
+	if len(releases) > 0 {
+		newBefore = releases[0].Id
+		newAfter = releases[len(releases)-1].Id
+	}
+
+	out.RespCode = EC_NONE.Code()
+	out.RespDesc = EC_NONE.String()
+	out.RespData = PageResp{
+		Before: newBefore,
+		After:  newAfter,
+		List:   releases,
+	}
+	ctx.JSON(http.StatusOK, out)
+}

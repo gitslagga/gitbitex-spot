@@ -162,4 +162,8 @@ type Store interface {
 	GetAddressGroupSumNum(coin string) (decimal.Decimal, error)
 	AddAddressGroup(group *AddressGroup) error
 	UpdateAddressGroup(group *AddressGroup) error
+
+	GetAddressReleaseByUserId(userId, beforeId, afterId, limit int64) ([]*AddressRelease, error)
+	GetLastAddressRelease(releaseType int) (*AddressRelease, error)
+	AddAddressRelease(release *AddressRelease) error
 }

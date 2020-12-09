@@ -553,3 +553,13 @@ type AddressGroup struct {
 	Status    int
 	Count     int
 }
+
+type AddressRelease struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Coin      string
+	Number    decimal.Decimal
+	Type      int
+}
