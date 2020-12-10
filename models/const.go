@@ -42,8 +42,11 @@ const (
 	AccountGroupPersonNumber = 7
 	AccountGroupPlayUsdt     = 20
 	AccountGroupPlayBite     = 20
-	AccountGroupDefault      = 0
-	AccountGroupWinning      = 1
+	AccountGroupProcess      = 1
+	AccountGroupFinish       = 2
+	AccountGroupLogProcess   = 1
+	AccountGroupLogSuccess   = 2
+	AccountGroupLogFailed    = 3
 	AccountGroupRefundUsdt   = 21
 	AccountGroupRefundBite   = 21
 	AccountGroupIncreaseDay  = 30

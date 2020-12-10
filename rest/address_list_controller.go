@@ -19,16 +19,18 @@ func AddressListService(ctx *gin.Context) {
 	}
 
 	addressLists, err := service.AddressListService(address)
-	if addressLists == nil || err != nil {
+	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
+	if addressLists != nil {
+		out.RespData = addressLists
+	}
 
 	out.RespCode = EC_NONE.Code()
 	out.RespDesc = EC_NONE.String()
-	out.RespData = addressLists
 	ctx.JSON(http.StatusOK, out)
 }
 

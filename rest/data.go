@@ -24,13 +24,15 @@ const (
 	EC_USERNAME_PASSWORD_ERR = 9005
 	EC_ACTIVATION_SELF_ERR   = 9006
 
-	EC_CLIENT_OID_ERR      = 8000
-	EC_ORDER_NOT_EXISTS    = 8001
-	EC_THE_SAME_ACCOUNT    = 8002
-	EC_SHOP_ONLY_ENTER     = 8003
-	EC_CURRENCY_NOT_EXISTS = 8004
-	EC_POOL_ONLY_BITE      = 8005
-	EC_DAY_PROFIT_RELEASED = 8006
+	EC_CLIENT_OID_ERR        = 8000
+	EC_ORDER_NOT_EXISTS      = 8001
+	EC_THE_SAME_ACCOUNT      = 8002
+	EC_SHOP_ONLY_ENTER       = 8003
+	EC_CURRENCY_NOT_EXISTS   = 8004
+	EC_POOL_ONLY_BITE        = 8005
+	EC_DAY_PROFIT_RELEASED   = 8006
+	EC_GROUP_PUBLISH_EXISTS  = 8007
+	EC_GROUP_JOIN_NOT_EXISTS = 8008
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -89,6 +91,10 @@ func (c ErrorCode) String() (r string) {
 		r = "矿池账户只支持BITE|Mining pool accounts only support BITE"
 	case EC_DAY_PROFIT_RELEASED:
 		r = "今日收益已释放|Today's earnings have been released"
+	case EC_GROUP_PUBLISH_EXISTS:
+		r = "拼团已经存在|The group already exists"
+	case EC_GROUP_JOIN_NOT_EXISTS:
+		r = "该拼团不存在|The group does not exist"
 
 	default:
 	}
@@ -177,6 +183,10 @@ type AddressListRequest struct {
 	Address string `json:"address" binding:"required"`
 }
 
-type AddressGroupRequest struct {
+type GroupRequest struct {
 	Coin string `json:"coin" binding:"required"`
+}
+
+type GroupJoinRequest struct {
+	GroupId int64 `json:"group_id" binding:"required"`
 }

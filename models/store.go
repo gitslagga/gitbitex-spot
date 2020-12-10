@@ -155,13 +155,17 @@ type Store interface {
 	GetLastIssueLog(issueId int64) (*IssueLog, error)
 	AddIssueLog(issueLog *IssueLog) error
 
-	GetAddressGroupByUserId(userId, before, after, limit int64) ([]*AddressGroup, error)
-	GetAddressGroupForUpdate(currency string) (*AddressGroup, error)
-	GetAddressGroupByUserIdOrderSN(userId int64, orderSN string) (*AddressGroup, error)
-	GetAddressGroupsByOrderSN(orderSN string) ([]*AddressGroup, error)
-	GetAddressGroupSumNum(coin string) (decimal.Decimal, error)
-	AddAddressGroup(group *AddressGroup) error
-	UpdateAddressGroup(group *AddressGroup) error
+	GetGroupById(groupId int64) (*Group, error)
+	GetGroupByUserIdCoin(userId int64, coin string) (*Group, error)
+	GetGroupByCoin(coin string, beforeId, afterId, limit int64) ([]*Group, error)
+	AddGroup(group *Group) error
+	UpdateGroup(group *Group) error
+	GetGroupLogByUserId(userId, beforeId, afterId, limit int64) ([]*GroupLog, error)
+	GetGroupLogPublicity(beforeId, afterId, limit int64) ([]*GroupLog, error)
+	GetGroupLogByGroupId(groupId int64) ([]*GroupLog, error)
+	GetGroupLogSumNum(coin string) (decimal.Decimal, error)
+	AddGroupLog(groupLog *GroupLog) error
+	UpdateGroupLog(groupLog *GroupLog) error
 
 	GetAddressReleaseByUserId(userId, beforeId, afterId, limit int64) ([]*AddressRelease, error)
 	GetLastAddressRelease(releaseType int) (*AddressRelease, error)

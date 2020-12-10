@@ -77,10 +77,13 @@ func (server *HttpServer) Start() {
 		frontend.POST("/address/switchList", AddressSwitchListService)
 
 		//拼团板块
-		frontend.POST("/address/group", AddressGroupService)
-		frontend.GET("/address/groupInfo", AddressGroupInfoService)
-		frontend.POST("/address/delegate", AddressDelegateService)
-		frontend.POST("/address/release", AddressReleaseService)
+		frontend.GET("/group/info", GroupInfoService)
+		frontend.GET("/group/log", GroupLogService)
+		frontend.GET("/group/publicity", GroupPublicityService)
+		frontend.POST("/group/publish", GroupPublishService)
+		frontend.POST("/group/join", GroupJoinService)
+		frontend.POST("/group/delegate", GroupDelegateService)
+		frontend.POST("/group/release", GroupReleaseService)
 
 		//资金池记录
 		frontend.GET("/address/taskRelease", AddressTaskReleaseService)

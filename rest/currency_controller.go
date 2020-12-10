@@ -43,7 +43,7 @@ func AddressDepositInfoService(ctx *gin.Context) {
 	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	deposits, err := service.GetAddressDepositsByUserId(address.Id, before, after, limit)
-	if deposits == nil || err != nil {
+	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -127,7 +127,7 @@ func AddressWithdrawInfoService(ctx *gin.Context) {
 	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	withdraws, err := service.GetAddressWithdrawsByUserId(address.Id, before, after, limit)
-	if withdraws == nil || err != nil {
+	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)

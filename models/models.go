@@ -542,16 +542,31 @@ type AddressPromote struct {
 	CountSon   int
 }
 
-type AddressGroup struct {
+type Group struct {
 	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserId    int64
+	Address   string
 	Coin      string
-	OrderSN   string
+	Fee       decimal.Decimal
+	Number    decimal.Decimal
+	Refund    decimal.Decimal
+	JoinCount int
+	Count     int
+	Status    int
+}
+
+type GroupLog struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	GroupId   int64
+	UserId    int64
+	Address   string
+	Coin      string
 	Number    decimal.Decimal
 	Status    int
-	Count     int
 }
 
 type AddressRelease struct {

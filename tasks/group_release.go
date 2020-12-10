@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// 拼团节点资金池任务
+//拼团节点资金池任务
 func StartGroupRelease() {
 	GroupRelease()
 
@@ -38,13 +38,13 @@ func GroupRelease() {
 		}
 	}
 
-	// 获取扫描手续费
-	usdtNum, err := mysql.SharedStore().GetAddressGroupSumNum(models.AccountGroupCurrencyUsdt)
+	// 获取节点资金池
+	usdtNum, err := mysql.SharedStore().GetGroupLogSumNum(models.AccountGroupCurrencyUsdt)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("GroupRelease GetAddressGroupSumNum err: %v", err)
 		return
 	}
-	biteNum, err := mysql.SharedStore().GetAddressGroupSumNum(models.AccountGroupCurrencyBite)
+	biteNum, err := mysql.SharedStore().GetGroupLogSumNum(models.AccountGroupCurrencyBite)
 	if err != nil {
 		mylog.DataLogger.Error().Msgf("GroupRelease GetAddressGroupSumNum err: %v", err)
 		return
