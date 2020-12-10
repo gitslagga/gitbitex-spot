@@ -100,38 +100,46 @@ func groupPublish(address *models.Address, coin string, number, refund decimal.D
 		return err
 	}
 
-	// 直推收益，间推收益
 	if address.ParentId != 0 && address.ParentIds != "" {
-		accountAsset, err = db.GetAccountAssetForUpdate(address.ParentId, coin)
+		err = parentProfit(address, db, number, coin)
 		if err != nil {
 			return err
-		}
-		accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountGroupDirectRate)))
-		err = db.UpdateAccountAsset(accountAsset)
-		if err != nil {
-			return err
-		}
-
-		parentIds := strings.Split(address.ParentIds, ",")
-		for i := 0; i < len(parentIds)-1; i++ {
-			parentId, err := strconv.ParseInt(parentIds[i], 10, 64)
-			if err != nil {
-				return err
-			}
-
-			accountAsset, err = db.GetAccountAssetForUpdate(parentId, coin)
-			if err != nil {
-				return err
-			}
-			accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountGroupIndirectRate)))
-			err = db.UpdateAccountAsset(accountAsset)
-			if err != nil {
-				return err
-			}
 		}
 	}
 
 	return db.CommitTx()
+}
+
+// 直推收益，间推收益
+func parentProfit(address *models.Address, db models.Store, number decimal.Decimal, coin string) error {
+	accountAsset, err := db.GetAccountAssetForUpdate(address.ParentId, coin)
+	if err != nil {
+		return err
+	}
+	accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountGroupDirectRate)))
+	err = db.UpdateAccountAsset(accountAsset)
+	if err != nil {
+		return err
+	}
+
+	parentIds := strings.Split(address.ParentIds, ",")
+	for i := 0; i < len(parentIds)-1; i++ {
+		parentId, err := strconv.ParseInt(parentIds[i], 10, 64)
+		if err != nil {
+			return err
+		}
+
+		accountAsset, err = db.GetAccountAssetForUpdate(parentId, coin)
+		if err != nil {
+			return err
+		}
+		accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(models.AccountGroupIndirectRate)))
+		err = db.UpdateAccountAsset(accountAsset)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func GroupJoin(address *models.Address, group *models.Group) error {
@@ -177,6 +185,7 @@ func GroupJoin(address *models.Address, group *models.Group) error {
 	}
 
 	if group.JoinCount >= group.Count {
+		rand.Seed(time.Now().UnixNano())
 		goal := rand.Intn(group.Count)
 
 		// 持币排名翻倍，再次成功持续时间翻倍
@@ -226,6 +235,13 @@ func GroupJoin(address *models.Address, group *models.Group) error {
 			if err != nil {
 				return err
 			}
+		}
+	}
+
+	if address.ParentId != 0 && address.ParentIds != "" {
+		err = parentProfit(address, db, group.Number, group.Coin)
+		if err != nil {
+			return err
 		}
 	}
 

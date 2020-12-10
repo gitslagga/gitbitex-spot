@@ -118,7 +118,7 @@ func (b *box) ExistsAccountGroupSumNum() bool {
 }
 
 func (b *box) SetAccountGroupWinTime(userId int64, exp time.Duration) error {
-	err := b.redis.Set(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId), exp, exp).Err()
+	err := b.redis.Set(fmt.Sprintf("%s_%v", AccountGroupWinTime, userId), userId, exp).Err()
 	if err != nil {
 		return err
 	}
