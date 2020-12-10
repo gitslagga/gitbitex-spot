@@ -198,7 +198,7 @@ func GetOrders(ctx *gin.Context) {
 		return
 	}
 
-	orderVos := []*orderVo{}
+	var orderVos []*orderVo
 	for _, order := range orders {
 		orderVos = append(orderVos, newOrderVo(order))
 	}
@@ -218,16 +218,9 @@ func GetOrders(ctx *gin.Context) {
 func GetOrderService(ctx *gin.Context) {
 	out := CommonResp{}
 	productId := ctx.Query("productId")
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	var side *models.Side
 	var err error

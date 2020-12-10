@@ -137,15 +137,9 @@ func AccountTransferInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	accountTransfer, err := service.GetAccountTransferByUserId(address.Id, before, after, limit)
 	if err != nil {
@@ -217,15 +211,9 @@ func AccountScanInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	accountScan, err := service.GetAccountScanByUserId(address.Id, before, after, limit)
 	if err != nil {

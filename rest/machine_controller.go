@@ -86,15 +86,9 @@ func AddressMachineService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	machineAddress, err := service.GetMachineAddressByUserId(address.Id, before, after, limit)
 	if err != nil {
@@ -131,15 +125,9 @@ func LogMachineService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	machineLog, err := service.GetMachineLogByUserId(address.Id, before, after, limit)
 	if err != nil {
@@ -214,15 +202,9 @@ func MachineConvertInfoService(ctx *gin.Context) {
 		return
 	}
 
-	before, err1 := strconv.ParseInt(ctx.Query("before"), 10, 64)
-	after, err2 := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, err3 := strconv.ParseInt(ctx.Query("limit"), 10, 64)
-	if err1 != nil || err2 != nil || err3 != nil {
-		out.RespCode = EC_PARAMS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
+	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
+	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
+	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
 
 	machineConvert, err := service.GetMachineConvertByUserId(address.Id, before, after, limit)
 	if err != nil {
