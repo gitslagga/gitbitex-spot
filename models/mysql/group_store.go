@@ -105,6 +105,15 @@ func (s *Store) GetGroupLogByGroupId(groupId int64) ([]*models.GroupLog, error) 
 	return groupLogs, err
 }
 
+func (s *Store) GetGroupLogByGroupIdUserId(groupId, userId int64) (*models.GroupLog, error) {
+	var groupLog models.GroupLog
+	err := s.db.Raw("SELECT * FROM g_group_log WHERE group_id=? AND user_id=?", groupId, userId).Scan(&groupLog).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &groupLog, err
+}
+
 func (s *Store) GetGroupLogSumNum(coin string) (decimal.Decimal, error) {
 	var number models.SumNumber
 	err := s.db.Raw("SELECT SUM(number) as number FROM g_group_log WHERE "+

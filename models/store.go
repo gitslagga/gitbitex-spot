@@ -163,6 +163,7 @@ type Store interface {
 	GetGroupLogByUserId(userId, beforeId, afterId, limit int64) ([]*GroupLog, error)
 	GetGroupLogPublicity(beforeId, afterId, limit int64) ([]*GroupLog, error)
 	GetGroupLogByGroupId(groupId int64) ([]*GroupLog, error)
+	GetGroupLogByGroupIdUserId(groupId, userId int64) (*GroupLog, error)
 	GetGroupLogSumNum(coin string) (decimal.Decimal, error)
 	AddGroupLog(groupLog *GroupLog) error
 	UpdateGroupLog(groupLog *GroupLog) error

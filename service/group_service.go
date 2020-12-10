@@ -32,6 +32,10 @@ func GetGroupLogPublicity(before, after, limit int64) ([]*models.GroupLog, error
 	return mysql.SharedStore().GetGroupLogPublicity(before, after, limit)
 }
 
+func GetGroupLogByGroupIdUserId(groupId, userId int64) (*models.GroupLog, error) {
+	return mysql.SharedStore().GetGroupLogByGroupIdUserId(groupId, userId)
+}
+
 func GetAddressReleaseByUserId(userId, before, after, limit int64) ([]*models.AddressRelease, error) {
 	return mysql.SharedStore().GetAddressReleaseByUserId(userId, before, after, limit)
 }

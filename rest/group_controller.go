@@ -212,6 +212,20 @@ func GroupJoinService(ctx *gin.Context) {
 		return
 	}
 
+	groupLog, err := service.GetGroupLogByGroupIdUserId(groupJoinRequest.GroupId, address.Id)
+	if err != nil {
+		out.RespCode = EC_NETWORK_ERR
+		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+	if groupLog != nil {
+		out.RespCode = EC_GROUP_JOIN_REPEAT_ERR
+		out.RespDesc = ErrorCodeMessage(EC_GROUP_JOIN_REPEAT_ERR)
+		ctx.JSON(http.StatusOK, out)
+		return
+	}
+
 	err = service.GroupJoin(address, group)
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] GroupJoinService GroupJoin err: %v", err)

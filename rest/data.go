@@ -33,6 +33,7 @@ const (
 	EC_DAY_PROFIT_RELEASED   = 8006
 	EC_GROUP_PUBLISH_EXISTS  = 8007
 	EC_GROUP_JOIN_NOT_EXISTS = 8008
+	EC_GROUP_JOIN_REPEAT_ERR = 8009
 )
 
 func (c ErrorCode) Code() (r int) {
@@ -95,6 +96,8 @@ func (c ErrorCode) String() (r string) {
 		r = "拼团已经存在|The group already exists"
 	case EC_GROUP_JOIN_NOT_EXISTS:
 		r = "该拼团不存在|The group does not exist"
+	case EC_GROUP_JOIN_REPEAT_ERR:
+		r = "不能重复参加|Cannot repeat join"
 
 	default:
 	}

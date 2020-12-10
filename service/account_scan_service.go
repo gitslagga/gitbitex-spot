@@ -65,7 +65,7 @@ func AccountScan(userId int64, url string, numberF float64) error {
 	}
 
 	if number.LessThan(minPayment) || number.GreaterThan(maxPayment) {
-		return errors.New("不在服务时间段|Out of service time")
+		return errors.New("支付金额超过范围|Payment amount exceeds range")
 	}
 
 	sumNumber, err := GetAccountScanSumNumber(userId)
