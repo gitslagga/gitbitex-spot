@@ -76,7 +76,7 @@ func (s *Store) GetGroupLogByUserId(userId, beforeId, afterId, limit int64) ([]*
 }
 
 func (s *Store) GetGroupLogPublicity(beforeId, afterId, limit int64) ([]*models.GroupLog, error) {
-	db := s.db.Where("status=1")
+	db := s.db.Where("status=2")
 
 	if beforeId > 0 {
 		db = db.Where("id>?", beforeId)

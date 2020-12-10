@@ -191,7 +191,7 @@ func GroupJoin(address *models.Address, group *models.Group) error {
 
 		err = models.SharedRedis().SetAccountGroupWinTime(groupLogs[goal].UserId, exp)
 		if err != nil {
-			mylog.Logger.Error().Msgf("addressGroup SetAccountGroupWinTime err:%v", err)
+			mylog.Logger.Error().Msgf("GroupJoin SetAccountGroupWinTime err:%v", err)
 		}
 
 		// 拼团成功

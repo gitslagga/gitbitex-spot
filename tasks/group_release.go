@@ -41,12 +41,12 @@ func GroupRelease() {
 	// 获取节点资金池
 	usdtNum, err := mysql.SharedStore().GetGroupLogSumNum(models.AccountGroupCurrencyUsdt)
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("GroupRelease GetAddressGroupSumNum err: %v", err)
+		mylog.DataLogger.Error().Msgf("GroupRelease GetGroupLogSumNum err: %v", err)
 		return
 	}
 	biteNum, err := mysql.SharedStore().GetGroupLogSumNum(models.AccountGroupCurrencyBite)
 	if err != nil {
-		mylog.DataLogger.Error().Msgf("GroupRelease GetAddressGroupSumNum err: %v", err)
+		mylog.DataLogger.Error().Msgf("GroupRelease GetGroupLogSumNum err: %v", err)
 		return
 	}
 
