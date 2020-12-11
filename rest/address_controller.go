@@ -17,7 +17,7 @@ func MnemonicService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] MnemonicService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -54,7 +54,7 @@ func RegisterService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -63,7 +63,7 @@ func RegisterService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -104,7 +104,7 @@ func LoginService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -113,7 +113,7 @@ func LoginService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressAsset err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -122,7 +122,7 @@ func LoginService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] LoginService CreateFrontendToken err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -197,7 +197,7 @@ func FindPasswordService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] FindPasswordService UpdateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -241,7 +241,7 @@ func ModifyPasswordService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] ModifyPasswordService UpdateAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -284,7 +284,7 @@ func ActivationService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] ActivationService ActivationAddress err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

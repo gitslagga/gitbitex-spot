@@ -35,7 +35,7 @@ func BackendWithdrawService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendWithdrawService BackendWithdraw err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -73,7 +73,7 @@ func BackendIssueStartService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendIssueStartService BackendIssueStart err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -132,7 +132,7 @@ func BackendHoldingStartService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendHoldingStartService BackendHoldingStart err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -191,7 +191,7 @@ func BackendPromoteStartService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] BackendPromoteStartService BackendPromoteStart err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

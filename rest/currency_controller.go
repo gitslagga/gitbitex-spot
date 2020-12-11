@@ -100,7 +100,7 @@ func AddressWithdrawService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] AddressWithdrawService AddressWithdraw err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

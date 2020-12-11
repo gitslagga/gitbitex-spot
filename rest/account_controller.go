@@ -115,7 +115,7 @@ func AccountTransferService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] AccountTransferService AccountTransfer err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
@@ -189,7 +189,7 @@ func AccountScanService(ctx *gin.Context) {
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] AccountScanService AccountScan err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
+		out.RespDesc = err.Error()
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
