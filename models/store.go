@@ -69,7 +69,6 @@ type Store interface {
 	GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64) ([]*AddressHolding, error)
 	GetLastAddressHolding() (*AddressHolding, error)
 	AddAddressHolding(holding *AddressHolding) error
-	GetTotalPowerList() ([]*TotalPower, error)
 	GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*AddressPromote, error)
 	GetLastAddressPromote() (*AddressPromote, error)
 	AddAddressPromote(promote *AddressPromote) error
@@ -87,13 +86,14 @@ type Store interface {
 	GetAccountAssetForUpdate(userId int64, currency string) (*AccountAsset, error)
 	GetIssueAccountAsset() ([]*AccountAsset, error)
 	SumIssueAccountAsset() (decimal.Decimal, error)
-	GetHoldingAccountAsset(minHolding decimal.Decimal) ([]*AccountAsset, error)
 	AddAccountAsset(account *AccountAsset) error
 	UpdateAccountAsset(account *AccountAsset) error
 
 	GetAccountPool(userId int64, currency string) (*AccountPool, error)
 	GetAccountsPoolByUserId(userId int64) ([]*AccountPool, error)
 	GetAccountPoolForUpdate(userId int64, currency string) (*AccountPool, error)
+	GetHoldingAccountPool(minHolding decimal.Decimal) ([]*AccountPool, error)
+	GetTotalPowerList() ([]*TotalPower, error)
 	AddAccountPool(account *AccountPool) error
 	UpdateAccountPool(account *AccountPool) error
 

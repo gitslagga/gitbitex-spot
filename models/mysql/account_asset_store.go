@@ -51,16 +51,6 @@ func (s *Store) SumIssueAccountAsset() (decimal.Decimal, error) {
 	return number.Number, err
 }
 
-func (s *Store) GetHoldingAccountAsset(minHolding decimal.Decimal) ([]*models.AccountAsset, error) {
-	var assets []*models.AccountAsset
-	err := s.db.Raw("SELECT * FROM g_account_asset WHERE currency='BITE' AND available>? ORDER BY available ASC",
-		minHolding.IntPart()).Scan(&assets).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, nil
-	}
-	return assets, err
-}
-
 func (s *Store) AddAccountAsset(account *models.AccountAsset) error {
 	return s.db.Create(account).Error
 }

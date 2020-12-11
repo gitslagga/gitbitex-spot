@@ -130,26 +130,26 @@ func BackendHoldingList() (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	accountAssets, err := mysql.SharedStore().GetHoldingAccountAsset(minHolding)
+	accountPools, err := mysql.SharedStore().GetHoldingAccountPool(minHolding)
 	if err != nil {
 		return nil, err
 	}
 
-	var holdingMap = make([]map[string]interface{}, len(accountAssets))
+	var holdingMap = make([]map[string]interface{}, len(accountPools))
 	var totalRank decimal.Decimal
 	var bestHolding decimal.Decimal
-	for k, v := range accountAssets {
+	for k, v := range accountPools {
 		holdingMap[k] = utils.StructToMapViaJson(v)
 
 		holdingMap[k]["Rank"] = decimal.NewFromInt(int64(k + 1))
-		if k > 0 && v.Available.Equal(accountAssets[k-1].Available) {
+		if k > 0 && v.Available.Equal(accountPools[k-1].Available) {
 			holdingMap[k]["Rank"] = holdingMap[k-1]["Rank"]
 		}
 
 		totalRank = totalRank.Add(holdingMap[k]["Rank"].(decimal.Decimal))
 
 		if k > 0 && holdingMap[k]["Rank"].(decimal.Decimal).Div(v.Available).
-			GreaterThan(holdingMap[k-1]["Rank"].(decimal.Decimal).Div(accountAssets[k-1].Available)) {
+			GreaterThan(holdingMap[k-1]["Rank"].(decimal.Decimal).Div(accountPools[k-1].Available)) {
 			bestHolding = v.Available
 		}
 	}
@@ -196,13 +196,13 @@ func backendHoldingStart(userId int64, totalNum, number, totalRank, rank decimal
 	}
 	defer func() { _ = db.Rollback() }()
 
-	accountAsset, err := db.GetAccountAssetForUpdate(userId, models.AccountCurrencyBite)
+	accountPool, err := db.GetAccountPoolForUpdate(userId, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
 
-	accountAsset.Available = accountAsset.Available.Add(number.Mul(decimal.NewFromFloat(1 - models.AccountHoldingShopRate)))
-	err = db.UpdateAccountAsset(accountAsset)
+	accountPool.Available = accountPool.Available.Add(number.Mul(decimal.NewFromFloat(1 - models.AccountHoldingShopRate)))
+	err = db.UpdateAccountPool(accountPool)
 	if err != nil {
 		return err
 	}
@@ -345,13 +345,13 @@ func backendPromoteStart(userId int64, power, totalPower, profit decimal.Decimal
 	}
 	defer func() { _ = db.Rollback() }()
 
-	accountAsset, err := db.GetAccountAssetForUpdate(userId, models.AccountCurrencyBite)
+	accountPool, err := db.GetAccountPoolForUpdate(userId, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
 
-	accountAsset.Available = accountAsset.Available.Add(profit.Mul(decimal.NewFromFloat(1 - models.AccountPromoteShopRate)))
-	err = db.UpdateAccountAsset(accountAsset)
+	accountPool.Available = accountPool.Available.Add(profit.Mul(decimal.NewFromFloat(1 - models.AccountPromoteShopRate)))
+	err = db.UpdateAccountPool(accountPool)
 	if err != nil {
 		return err
 	}

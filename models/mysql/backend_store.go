@@ -3,6 +3,7 @@ package mysql
 import (
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/jinzhu/gorm"
+	"github.com/shopspring/decimal"
 )
 
 func (s *Store) GetIssueByUserId(userId, beforeId, afterId, limit int64) ([]*models.Issue, error) {
@@ -121,10 +122,20 @@ func (s *Store) AddAddressHolding(holding *models.AddressHolding) error {
 	return s.db.Create(holding).Error
 }
 
+func (s *Store) GetHoldingAccountPool(minHolding decimal.Decimal) ([]*models.AccountPool, error) {
+	var pools []*models.AccountPool
+	err := s.db.Raw("SELECT * FROM g_account_pool WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&pools).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return pools, err
+}
+
 func (s *Store) GetTotalPowerList() ([]*models.TotalPower, error) {
 	var totalPower []*models.TotalPower
 	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gaa.currency, gaa.available FROM g_address ga ` +
-		`INNER JOIN g_account_asset gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
+		`INNER JOIN g_account_pool gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
 		Scan(&totalPower).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
