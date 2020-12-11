@@ -66,9 +66,20 @@ type Store interface {
 	GetAddressByParentId(parentId int64) ([]*Address, error)
 	AddAddress(address *Address) error
 	UpdateAddress(address *Address) error
+
+	GetHoldingAccount(minHolding decimal.Decimal) ([]*Account, error)
+	GetHoldingAccountAsset(minHolding decimal.Decimal) ([]*AccountAsset, error)
+	GetHoldingAccountShop(minHolding decimal.Decimal) ([]*AccountShop, error)
+	GetHoldingAccountPool(minHolding decimal.Decimal) ([]*AccountPool, error)
+	GetHoldingAccountIssue(minHolding decimal.Decimal) ([]*AccountIssue, error)
 	GetAddressHoldingByUserId(userId, beforeId, afterId, limit int64) ([]*AddressHolding, error)
 	GetLastAddressHolding() (*AddressHolding, error)
 	AddAddressHolding(holding *AddressHolding) error
+	GetPromoteAccount() ([]*TotalPower, error)
+	GetPromoteAccountAsset() ([]*TotalPower, error)
+	GetPromoteAccountPool() ([]*TotalPower, error)
+	GetPromoteAccountShop() ([]*TotalPower, error)
+	GetPromoteAccountIssue() ([]*TotalPower, error)
 	GetAddressPromoteByUserId(userId, beforeId, afterId, limit int64) ([]*AddressPromote, error)
 	GetLastAddressPromote() (*AddressPromote, error)
 	AddAddressPromote(promote *AddressPromote) error
@@ -92,8 +103,6 @@ type Store interface {
 	GetAccountPool(userId int64, currency string) (*AccountPool, error)
 	GetAccountsPoolByUserId(userId int64) ([]*AccountPool, error)
 	GetAccountPoolForUpdate(userId int64, currency string) (*AccountPool, error)
-	GetHoldingAccountPool(minHolding decimal.Decimal) ([]*AccountPool, error)
-	GetTotalPowerList() ([]*TotalPower, error)
 	AddAccountPool(account *AccountPool) error
 	UpdateAccountPool(account *AccountPool) error
 
@@ -102,6 +111,12 @@ type Store interface {
 	GetAccountShopForUpdate(userId int64, currency string) (*AccountShop, error)
 	AddAccountShop(account *AccountShop) error
 	UpdateAccountShop(account *AccountShop) error
+
+	GetAccountIssue(userId int64, currency string) (*AccountIssue, error)
+	GetAccountsIssueByUserId(userId int64) ([]*AccountIssue, error)
+	GetAccountIssueForUpdate(userId int64, currency string) (*AccountIssue, error)
+	AddAccountIssue(account *AccountIssue) error
+	UpdateAccountIssue(account *AccountIssue) error
 
 	GetBuyMachine() ([]*Machine, error)
 	GetMachineById(machineId int64) (*Machine, error)

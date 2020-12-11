@@ -103,13 +103,13 @@ func issueRelease(issue *models.Issue, number, biteNumber decimal.Decimal) error
 		return err
 	}
 
-	addressAsset, err := db.GetAccountAssetForUpdate(issue.UserId, models.AccountCurrencyBite)
+	accountIssue, err := db.GetAccountIssueForUpdate(issue.UserId, models.AccountCurrencyBite)
 	if err != nil {
 		return err
 	}
 
-	addressAsset.Available = addressAsset.Available.Add(biteNumber)
-	err = db.UpdateAccountAsset(addressAsset)
+	accountIssue.Available = accountIssue.Available.Add(biteNumber)
+	err = db.UpdateAccountIssue(accountIssue)
 	if err != nil {
 		return err
 	}

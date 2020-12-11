@@ -122,20 +122,104 @@ func (s *Store) AddAddressHolding(holding *models.AddressHolding) error {
 	return s.db.Create(holding).Error
 }
 
-func (s *Store) GetHoldingAccountPool(minHolding decimal.Decimal) ([]*models.AccountPool, error) {
-	var pools []*models.AccountPool
-	err := s.db.Raw("SELECT * FROM g_account_pool WHERE currency='BITE' AND available>? ORDER BY available ASC",
-		minHolding.IntPart()).Scan(&pools).Error
+func (s *Store) GetHoldingAccount(minHolding decimal.Decimal) ([]*models.Account, error) {
+	var accounts []*models.Account
+	err := s.db.Raw("SELECT * FROM g_account WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&accounts).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil
 	}
-	return pools, err
+	return accounts, err
 }
 
-func (s *Store) GetTotalPowerList() ([]*models.TotalPower, error) {
+func (s *Store) GetHoldingAccountAsset(minHolding decimal.Decimal) ([]*models.AccountAsset, error) {
+	var accounts []*models.AccountAsset
+	err := s.db.Raw("SELECT * FROM g_account_asset WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&accounts).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return accounts, err
+}
+
+func (s *Store) GetHoldingAccountPool(minHolding decimal.Decimal) ([]*models.AccountPool, error) {
+	var accounts []*models.AccountPool
+	err := s.db.Raw("SELECT * FROM g_account_pool WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&accounts).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return accounts, err
+}
+
+func (s *Store) GetHoldingAccountShop(minHolding decimal.Decimal) ([]*models.AccountShop, error) {
+	var accounts []*models.AccountShop
+	err := s.db.Raw("SELECT * FROM g_account_shop WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&accounts).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return accounts, err
+}
+
+func (s *Store) GetHoldingAccountIssue(minHolding decimal.Decimal) ([]*models.AccountIssue, error) {
+	var accounts []*models.AccountIssue
+	err := s.db.Raw("SELECT * FROM g_account_issue WHERE currency='BITE' AND available>? ORDER BY available ASC",
+		minHolding.IntPart()).Scan(&accounts).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return accounts, err
+}
+
+func (s *Store) GetPromoteAccount() ([]*models.TotalPower, error) {
 	var totalPower []*models.TotalPower
 	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gaa.currency, gaa.available FROM g_address ga ` +
-		`INNER JOIN g_account_pool gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
+		`INNER JOIN g_account gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
+		Scan(&totalPower).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return totalPower, err
+}
+
+func (s *Store) GetPromoteAccountAsset() ([]*models.TotalPower, error) {
+	var totalPower []*models.TotalPower
+	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gaa.currency, gaa.available FROM g_address ga ` +
+		`INNER JOIN g_account_asset gaa ON ga.id = gaa.user_id WHERE ga.parent_id!=0 AND gaa.currency="BITE" AND gaa.available>0`).
+		Scan(&totalPower).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return totalPower, err
+}
+
+func (s *Store) GetPromoteAccountPool() ([]*models.TotalPower, error) {
+	var totalPower []*models.TotalPower
+	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gap.currency, gap.available FROM g_address ga ` +
+		`INNER JOIN g_account_pool gap ON ga.id = gap.user_id WHERE ga.parent_id!=0 AND gap.currency="BITE" AND gap.available>0`).
+		Scan(&totalPower).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return totalPower, err
+}
+
+func (s *Store) GetPromoteAccountShop() ([]*models.TotalPower, error) {
+	var totalPower []*models.TotalPower
+	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gas.currency, gas.available FROM g_address ga ` +
+		`INNER JOIN g_account_shop gas ON ga.id = gas.user_id WHERE ga.parent_id!=0 AND gas.currency="BITE" AND gas.available>0`).
+		Scan(&totalPower).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return totalPower, err
+}
+
+func (s *Store) GetPromoteAccountIssue() ([]*models.TotalPower, error) {
+	var totalPower []*models.TotalPower
+	err := s.db.Raw(`SELECT ga.id,ga.parent_id,ga.parent_ids, gai.currency, gai.available FROM g_address ga ` +
+		`INNER JOIN g_account_issue gai ON ga.id = gai.user_id WHERE ga.parent_id!=0 AND gai.currency="BITE" AND gai.available>0`).
 		Scan(&totalPower).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, nil

@@ -130,6 +130,7 @@ func BackendHoldingList() (map[string]interface{}, error) {
 		return nil, err
 	}
 
+	//TODO Holding List
 	accountPools, err := mysql.SharedStore().GetHoldingAccountPool(minHolding)
 	if err != nil {
 		return nil, err
@@ -243,7 +244,8 @@ func BackendPromoteList() ([]map[string]interface{}, error) {
 		return nil, err
 	}
 
-	totalPowerList, err := mysql.SharedStore().GetTotalPowerList()
+	//TODO Promote List
+	totalPowerList, err := mysql.SharedStore().GetPromoteAccount()
 	if err != nil {
 		return nil, err
 	}
