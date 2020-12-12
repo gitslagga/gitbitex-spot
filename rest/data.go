@@ -23,6 +23,7 @@ const (
 	EC_PASSWORD_INCORRECT    = 9004
 	EC_USERNAME_PASSWORD_ERR = 9005
 	EC_ACTIVATION_SELF_ERR   = 9006
+	EC_USERNAME_EXISTS_ERR   = 9007
 
 	EC_CLIENT_OID_ERR        = 8000
 	EC_ORDER_NOT_EXISTS      = 8001
@@ -77,6 +78,8 @@ func (c ErrorCode) String() (r string) {
 		r = "用户名或密码错误|Username or password error"
 	case EC_ACTIVATION_SELF_ERR:
 		r = "不能自己激活自己|Can not activate yourself"
+	case EC_USERNAME_EXISTS_ERR:
+		r = "用户名已存在:Username is already exists"
 
 	case EC_CLIENT_OID_ERR:
 		r = "无效的客户ID: %v|invalid client_oid"

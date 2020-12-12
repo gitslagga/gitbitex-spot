@@ -9,6 +9,7 @@ import (
 	"github.com/gitslagga/gitbitex-spot/conf"
 	"github.com/gitslagga/gitbitex-spot/models"
 	"github.com/gitslagga/gitbitex-spot/models/mysql"
+	"github.com/gitslagga/gitbitex-spot/utils"
 	"github.com/miguelmota/go-ethereum-hdwallet"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
@@ -118,6 +119,7 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 
 	address.Username = username
 	address.Password = password
+	address.AddressBite = utils.GetBiteAddress(address.Address)
 
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
@@ -162,6 +164,7 @@ func AddressLogin(username, password, mnemonic, privateKey string) (address *mod
 
 	address.Username = username
 	address.Password = password
+	address.AddressBite = utils.GetBiteAddress(address.Address)
 
 	config, err := GetConfigById(models.ConfigYtlConvertBiteFee + 1)
 	if err != nil {
@@ -293,6 +296,10 @@ func GetAddressById(id int64) (*models.Address, error) {
 	return mysql.SharedStore().GetAddressById(id)
 }
 
+func GetAddressByUsername(username string) (*models.Address, error) {
+	return mysql.SharedStore().GetAddressByUsername(username)
+}
+
 func GetAddressByParentId(parentId int64) ([]*models.Address, error) {
 	return mysql.SharedStore().GetAddressByParentId(parentId)
 }
@@ -325,7 +332,7 @@ func ActivationAddress(address *models.Address, number float64, addressValue str
 	}
 
 	//目标账户已经激活
-	targetAddress, err := mysql.SharedStore().GetAddressByAddress(addressValue)
+	targetAddress, err := mysql.SharedStore().GetAddressByUAddressBite(addressValue)
 	if err != nil {
 		return err
 	}

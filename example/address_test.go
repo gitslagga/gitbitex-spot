@@ -2,6 +2,7 @@ package example
 
 import (
 	"crypto/ecdsa"
+	"crypto/md5"
 	"fmt"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -71,4 +72,12 @@ func TestGetAddressByPrivateKey(t *testing.T) {
 	fmt.Println("privateKey:", privateKeyValue)
 	fmt.Println("publicKey", publicKeyValue)
 	fmt.Println("address:", address)
+}
+
+func TestGetBiteAddress(t *testing.T) {
+	hash := md5.Sum([]byte(`0x82d2658D3fF713fbDA59f39aEA584975D7442407`))
+	biteAddress := fmt.Sprintf("BITE%x", hash)
+
+	fmt.Println("hash:", hash)
+	fmt.Println("biteAddress:", biteAddress)
 }

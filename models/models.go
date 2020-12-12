@@ -257,6 +257,7 @@ type Address struct {
 	Status         int
 	GroupUsdt      int
 	GroupBite      int
+	AddressBite    string
 }
 
 type AddressList struct {

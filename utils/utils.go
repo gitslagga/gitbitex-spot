@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"github.com/shopspring/decimal"
@@ -110,4 +111,10 @@ func GetOrderSN() string {
 	}
 
 	return fmt.Sprintf("%s%s", time.Now().Format("20060102150405"), b)
+}
+
+// get BiteAddress
+func GetBiteAddress(address string) string {
+	hash := md5.Sum([]byte(address))
+	return fmt.Sprintf("BITE%x", hash)
 }

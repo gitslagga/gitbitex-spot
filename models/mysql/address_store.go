@@ -23,6 +23,24 @@ func (s *Store) GetAddressById(id int64) (*models.Address, error) {
 	return &address, err
 }
 
+func (s *Store) GetAddressByUsername(username string) (*models.Address, error) {
+	var address models.Address
+	err := s.db.Raw("SELECT * FROM g_address WHERE username=?", username).Scan(&address).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &address, err
+}
+
+func (s *Store) GetAddressByUAddressBite(addressBite string) (*models.Address, error) {
+	var address models.Address
+	err := s.db.Raw("SELECT * FROM g_address WHERE address_bite=?", addressBite).Scan(&address).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &address, err
+}
+
 func (s *Store) CountAddressByMachineLevelId(machineLevelId int64) (int, error) {
 	var count models.TotalCount
 	err := s.db.Raw("SELECT COUNT(*) as count FROM g_address WHERE machine_level_id=?", machineLevelId).Scan(&count).Error
