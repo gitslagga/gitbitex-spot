@@ -48,20 +48,6 @@ func RegisterService(ctx *gin.Context) {
 		return
 	}
 
-	valid, err := service.GetAddressByUsername(register.Username)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-	if !valid {
-		out.RespCode = EC_USERNAME_EXISTS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_USERNAME_EXISTS_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
 	mylog.Logger.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
 	address, err := service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
@@ -108,20 +94,6 @@ func LoginService(ctx *gin.Context) {
 	if len(login.Username) < 3 {
 		out.RespCode = EC_USERNAME_ERR
 		out.RespDesc = ErrorCodeMessage(EC_USERNAME_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-
-	valid, err := service.GetAddressByUsername(login.Username)
-	if err != nil {
-		out.RespCode = EC_NETWORK_ERR
-		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
-		ctx.JSON(http.StatusOK, out)
-		return
-	}
-	if !valid {
-		out.RespCode = EC_USERNAME_EXISTS_ERR
-		out.RespDesc = ErrorCodeMessage(EC_USERNAME_EXISTS_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}

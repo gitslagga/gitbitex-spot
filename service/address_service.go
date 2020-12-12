@@ -112,9 +112,27 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 	}
 
 	if addressExists != nil {
+		if addressExists.Username != username {
+			valid, err := GetAddressByUsername(username)
+			if err != nil {
+				return nil, err
+			}
+			if !valid {
+				return nil, errors.New("用户名已存在:Username is already exists")
+			}
+		}
+
 		addressExists.Username = username
 		addressExists.Password = password
 		return addressExists, UpdateAddress(addressExists)
+	}
+
+	valid, err := GetAddressByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	if !valid {
+		return nil, errors.New("用户名已存在:Username is already exists")
 	}
 
 	address.Username = username
@@ -168,9 +186,27 @@ func AddressLogin(username, password, mnemonic, privateKey string) (address *mod
 		return nil, err
 	}
 	if addressExists != nil {
+		if addressExists.Username != username {
+			valid, err := GetAddressByUsername(username)
+			if err != nil {
+				return nil, err
+			}
+			if !valid {
+				return nil, errors.New("用户名已存在:Username is already exists")
+			}
+		}
+
 		addressExists.Username = username
 		addressExists.Password = password
 		return addressExists, UpdateAddress(addressExists)
+	}
+
+	valid, err := GetAddressByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+	if !valid {
+		return nil, errors.New("用户名已存在:Username is already exists")
 	}
 
 	address.Username = username
