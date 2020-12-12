@@ -23,6 +23,15 @@ func (s *Store) GetAddressListById(id int64) (*models.AddressList, error) {
 	return &addressList, err
 }
 
+func (s *Store) GetAddressListByUsername(username string) (*models.AddressList, error) {
+	var addressList models.AddressList
+	err := s.db.Raw("SELECT * FROM g_address_list WHERE username=?", username).Scan(&addressList).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, nil
+	}
+	return &addressList, err
+}
+
 func (s *Store) GetAddressListByUserId(userId int64) ([]*models.AddressList, error) {
 	var addressLists []*models.AddressList
 	err := s.db.Raw("SELECT * FROM g_address_list WHERE user_id=?", userId).Scan(&addressLists).Error

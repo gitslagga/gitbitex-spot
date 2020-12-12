@@ -88,6 +88,7 @@ type Store interface {
 
 	GetAddressListByAddress(address string) (*AddressList, error)
 	GetAddressListById(id int64) (*AddressList, error)
+	GetAddressListByUsername(username string) (*AddressList, error)
 	GetAddressListByUserId(userId int64) ([]*AddressList, error)
 	CountAddressListByUserId(userId int64) (int, error)
 	AddAddressList(addressList *AddressList) error

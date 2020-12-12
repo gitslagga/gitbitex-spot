@@ -48,14 +48,14 @@ func RegisterService(ctx *gin.Context) {
 		return
 	}
 
-	address, err := service.GetAddressByUsername(register.Username)
+	valid, err := service.GetAddressByUsername(register.Username)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
-	if address != nil {
+	if !valid {
 		out.RespCode = EC_USERNAME_EXISTS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_USERNAME_EXISTS_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -64,7 +64,7 @@ func RegisterService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] RegisterService request param: %v", register)
 
-	address, err = service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
+	address, err := service.AddressRegister(register.Username, encryptPassword(register.Password), register.Mnemonic)
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressRegister err: %v", err)
 		out.RespCode = EC_NETWORK_ERR
@@ -112,14 +112,14 @@ func LoginService(ctx *gin.Context) {
 		return
 	}
 
-	address, err := service.GetAddressByUsername(login.Username)
+	valid, err := service.GetAddressByUsername(login.Username)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
 		ctx.JSON(http.StatusOK, out)
 		return
 	}
-	if address != nil {
+	if !valid {
 		out.RespCode = EC_USERNAME_EXISTS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_USERNAME_EXISTS_ERR)
 		ctx.JSON(http.StatusOK, out)
@@ -128,7 +128,7 @@ func LoginService(ctx *gin.Context) {
 
 	mylog.Logger.Info().Msgf("[Rest] LoginService request param: %v", login)
 
-	address, err = service.AddressLogin(login.Username, encryptPassword(login.Password), login.Mnemonic, login.PrivateKey)
+	address, err := service.AddressLogin(login.Username, encryptPassword(login.Password), login.Mnemonic, login.PrivateKey)
 	if err != nil {
 		mylog.Logger.Error().Msgf("[Rest] RegisterService AddressLogin err: %v", err)
 		out.RespCode = EC_NETWORK_ERR

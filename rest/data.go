@@ -137,6 +137,12 @@ type LoginRequest struct {
 	PrivateKey string `json:"private_key"`
 }
 
+type AddressAddListRequest struct {
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Mnemonic string `json:"mnemonic" binding:"required"`
+}
+
 type FindPasswordRequest struct {
 	PrivateKey string `json:"private_key" binding:"required"`
 	Password   string `json:"password" binding:"required"`

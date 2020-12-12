@@ -136,11 +136,22 @@ func AddressRegister(username, password, mnemonic string) (*models.Address, erro
 func AddressLogin(username, password, mnemonic, privateKey string) (address *models.Address, err error) {
 	if mnemonic != "" {
 		address, err = createAddressByMnemonic(mnemonic)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		address, err = createAddressByPrivateKey(privateKey)
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+
+		address, err := GetAddressByAddress(address.Address)
+		if err != nil {
+			return nil, err
+		}
+		if address == nil {
+			return nil, errors.New("外部私钥不能导入|External private key cannot be imported")
+		}
 	}
 
 	//子地址不能注册或登录，会引发地址混乱冲突
@@ -296,8 +307,18 @@ func GetAddressById(id int64) (*models.Address, error) {
 	return mysql.SharedStore().GetAddressById(id)
 }
 
-func GetAddressByUsername(username string) (*models.Address, error) {
-	return mysql.SharedStore().GetAddressByUsername(username)
+func GetAddressByUsername(username string) (bool, error) {
+	address, err := mysql.SharedStore().GetAddressByUsername(username)
+	if err != nil {
+		return false, err
+	}
+
+	addressList, err := mysql.SharedStore().GetAddressListByUsername(username)
+	if err != nil {
+		return false, err
+	}
+
+	return address == nil && addressList == nil, nil
 }
 
 func GetAddressByParentId(parentId int64) ([]*models.Address, error) {

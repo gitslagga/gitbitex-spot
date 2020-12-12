@@ -40,7 +40,7 @@ func AddressListService(address *models.Address) ([]*models.AddressList, error) 
 	return addressList, nil
 }
 
-func AddressAddList(userId int64, username, password, mnemonic, privateKey string) error {
+func AddressAddList(userId int64, username, password, mnemonic string) error {
 	count, err := CountAddressListByUserId(userId)
 	if err != nil {
 		return err
@@ -49,12 +49,7 @@ func AddressAddList(userId int64, username, password, mnemonic, privateKey strin
 		return errors.New("子地址添加数量超过限制|The number of sub addresses added exceeds the limit")
 	}
 
-	var address *models.Address
-	if mnemonic != "" {
-		address, err = createAddressByMnemonic(mnemonic)
-	} else {
-		address, err = createAddressByPrivateKey(privateKey)
-	}
+	address, err := createAddressByMnemonic(mnemonic)
 	if err != nil {
 		return err
 	}
