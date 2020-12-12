@@ -589,3 +589,17 @@ type AddressRelease struct {
 	Number    decimal.Decimal
 	Type      int
 }
+
+//TODO Add global account change
+type AccountChange struct {
+	Id        int64 `gorm:"column:id;primary_key;AUTO_INCREMENT"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	UserId    int64
+	Coin      string
+	Start     decimal.Decimal
+	Change    decimal.Decimal
+	End       decimal.Decimal
+	Type      int
+	Comment   string
+}
