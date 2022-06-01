@@ -41,7 +41,7 @@ func GetProductTrades(ctx *gin.Context) {
 func GetProductCandles(ctx *gin.Context) {
 	productId := ctx.Param("productId")
 	granularity, _ := utils.AToInt64(ctx.Query("granularity"))
-	limit, _ := utils.AToInt64(ctx.DefaultQuery("limit", "1000"))
+	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "1000"))
 	if limit <= 0 || limit > 10000 {
 		limit = 1000
 	}
@@ -51,7 +51,7 @@ func GetProductCandles(ctx *gin.Context) {
 	//    [ 1415398768, 0.32, 4.2, 0.35, 4.2, 12.3 ],
 	//]
 	var tickVos [][6]float64
-	ticks, err := service.GetTicksByProductId(productId, granularity/60, int(limit))
+	ticks, err := service.GetTicksByProductId(productId, granularity/60, limit)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, newMessageVo(err))
 		return
@@ -114,7 +114,7 @@ func GetProductCandleService(ctx *gin.Context) {
 
 	productId := ctx.Param("productId")
 	granularity, err1 := utils.AToInt64(ctx.DefaultQuery("granularity", "60"))
-	limit, err2 := utils.AToInt64(ctx.DefaultQuery("limit", "1000"))
+	limit, err2 := strconv.Atoi(ctx.DefaultQuery("limit", "1000"))
 	if err1 != nil || err2 != nil {
 		out.RespCode = EC_PARAMS_ERR
 		out.RespDesc = ErrorCodeMessage(EC_PARAMS_ERR)
@@ -125,7 +125,7 @@ func GetProductCandleService(ctx *gin.Context) {
 		limit = 1000
 	}
 
-	ticks, err := service.GetTicksByProductId(productId, granularity/60, int(limit))
+	ticks, err := service.GetTicksByProductId(productId, granularity/60, limit)
 	if err != nil {
 		out.RespCode = EC_NETWORK_ERR
 		out.RespDesc = ErrorCodeMessage(EC_NETWORK_ERR)
