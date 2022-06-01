@@ -8,7 +8,7 @@ require (
 	github.com/cznic/mathutil v0.0.0-20181122101859-297441e03548 // indirect
 	github.com/cznic/sortutil v0.0.0-20181122101858-f5f958428db8 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/emirpasic/gods v1.12.0
+	github.com/emirpasic/gods v1.18.1
 	github.com/etcd-io/gofail v0.0.0-20190801230047-ad7f989257ca // indirect
 	github.com/ethereum/go-ethereum v1.9.23
 	github.com/gin-gonic/gin v1.8.0
