@@ -11,7 +11,7 @@ require (
 	github.com/emirpasic/gods v1.12.0
 	github.com/etcd-io/gofail v0.0.0-20190801230047-ad7f989257ca // indirect
 	github.com/ethereum/go-ethereum v1.9.23
-	github.com/gin-gonic/gin v1.6.3
+	github.com/gin-gonic/gin v1.8.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.1.2
