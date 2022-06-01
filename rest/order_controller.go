@@ -190,9 +190,9 @@ func GetOrders(ctx *gin.Context) {
 
 	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
 	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
-	orders, err := service.GetOrdersByUserId(GetCurrentUser(ctx).Id, statuses, side, productId, before, after, int(limit))
+	orders, err := service.GetOrdersByUserId(GetCurrentUser(ctx).Id, statuses, side, productId, before, after, limit)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, newMessageVo(err))
 		return
@@ -220,7 +220,7 @@ func GetOrderService(ctx *gin.Context) {
 	productId := ctx.Query("productId")
 	before, _ := strconv.ParseInt(ctx.Query("before"), 10, 64)
 	after, _ := strconv.ParseInt(ctx.Query("after"), 10, 64)
-	limit, _ := strconv.ParseInt(ctx.Query("limit"), 10, 64)
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
 
 	var side *models.Side
 	var err error
@@ -248,7 +248,7 @@ func GetOrderService(ctx *gin.Context) {
 		statuses = append(statuses, *status)
 	}
 
-	orders, err := service.GetOrdersByUserId(GetCurrentAddress(ctx).Id, statuses, side, productId, before, after, int(limit))
+	orders, err := service.GetOrdersByUserId(GetCurrentAddress(ctx).Id, statuses, side, productId, before, after, limit)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, newMessageVo(err))
 		return
