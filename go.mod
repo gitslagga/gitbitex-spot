@@ -28,7 +28,7 @@ require (
 	github.com/pingcap/tidb v2.0.11+incompatible // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.14.0
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.27.0
 	github.com/segmentio/kafka-go v0.4.8
 	github.com/shopspring/decimal v1.2.0
 	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
@@ -36,5 +36,7 @@ require (
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/tyler-smith/go-bip39 v1.1.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e // indirect
+	golang.org/x/tools v0.1.7 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
