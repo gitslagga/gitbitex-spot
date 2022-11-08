@@ -29,7 +29,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.14.0
 	github.com/rs/zerolog v1.26.1
-	github.com/segmentio/kafka-go v0.4.8
+	github.com/segmentio/kafka-go v0.4.37
 	github.com/shopspring/decimal v1.2.0
 	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
 	github.com/siddontang/go-mysql v1.1.0
