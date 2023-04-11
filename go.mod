@@ -22,7 +22,7 @@ require (
 	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
 	github.com/siddontang/go-mysql v1.1.0
 	github.com/tyler-smith/go-bip39 v1.1.0
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
