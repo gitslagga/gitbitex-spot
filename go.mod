@@ -18,7 +18,7 @@ require (
 	github.com/prometheus/common v0.14.0
 	github.com/rs/zerolog v1.26.1
 	github.com/segmentio/kafka-go v0.4.8
-	github.com/shopspring/decimal v1.2.0
+	github.com/shopspring/decimal v1.3.1
 	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
 	github.com/siddontang/go-mysql v1.1.0
 	github.com/tyler-smith/go-bip39 v1.1.0
