@@ -16,7 +16,7 @@ require (
 	github.com/miguelmota/go-ethereum-hdwallet v0.0.0-20200123000308-a60dcd172b4c
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.14.0
-	github.com/rs/zerolog v1.26.1
+	github.com/rs/zerolog v1.29.0
 	github.com/segmentio/kafka-go v0.4.8
 	github.com/shopspring/decimal v1.3.1
 	github.com/siddontang/go-log v0.0.0-20190221022429-1e957dd83bed
@@ -47,6 +47,7 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.2.0 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v1.14.6 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
